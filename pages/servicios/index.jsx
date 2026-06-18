@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import Head from 'next/head';
-import { SECTORES_META, getCasosBySector, getSectores } from '../data/casos';
-import SectorDetail from '../components/servicios/SectorDetail';
-import SectionHeading from '../components/ui/SectionHeading';
+import { SECTORES_META, getCasosBySector, getSectores } from '../../data/casos';
+import SectorDetail from '../../components/servicios/SectorDetail';
+import SectionHeading from '../../components/ui/SectionHeading';
 
 export default function ServiciosPage() {
   const sectores = getSectores();
