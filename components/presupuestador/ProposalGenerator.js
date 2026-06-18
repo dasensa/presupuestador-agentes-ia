@@ -1,8 +1,17 @@
-export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled) => {
+export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled, companyData) => {
+  const clienteInfo = companyData ? `
+    <div style="background: #1a2744; border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #243353;">
+      <p style="color: #fbbf24; font-size: 11px; font-weight: bold; margin: 0 0 12px; letter-spacing: 1px;">PREPARADO PARA</p>
+      <p style="color: #ffffff; font-size: 16px; font-weight: bold; margin: 0;">${companyData.nombre}${companyData.cargo ? ` — ${companyData.cargo}` : ''}</p>
+      <p style="color: #94a3b8; font-size: 14px; margin: 4px 0 0;">${companyData.empresa}${companyData.empleados ? ` (${companyData.empleados} empleados)` : ''}</p>
+      ${companyData.email ? `<p style="color: #60a5fa; font-size: 13px; margin: 4px 0 0;">${companyData.email}</p>` : ''}
+    </div>
+  ` : '';
+
   const html = `
     <!DOCTYPE html>
     <html lang="es">
-    <head><meta charset="UTF-8"><title>Propuesta AgentIA - ${sector}</title></head>
+    <head><meta charset="UTF-8"><title>Propuesta AgentIA - ${companyData?.empresa || sector}</title></head>
     <body style="font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; max-width: 900px; margin: 0 auto; color: #e2e8f0; background: #020617;">
       <div style="background: linear-gradient(135deg, #0a1628 0%, #111d35 100%); border-radius: 16px; padding: 40px; border: 1px solid #243353;">
         <div style="text-align: center; margin-bottom: 40px;">
@@ -11,6 +20,8 @@ export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, 
           </h1>
           <p style="color: #94a3b8; margin-top: 8px;">Propuesta de Agentes IA</p>
         </div>
+
+        ${clienteInfo}
 
         <div style="background: #1a2744; border-radius: 12px; padding: 24px; margin-bottom: 24px; border-left: 4px solid #fbbf24;">
           <h2 style="color: #fbbf24; font-size: 18px; margin: 0 0 8px;">Sector: ${sector}</h2>
@@ -62,13 +73,13 @@ export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, 
   return html;
 };
 
-export const descargarPropuesta = (selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled) => {
-  const html = generarPropuestaHTML(selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled);
+export const descargarPropuesta = (selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled, companyData) => {
+  const html = generarPropuestaHTML(selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled, companyData);
   const blob = new Blob([html], { type: 'text/html' });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `Propuesta_AgentIA_${sector}_${Date.now()}.html`;
+  a.download = `Propuesta_AgentIA_${companyData?.empresa || sector}_${Date.now()}.html`;
   a.click();
   window.URL.revokeObjectURL(url);
 };

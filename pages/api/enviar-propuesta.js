@@ -7,17 +7,20 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, nombre, sector, casos, roi, inversion, beneficio } = req.body;
+  const { email, nombre, empresa, cargo, telefono, sector, casos, roi, inversion, beneficio } = req.body;
 
   if (!email || !nombre) {
     return res.status(400).json({ error: 'Email y nombre requeridos' });
   }
 
+  const destinatario = cargo ? `${nombre} — ${cargo}` : nombre;
+  const linea_empresa = empresa ? ` en ${empresa}` : '';
+
   try {
     await resend.emails.send({
       from: 'propuestas@tudominio.com',
       to: email,
-      subject: `Propuesta AgentIA - Sector ${sector}`,
+      subject: `Propuesta AgentIA - ${empresa || sector} - ${casos} agentes IA`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -34,8 +37,14 @@ export default async function handler(req, res) {
 
                 <p style="color: #e2e8f0; font-size: 15px;">Hola <strong>${nombre}</strong>,</p>
                 <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">
-                  Te adjuntamos el analisis de presupuestacion para <strong style="color: #fbbf24;">${casos} agentes IA</strong> en el sector <strong style="color: #fbbf24;">${sector}</strong>.
+                  Te adjuntamos el analisis de presupuestacion para <strong style="color: #fbbf24;">${casos} agentes IA</strong> en el sector <strong style="color: #fbbf24;">${sector}</strong>${linea_empresa}.
                 </p>
+
+                <div style="background: #1a2744; border-radius: 12px; padding: 16px 20px; margin: 20px 0; border: 1px solid #243353;">
+                  <p style="color: #fbbf24; font-size: 11px; font-weight: bold; margin: 0 0 8px; letter-spacing: 1px;">PREPARADO PARA</p>
+                  <p style="color: #ffffff; margin: 0; font-weight: 600;">${destinatario}</p>
+                  ${empresa ? `<p style="color: #94a3b8; font-size: 13px; margin: 4px 0 0;">${empresa}</p>` : ''}
+                </div>
 
                 <div style="display: flex; gap: 12px; margin: 24px 0;">
                   <div style="flex: 1; background: #1a2744; border-radius: 12px; padding: 20px; border: 1px solid #243353;">
