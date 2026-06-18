@@ -17,69 +17,56 @@ export default async function handler(req, res) {
     await resend.emails.send({
       from: 'propuestas@tudominio.com',
       to: email,
-      subject: `Propuesta Agentes IA - Sector ${sector}`,
+      subject: `Propuesta AgentIA - Sector ${sector}`,
       html: `
         <!DOCTYPE html>
         <html>
-          <head>
-            <meta charset="UTF-8">
-            <style>
-              body { font-family: Arial, sans-serif; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background: linear-gradient(135deg, #1F3864 0%, #0066cc 100%); color: white; padding: 30px; border-radius: 8px; text-align: center; }
-              .header h1 { margin: 0; font-size: 24px; }
-              .section { margin: 20px 0; padding: 20px; background: #f9f9f9; border-radius: 8px; }
-              .section h2 { color: #1F3864; font-size: 18px; margin-top: 0; }
-              .metric { display: inline-block; margin: 10px 15px 10px 0; }
-              .metric-label { color: #666; font-size: 12px; }
-              .metric-value { font-size: 24px; font-weight: bold; color: #0066cc; }
-              .metric-value.roi { color: #28a745; }
-              .cta { background: #0066cc; color: white; padding: 15px 30px; border-radius: 5px; text-align: center; text-decoration: none; display: inline-block; margin-top: 20px; }
-              .footer { font-size: 12px; color: #999; margin-top: 30px; text-align: center; border-top: 1px solid #ddd; padding-top: 20px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1>Propuesta de Agentes IA</h1>
-                <p>Análisis de presupuesto e impacto ROI</p>
-              </div>
-              <div style="margin-top: 20px;">
-                <p>Hola <strong>${nombre}</strong>,</p>
-                <p>Te adjuntamos el análisis de presupuestación para <strong>${casos} agentes IA en el sector ${sector}</strong>.</p>
-              </div>
-              <div class="section">
-                <h2>Resumen Ejecutivo</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                  <div class="metric">
-                    <p class="metric-label">INVERSIÓN AÑO 1</p>
-                    <p class="metric-value">€${inversion.toLocaleString()}</p>
+          <head><meta charset="UTF-8"></head>
+          <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #020617;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 32px 20px;">
+              <div style="background: linear-gradient(135deg, #0a1628 0%, #111d35 100%); border-radius: 16px; padding: 32px; border: 1px solid #243353;">
+                <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid #243353; margin-bottom: 24px;">
+                  <h1 style="margin: 0; font-size: 28px;">
+                    <span style="color: #ffffff;">Agent</span><span style="color: #fbbf24;">IA</span>
+                  </h1>
+                  <p style="color: #94a3b8; margin: 8px 0 0; font-size: 14px;">Propuesta de Agentes IA</p>
+                </div>
+
+                <p style="color: #e2e8f0; font-size: 15px;">Hola <strong>${nombre}</strong>,</p>
+                <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">
+                  Te adjuntamos el analisis de presupuestacion para <strong style="color: #fbbf24;">${casos} agentes IA</strong> en el sector <strong style="color: #fbbf24;">${sector}</strong>.
+                </p>
+
+                <div style="display: flex; gap: 12px; margin: 24px 0;">
+                  <div style="flex: 1; background: #1a2744; border-radius: 12px; padding: 20px; border: 1px solid #243353;">
+                    <p style="color: #60a5fa; font-size: 11px; font-weight: bold; margin: 0; letter-spacing: 1px;">INVERSION ANO 1</p>
+                    <p style="font-size: 24px; font-weight: bold; color: #ffffff; margin: 8px 0 0;">&euro;${inversion.toLocaleString()}</p>
                   </div>
-                  <div class="metric">
-                    <p class="metric-label">ROI AÑO 1</p>
-                    <p class="metric-value roi">${roi}%</p>
+                  <div style="flex: 1; background: #1a2744; border-radius: 12px; padding: 20px; border: 1px solid #243353;">
+                    <p style="color: #fbbf24; font-size: 11px; font-weight: bold; margin: 0; letter-spacing: 1px;">ROI ANO 1</p>
+                    <p style="font-size: 24px; font-weight: bold; color: #34d399; margin: 8px 0 0;">${roi}%</p>
                   </div>
                 </div>
-                <p style="margin-top: 15px; color: #666; font-size: 14px;">
-                  <strong>Beneficio estimado:</strong> €${beneficio.toLocaleString()} anuales con sinergia de bundling.
-                </p>
-              </div>
-              <div class="section">
-                <h2>¿Qué incluye?</h2>
-                <ul style="color: #666; line-height: 1.8;">
-                  <li>Análisis detallado de cada caso de uso</li>
-                  <li>Presupuesto desglosado (inicial + recurrente)</li>
-                  <li>Cálculo de ROI por caso y bundled</li>
-                  <li>Sinergias detectadas automáticamente</li>
-                  <li>Roadmap de implementación</li>
-                </ul>
-              </div>
-              <div style="text-align: center; margin-top: 30px;">
-                <a href="https://presupuestador-agentes-ia.vercel.app" class="cta">Ver propuesta completa</a>
-              </div>
-              <div class="footer">
-                <p>Esta propuesta ha sido generada automáticamente con base en tu selección de casos.</p>
-                <p>© 2026 Presupuestador de Agentes IA</p>
+
+                <div style="background: #1a2744; border-radius: 12px; padding: 20px; margin-bottom: 24px; border: 1px solid #243353;">
+                  <p style="color: #94a3b8; font-size: 12px; margin: 0 0 4px;">Beneficio estimado anual:</p>
+                  <p style="color: #34d399; font-size: 20px; font-weight: bold; margin: 0;">&euro;${beneficio.toLocaleString()}</p>
+                </div>
+
+                <div style="background: #1a2744; border-radius: 12px; padding: 16px 20px; border: 1px solid #243353;">
+                  <p style="color: #fbbf24; font-size: 13px; font-weight: bold; margin: 0 0 8px;">Que incluye:</p>
+                  <ul style="color: #94a3b8; margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.8;">
+                    <li>Analisis detallado de cada caso de uso</li>
+                    <li>Presupuesto desglosado (inicial + recurrente)</li>
+                    <li>Calculo de ROI por caso y bundled</li>
+                    <li>Sinergias detectadas automaticamente</li>
+                    <li>Roadmap de implementacion</li>
+                  </ul>
+                </div>
+
+                <div style="text-align: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid #243353;">
+                  <p style="font-size: 11px; color: #64748b; margin: 0;">&copy; 2026 AgentIA. Propuesta generada automaticamente.</p>
+                </div>
               </div>
             </div>
           </body>
