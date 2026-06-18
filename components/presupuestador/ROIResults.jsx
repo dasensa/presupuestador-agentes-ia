@@ -18,14 +18,14 @@ export default function ROIResults({ resumen, onEmailClick, onDownload }) {
       <div className="glass-card p-5 border-red-500/30 bg-red-500/5">
         <div className="flex items-center gap-2 mb-2">
           <AlertTriangle size={16} className="text-red-400" />
-          <span className="text-xs font-bold text-red-300 tracking-wider uppercase">Coste de inactividad mensual</span>
+          <span className="text-xs font-bold text-red-300 tracking-wider uppercase">Coste de inaccion mensual</span>
         </div>
         <div className="text-3xl font-display font-bold text-red-400">
-          {hasData ? `€${Math.round(resumen.costeInactividadMensual).toLocaleString()}` : '—'}
+          {hasData ? `€${Math.round(resumen.costeInaccionMensual).toLocaleString()}` : '—'}
         </div>
         {hasData && (
           <p className="text-xs text-red-300/70 mt-2">
-            Cada mes sin estos agentes, tu empresa deja de ganar esta cantidad.
+            Este es el coste de no actuar: lo que tu empresa pierde cada mes por no implementar.
           </p>
         )}
       </div>
@@ -64,7 +64,7 @@ export default function ROIResults({ resumen, onEmailClick, onDownload }) {
                 <span className="text-slate-400">{d.label}</span>
                 <div className="text-right">
                   <span className="text-emerald-400 font-semibold">{Math.round(d.roi)}%</span>
-                  <span className="text-slate-600 ml-2 text-xs">&euro;{Math.round(d.costeInactividad).toLocaleString()}/mes</span>
+                  <span className="text-slate-600 ml-2 text-xs">&euro;{Math.round(d.costeInaccion).toLocaleString()}/mes</span>
                 </div>
               </div>
             ))}

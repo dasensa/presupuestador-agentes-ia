@@ -12,9 +12,9 @@ export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, 
 
   const roiSection = hasROI ? `
     <div style="background: rgba(239, 68, 68, 0.08); border-left: 4px solid #f87171; padding: 20px; border-radius: 8px; margin-bottom: 24px;">
-      <p style="color: #f87171; font-weight: bold; font-size: 14px; margin: 0 0 4px;">COSTE DE INACTIVIDAD MENSUAL</p>
-      <p style="font-size: 28px; font-weight: bold; color: #f87171; margin: 0;">&euro;${Math.round(resumenROI.costeInactividadMensual).toLocaleString()}</p>
-      <p style="color: #fca5a5; font-size: 12px; margin: 8px 0 0;">Cada mes sin estos agentes, tu empresa deja de ganar esta cantidad.</p>
+      <p style="color: #f87171; font-weight: bold; font-size: 14px; margin: 0 0 4px;">COSTE DE INACCION MENSUAL</p>
+      <p style="font-size: 28px; font-weight: bold; color: #f87171; margin: 0;">&euro;${Math.round(resumenROI.costeInaccionMensual).toLocaleString()}</p>
+      <p style="color: #fca5a5; font-size: 12px; margin: 8px 0 0;">Este es el coste de no actuar: lo que tu empresa pierde cada mes por no implementar.</p>
     </div>
 
     <div style="display: flex; gap: 16px; margin-bottom: 24px;">
@@ -38,7 +38,7 @@ export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, 
             <tr>
               <td style="padding: 8px 0; color: #94a3b8; font-size: 13px; border-bottom: 1px solid #243353;">${d.label}</td>
               <td style="padding: 8px 0; text-align: right; color: #34d399; font-weight: bold; font-size: 13px; border-bottom: 1px solid #243353;">${Math.round(d.roi)}% ROI</td>
-              <td style="padding: 8px 0; text-align: right; color: #f87171; font-size: 12px; border-bottom: 1px solid #243353;">&euro;${Math.round(d.costeInactividad).toLocaleString()}/mes</td>
+              <td style="padding: 8px 0; text-align: right; color: #f87171; font-size: 12px; border-bottom: 1px solid #243353;">&euro;${Math.round(d.costeInaccion).toLocaleString()}/mes</td>
             </tr>
           `).join('')}
         </table>

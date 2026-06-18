@@ -100,7 +100,7 @@ export default function AgentePage({ caso, sectorCasos, beneficio }) {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button href={`/presupuestador?sector=${encodeURIComponent(caso.s)}`} variant="primary" size="lg">
+            <Button href={`/presupuestador?agent=${caso.slug}`} variant="primary" size="lg">
               Presupuestar este agente
               <ArrowRight size={18} />
             </Button>

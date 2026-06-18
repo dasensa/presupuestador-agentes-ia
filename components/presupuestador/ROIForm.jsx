@@ -6,6 +6,7 @@ import {
 import { ROI_CATEGORIES } from '../../data/roi-variables';
 import { getCategoryForCaso } from '../../lib/roi-calculator';
 import Card from '../ui/Card';
+import Tooltip from '../ui/Tooltip';
 
 const iconMap = { TrendingUp, Users, Settings, Headphones, ShieldAlert, DollarSign, Activity, Cpu };
 
@@ -44,8 +45,9 @@ export default function ROIForm({ selectedCasos, values, onChange }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {cat.fields.map(field => (
                 <div key={field.key}>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  <label className="flex items-center text-xs font-semibold text-slate-400 mb-1.5">
                     {field.label}{field.unit && ` (${field.unit})`}
+                    {field.tooltip && <Tooltip text={field.tooltip} />}
                   </label>
                   <input
                     type={field.type}

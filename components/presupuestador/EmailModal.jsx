@@ -25,7 +25,7 @@ export default function EmailModal({ isOpen, onClose, resumen, resumenROI, secto
           roi: hasROI ? Math.round(resumenROI.roiTotal) : (resumen.roiBundled * 100).toFixed(0),
           inversion: hasROI ? Math.round(resumenROI.inversionTotal) : Math.round(resumen.invBundled),
           beneficio: hasROI ? Math.round(resumenROI.beneficioAnualTotal) : Math.round(resumen.beneficioBundled),
-          costeInactividad: hasROI ? Math.round(resumenROI.costeInactividadMensual) : null,
+          costeInaccion: hasROI ? Math.round(resumenROI.costeInaccionMensual) : null,
         }),
       });
 
@@ -87,10 +87,10 @@ export default function EmailModal({ isOpen, onClose, resumen, resumenROI, secto
           <div className="glass-card p-4 bg-red-500/5 border-red-500/20">
             <div className="flex items-center gap-2 mb-1">
               <AlertTriangle size={14} className="text-red-400" />
-              <span className="text-xs font-bold text-red-300">COSTE INACTIVIDAD /MES</span>
+              <span className="text-xs font-bold text-red-300">COSTE DE INACCION /MES</span>
             </div>
             <p className="text-lg font-bold text-red-400">
-              &euro;{Math.round(resumenROI.costeInactividadMensual).toLocaleString()}
+              &euro;{Math.round(resumenROI.costeInaccionMensual).toLocaleString()}
             </p>
           </div>
         )}

@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, nombre, empresa, cargo, telefono, sector, casos, roi, inversion, beneficio, costeInactividad } = req.body;
+  const { email, nombre, empresa, cargo, telefono, sector, casos, roi, inversion, beneficio, costeInaccion } = req.body;
 
   if (!email || !nombre) {
     return res.status(400).json({ error: 'Email y nombre requeridos' });
@@ -62,11 +62,11 @@ export default async function handler(req, res) {
                   <p style="color: #34d399; font-size: 20px; font-weight: bold; margin: 0;">&euro;${beneficio.toLocaleString()}</p>
                 </div>
 
-                ${costeInactividad ? `
+                ${costeInaccion ? `
                 <div style="background: rgba(239, 68, 68, 0.08); border-left: 4px solid #f87171; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px;">
-                  <p style="color: #f87171; font-weight: bold; font-size: 13px; margin: 0 0 4px;">COSTE DE INACTIVIDAD MENSUAL</p>
-                  <p style="font-size: 22px; font-weight: bold; color: #f87171; margin: 0;">&euro;${costeInactividad.toLocaleString()}</p>
-                  <p style="color: #fca5a5; font-size: 11px; margin: 6px 0 0;">Cada mes sin estos agentes, tu empresa deja de ganar esta cantidad.</p>
+                  <p style="color: #f87171; font-weight: bold; font-size: 13px; margin: 0 0 4px;">COSTE DE INACCION MENSUAL</p>
+                  <p style="font-size: 22px; font-weight: bold; color: #f87171; margin: 0;">&euro;${costeInaccion.toLocaleString()}</p>
+                  <p style="color: #fca5a5; font-size: 11px; margin: 6px 0 0;">Este es el coste de no actuar: lo que tu empresa pierde cada mes por no implementar.</p>
                 </div>
                 ` : ''}
 

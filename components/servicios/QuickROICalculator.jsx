@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Calculator, AlertTriangle, TrendingUp } from 'lucide-react';
 import { ROI_CATEGORIES } from '../../data/roi-variables';
 import { getCategoryForCaso, calcBeneficioMensual, calcROIPersonalizado } from '../../lib/roi-calculator';
+import Tooltip from '../ui/Tooltip';
 
 export default function QuickROICalculator({ caso }) {
   const category = getCategoryForCaso(caso);
@@ -32,8 +33,9 @@ export default function QuickROICalculator({ caso }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         {cat.fields.map(field => (
           <div key={field.key}>
-            <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+            <label className="flex items-center text-xs font-semibold text-slate-400 mb-1.5">
               {field.label}{field.unit && ` (${field.unit})`}
+              {field.tooltip && <Tooltip text={field.tooltip} />}
             </label>
             <input
               type={field.type}
@@ -52,7 +54,7 @@ export default function QuickROICalculator({ caso }) {
           <div className="glass-card p-4 border-red-500/30 bg-red-500/5">
             <div className="flex items-center gap-2 mb-1">
               <AlertTriangle size={14} className="text-red-400" />
-              <span className="text-xs font-bold text-red-300">COSTE INACTIVIDAD /MES</span>
+              <span className="text-xs font-bold text-red-300">COSTE DE INACCION /MES</span>
             </div>
             <p className="text-2xl font-display font-bold text-red-400">
               &euro;{Math.round(benefMensual).toLocaleString()}
