@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, nombre, empresa, cargo, telefono, sector, casos, roi, inversion, beneficio } = req.body;
+  const { email, nombre, empresa, cargo, telefono, sector, casos, roi, inversion, beneficio, costeInactividad } = req.body;
 
   if (!email || !nombre) {
     return res.status(400).json({ error: 'Email y nombre requeridos' });
@@ -61,6 +61,14 @@ export default async function handler(req, res) {
                   <p style="color: #94a3b8; font-size: 12px; margin: 0 0 4px;">Beneficio estimado anual:</p>
                   <p style="color: #34d399; font-size: 20px; font-weight: bold; margin: 0;">&euro;${beneficio.toLocaleString()}</p>
                 </div>
+
+                ${costeInactividad ? `
+                <div style="background: rgba(239, 68, 68, 0.08); border-left: 4px solid #f87171; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px;">
+                  <p style="color: #f87171; font-weight: bold; font-size: 13px; margin: 0 0 4px;">COSTE DE INACTIVIDAD MENSUAL</p>
+                  <p style="font-size: 22px; font-weight: bold; color: #f87171; margin: 0;">&euro;${costeInactividad.toLocaleString()}</p>
+                  <p style="color: #fca5a5; font-size: 11px; margin: 6px 0 0;">Cada mes sin estos agentes, tu empresa deja de ganar esta cantidad.</p>
+                </div>
+                ` : ''}
 
                 <div style="background: #1a2744; border-radius: 12px; padding: 16px 20px; border: 1px solid #243353;">
                   <p style="color: #fbbf24; font-size: 13px; font-weight: bold; margin: 0 0 8px;">Que incluye:</p>

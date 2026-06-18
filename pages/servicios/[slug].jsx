@@ -11,6 +11,7 @@ import { calcBeneficio } from '../../lib/calculations';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
+import QuickROICalculator from '../../components/servicios/QuickROICalculator';
 
 const iconMap = {
   ShoppingBag, Landmark, HeartPulse, Wifi, Truck,
@@ -108,6 +109,8 @@ export default function AgentePage({ caso, sectorCasos, beneficio }) {
             </Button>
           </div>
         </div>
+
+        <QuickROICalculator caso={caso} />
 
         {sectorCasos.length > 0 && (
           <div>

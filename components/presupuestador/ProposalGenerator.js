@@ -1,4 +1,6 @@
-export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled, companyData) => {
+export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled, companyData, resumenROI) => {
+  const hasROI = resumenROI && resumenROI.beneficioMensualTotal > 0;
+
   const clienteInfo = companyData ? `
     <div style="background: #1a2744; border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #243353;">
       <p style="color: #fbbf24; font-size: 11px; font-weight: bold; margin: 0 0 12px; letter-spacing: 1px;">PREPARADO PARA</p>
@@ -7,6 +9,55 @@ export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, 
       ${companyData.email ? `<p style="color: #60a5fa; font-size: 13px; margin: 4px 0 0;">${companyData.email}</p>` : ''}
     </div>
   ` : '';
+
+  const roiSection = hasROI ? `
+    <div style="background: rgba(239, 68, 68, 0.08); border-left: 4px solid #f87171; padding: 20px; border-radius: 8px; margin-bottom: 24px;">
+      <p style="color: #f87171; font-weight: bold; font-size: 14px; margin: 0 0 4px;">COSTE DE INACTIVIDAD MENSUAL</p>
+      <p style="font-size: 28px; font-weight: bold; color: #f87171; margin: 0;">&euro;${Math.round(resumenROI.costeInactividadMensual).toLocaleString()}</p>
+      <p style="color: #fca5a5; font-size: 12px; margin: 8px 0 0;">Cada mes sin estos agentes, tu empresa deja de ganar esta cantidad.</p>
+    </div>
+
+    <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+      <div style="flex: 1; background: #1a2744; border-radius: 12px; padding: 20px; border: 1px solid #243353;">
+        <p style="color: #34d399; font-size: 11px; font-weight: bold; margin: 0; letter-spacing: 1px;">ROI PERSONALIZADO</p>
+        <p style="font-size: 28px; font-weight: bold; color: #34d399; margin: 8px 0 0;">${Math.round(resumenROI.roiTotal)}%</p>
+        <p style="font-size: 12px; color: #94a3b8; margin: 4px 0 0;">Basado en tus datos reales</p>
+      </div>
+      <div style="flex: 1; background: #1a2744; border-radius: 12px; padding: 20px; border: 1px solid #243353;">
+        <p style="color: #60a5fa; font-size: 11px; font-weight: bold; margin: 0; letter-spacing: 1px;">BENEFICIO ANUAL</p>
+        <p style="font-size: 28px; font-weight: bold; color: #ffffff; margin: 8px 0 0;">&euro;${Math.round(resumenROI.beneficioAnualTotal).toLocaleString()}</p>
+        <p style="font-size: 12px; color: #94a3b8; margin: 4px 0 0;">Inversion: &euro;${Math.round(resumenROI.inversionTotal).toLocaleString()}</p>
+      </div>
+    </div>
+
+    ${resumenROI.detalles.length > 1 ? `
+      <div style="background: #1a2744; border-radius: 12px; padding: 20px; margin-bottom: 24px; border: 1px solid #243353;">
+        <p style="color: #fbbf24; font-size: 11px; font-weight: bold; margin: 0 0 12px; letter-spacing: 1px;">DESGLOSE POR AREA</p>
+        <table style="width: 100%; border-collapse: collapse;">
+          ${resumenROI.detalles.map(d => `
+            <tr>
+              <td style="padding: 8px 0; color: #94a3b8; font-size: 13px; border-bottom: 1px solid #243353;">${d.label}</td>
+              <td style="padding: 8px 0; text-align: right; color: #34d399; font-weight: bold; font-size: 13px; border-bottom: 1px solid #243353;">${Math.round(d.roi)}% ROI</td>
+              <td style="padding: 8px 0; text-align: right; color: #f87171; font-size: 12px; border-bottom: 1px solid #243353;">&euro;${Math.round(d.costeInactividad).toLocaleString()}/mes</td>
+            </tr>
+          `).join('')}
+        </table>
+      </div>
+    ` : ''}
+  ` : `
+    <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+      <div style="flex: 1; background: #1a2744; border-radius: 12px; padding: 20px; border: 1px solid #243353;">
+        <p style="color: #60a5fa; font-size: 11px; font-weight: bold; margin: 0; letter-spacing: 1px;">INVERSION ANO 1</p>
+        <p style="font-size: 28px; font-weight: bold; color: #ffffff; margin: 8px 0 0;">&euro;${Math.round(invBundled).toLocaleString()}</p>
+        ${sinergia.disc > 0 ? `<p style="font-size: 12px; color: #34d399; margin: 4px 0 0;">Ahorro: &euro;${Math.round(invYear1 - invBundled).toLocaleString()}</p>` : ''}
+      </div>
+      <div style="flex: 1; background: #1a2744; border-radius: 12px; padding: 20px; border: 1px solid #243353;">
+        <p style="color: #fbbf24; font-size: 11px; font-weight: bold; margin: 0; letter-spacing: 1px;">ROI ESTIMADO</p>
+        <p style="font-size: 28px; font-weight: bold; color: #34d399; margin: 8px 0 0;">${(roiBundled * 100).toFixed(0)}%</p>
+        <p style="font-size: 12px; color: #94a3b8; margin: 4px 0 0;">Beneficio: &euro;${Math.round(beneficioBundled).toLocaleString()}</p>
+      </div>
+    </div>
+  `;
 
   const html = `
     <!DOCTYPE html>
@@ -43,18 +94,7 @@ export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, 
           `).join('')}
         </table>
 
-        <div style="display: flex; gap: 16px; margin-bottom: 24px;">
-          <div style="flex: 1; background: #1a2744; border-radius: 12px; padding: 20px; border: 1px solid #243353;">
-            <p style="color: #60a5fa; font-size: 11px; font-weight: bold; margin: 0; letter-spacing: 1px;">INVERSION ANO 1</p>
-            <p style="font-size: 28px; font-weight: bold; color: #ffffff; margin: 8px 0 0;">&euro;${Math.round(invBundled).toLocaleString()}</p>
-            ${sinergia.disc > 0 ? `<p style="font-size: 12px; color: #34d399; margin: 4px 0 0;">Ahorro: &euro;${Math.round(invYear1 - invBundled).toLocaleString()}</p>` : ''}
-          </div>
-          <div style="flex: 1; background: #1a2744; border-radius: 12px; padding: 20px; border: 1px solid #243353;">
-            <p style="color: #fbbf24; font-size: 11px; font-weight: bold; margin: 0; letter-spacing: 1px;">ROI BUNDLED</p>
-            <p style="font-size: 28px; font-weight: bold; color: #34d399; margin: 8px 0 0;">${(roiBundled * 100).toFixed(0)}%</p>
-            <p style="font-size: 12px; color: #94a3b8; margin: 4px 0 0;">Beneficio: &euro;${Math.round(beneficioBundled).toLocaleString()}</p>
-          </div>
-        </div>
+        ${roiSection}
 
         ${sinergia.bonus > 0 ? `
           <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid #34d399; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px;">
@@ -73,8 +113,8 @@ export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, 
   return html;
 };
 
-export const descargarPropuesta = (selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled, companyData) => {
-  const html = generarPropuestaHTML(selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled, companyData);
+export const descargarPropuesta = (selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled, companyData, resumenROI) => {
+  const html = generarPropuestaHTML(selectedCasos, sector, sinergia, invYear1, invBundled, roiBundled, beneficioBundled, companyData, resumenROI);
   const blob = new Blob([html], { type: 'text/html' });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');

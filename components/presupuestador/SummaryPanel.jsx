@@ -1,7 +1,7 @@
-import { TrendingUp, Mail, Download, Zap } from 'lucide-react';
+import { TrendingUp, ArrowRight, Zap } from 'lucide-react';
 import Button from '../ui/Button';
 
-export default function SummaryPanel({ resumen, onEmailClick, onDownload }) {
+export default function SummaryPanel({ resumen, onPersonalizar }) {
   if (!resumen || resumen.selectedCasos.length === 0) {
     return (
       <div className="glass-card p-8 text-center">
@@ -28,7 +28,7 @@ export default function SummaryPanel({ resumen, onEmailClick, onDownload }) {
       )}
 
       <div className="glass-card p-5 border-accent-500/20">
-        <div className="text-xs text-accent-300 font-bold tracking-wider mb-2">INVERSION ANO 1</div>
+        <div className="text-xs text-accent-300 font-bold tracking-wider mb-2">INVERSION ANO 1 (ESTIMADA)</div>
         <div className="text-3xl font-display font-bold text-white">
           &euro;{Math.round(invBundled).toLocaleString()}
         </div>
@@ -40,28 +40,21 @@ export default function SummaryPanel({ resumen, onEmailClick, onDownload }) {
       </div>
 
       <div className="glass-card p-5 border-gold-400/20">
-        <div className="text-xs text-gold-400 font-bold tracking-wider mb-2">ROI BUNDLED</div>
+        <div className="text-xs text-gold-400 font-bold tracking-wider mb-2">ROI ESTIMADO</div>
         <div className="text-4xl font-display font-bold text-emerald-400">
           {(roiBundled * 100).toFixed(0)}%
         </div>
         <div className="text-xs text-slate-400 mt-2">
-          Beneficio anual: &euro;{Math.round(beneficioBundled).toLocaleString()}
+          Beneficio anual estimado: &euro;{Math.round(beneficioBundled).toLocaleString()}
         </div>
-
-        <div className="mt-4 w-full bg-navy-700/50 rounded-full h-2">
-          <div
-            className="bg-gradient-to-r from-emerald-500 to-emerald-400 h-2 rounded-full transition-all duration-700"
-            style={{ width: `${Math.min(roiBundled * 20, 100)}%` }}
-          />
-        </div>
+        <p className="text-xs text-slate-500 mt-3 italic">
+          Calculo generico. Personaliza con tus datos reales en el siguiente paso.
+        </p>
       </div>
 
-      <Button onClick={onEmailClick} variant="primary" className="w-full">
-        <Mail size={16} /> Enviar por Email
-      </Button>
-
-      <Button onClick={onDownload} variant="ghost" className="w-full border border-navy-600/50">
-        <Download size={16} /> Descargar propuesta
+      <Button onClick={onPersonalizar} variant="primary" className="w-full">
+        Personalizar mi ROI
+        <ArrowRight size={16} />
       </Button>
     </div>
   );

@@ -4,17 +4,21 @@ import Head from 'next/head';
 import { Check, ArrowLeft } from 'lucide-react';
 import { getSectores, getCasosBySector, buildCasosMap } from '../data/casos';
 import { calcResumen } from '../lib/calculations';
+import { calcResumenPersonalizado } from '../lib/roi-calculator';
 import { descargarPropuesta } from '../components/presupuestador/ProposalGenerator';
 import CompanyForm from '../components/presupuestador/CompanyForm';
 import SectorSelector from '../components/presupuestador/SectorSelector';
 import CaseList from '../components/presupuestador/CaseList';
 import SummaryPanel from '../components/presupuestador/SummaryPanel';
+import ROIForm from '../components/presupuestador/ROIForm';
+import ROIResults from '../components/presupuestador/ROIResults';
 import EmailModal from '../components/presupuestador/EmailModal';
 import SectionHeading from '../components/ui/SectionHeading';
 
 const STEPS = [
   { num: 1, label: 'Tu empresa' },
   { num: 2, label: 'Simulacion' },
+  { num: 3, label: 'Tu ROI real' },
 ];
 
 function StepBar({ current }) {
@@ -33,7 +37,7 @@ function StepBar({ current }) {
               }`}>
                 {done ? <Check size={16} /> : step.num}
               </div>
-              <span className={`text-sm font-medium ${
+              <span className={`text-sm font-medium hidden sm:inline ${
                 done ? 'text-emerald-400' :
                 active ? 'text-gold-400' :
                 'text-slate-500'
@@ -42,7 +46,7 @@ function StepBar({ current }) {
               </span>
             </div>
             {i < STEPS.length - 1 && (
-              <div className={`w-16 sm:w-24 h-0.5 ${done ? 'bg-emerald-500' : 'bg-navy-600'}`} />
+              <div className={`w-10 sm:w-20 h-0.5 ${done ? 'bg-emerald-500' : 'bg-navy-600'}`} />
             )}
           </div>
         );
@@ -61,19 +65,20 @@ export default function PresupuestadorPage() {
   const [sector, setSector] = useState(sectores[0]);
   const [selected, setSelected] = useState([]);
   const [showEmail, setShowEmail] = useState(false);
+  const [roiVariables, setRoiVariables] = useState({});
 
   const initialSector = router.query.sector && sectores.includes(router.query.sector)
     ? router.query.sector
     : '';
 
   useEffect(() => {
-    if (initialSector) {
-      setSector(initialSector);
-    }
+    if (initialSector) setSector(initialSector);
   }, [initialSector]);
 
   const casosSector = getCasosBySector(sector);
   const resumen = calcResumen(selected, casosMap);
+  const selectedCasos = selected.map(id => casosMap[id]);
+  const resumenROI = calcResumenPersonalizado(selectedCasos, roiVariables);
 
   const handleCompanyComplete = (data) => {
     setCompanyData(data);
@@ -92,17 +97,36 @@ export default function PresupuestadorPage() {
     setSelected(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]);
   };
 
+  const handleROIVarChange = (category, key, value) => {
+    setRoiVariables(prev => ({
+      ...prev,
+      [category]: { ...(prev[category] || {}), [key]: value },
+    }));
+  };
+
+  const goToStep = (n) => {
+    setStep(n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleDownload = () => {
     descargarPropuesta(
       resumen.selectedCasos, sector, resumen.sinergia,
       resumen.invYear1, resumen.invBundled, resumen.roiBundled, resumen.beneficioBundled,
-      companyData
+      companyData, resumenROI
     );
   };
 
-  const handleBack = () => {
-    setStep(1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const stepTitles = {
+    1: 'Calcula tu inversion en IA',
+    2: 'Selecciona tus casos de uso',
+    3: 'Personaliza tu ROI',
+  };
+
+  const stepDescriptions = {
+    1: 'Primero cuentanos sobre tu empresa para personalizar la simulacion.',
+    2: `Simulacion para ${companyData?.empresa || 'tu empresa'}. Selecciona los agentes IA que necesitas.`,
+    3: 'Introduce tus datos operativos reales para calcular un ROI preciso y el coste de inactividad.',
   };
 
   return (
@@ -115,50 +139,59 @@ export default function PresupuestadorPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <SectionHeading
           eyebrow="Presupuestador"
-          title={step === 1 ? 'Calcula tu inversion en IA' : 'Selecciona tus casos de uso'}
-          description={step === 1
-            ? 'Primero cuentanos sobre tu empresa para personalizar la simulacion.'
-            : `Simulacion para ${companyData?.empresa || 'tu empresa'}. Selecciona los agentes IA que necesitas.`
-          }
+          title={stepTitles[step]}
+          description={stepDescriptions[step]}
         />
 
         <StepBar current={step} />
 
         {step === 1 && (
-          <CompanyForm
-            initialSector={initialSector}
-            onComplete={handleCompanyComplete}
-          />
+          <CompanyForm initialSector={initialSector} onComplete={handleCompanyComplete} />
         )}
 
         {step === 2 && (
           <>
             <div className="mb-6">
-              <button
-                onClick={handleBack}
-                className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-gold-400 transition-colors"
-              >
+              <button onClick={() => goToStep(1)} className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-gold-400 transition-colors">
                 <ArrowLeft size={16} /> Volver a datos de empresa
               </button>
             </div>
 
-            <SectorSelector
-              sectores={sectores}
-              selected={sector}
-              onChange={handleSectorChange}
-            />
+            <SectorSelector sectores={sectores} selected={sector} onChange={handleSectorChange} />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2">
-                <CaseList
-                  casos={casosSector}
-                  selected={selected}
-                  onToggle={handleToggle}
-                />
+                <CaseList casos={casosSector} selected={selected} onToggle={handleToggle} />
               </div>
               <div>
                 <SummaryPanel
                   resumen={resumen}
+                  onPersonalizar={() => goToStep(3)}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {step === 3 && (
+          <>
+            <div className="mb-6">
+              <button onClick={() => goToStep(2)} className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-gold-400 transition-colors">
+                <ArrowLeft size={16} /> Volver a seleccion de agentes
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2">
+                <ROIForm
+                  selectedCasos={selectedCasos}
+                  values={roiVariables}
+                  onChange={handleROIVarChange}
+                />
+              </div>
+              <div>
+                <ROIResults
+                  resumen={resumenROI}
                   onEmailClick={() => setShowEmail(true)}
                   onDownload={handleDownload}
                 />
@@ -169,6 +202,7 @@ export default function PresupuestadorPage() {
               isOpen={showEmail}
               onClose={() => setShowEmail(false)}
               resumen={resumen}
+              resumenROI={resumenROI}
               sector={sector}
               companyData={companyData}
               onFallbackDownload={handleDownload}
