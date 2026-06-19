@@ -99,7 +99,7 @@ export default function AgentePage({ caso, sectorCasos, beneficio, imageSrc, sec
 
           <div className="flex items-start gap-4 mb-6">
             <div className="w-12 h-12 flex items-center justify-center border border-border shrink-0">
-              <SectorIcon sector={caso.s} color={meta?.color} size={24} />
+              <SectorIcon sector={caso.s} color={meta?.color} size={28} />
             </div>
             <div>
               <div className="flex items-center gap-3 mb-2">

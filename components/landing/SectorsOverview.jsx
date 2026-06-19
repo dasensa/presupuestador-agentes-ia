@@ -26,7 +26,7 @@ export default function SectorsOverview() {
                 className="group ds-card-hover p-4 transition-all duration-200"
               >
                 <div className="flex items-center gap-2.5 mb-2">
-                  <SectorIcon sector={name} color={meta.color} size={16} />
+                  <SectorIcon sector={name} color={meta.color} size={20} />
                   <span className="font-serif text-[15px] text-base-text">{name}</span>
                 </div>
                 <div className="flex items-center justify-between">

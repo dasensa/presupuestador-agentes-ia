@@ -19,7 +19,7 @@ export default function SectorDetail({ name, meta, casos }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left panel */}
         <div className="ds-card p-6 lg:p-8">
-          <SectorIcon sector={name} color={meta.color} size={24} className="mb-4" />
+          <SectorIcon sector={name} color={meta.color} size={28} className="mb-4" />
           <h2 className="font-serif italic text-display-sm text-base-text mb-3">{name}</h2>
           <p className="text-body-sm text-base-muted leading-relaxed mb-6">{meta.longDescription}</p>
 
