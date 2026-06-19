@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Button from '../ui/Button';
 import UseCaseList from './UseCaseList';
-import SectorIcon from '../icons/SectorIcon';
+import SectorThumbnail from '../icons/SectorThumbnail';
 
 const FALLBACK_IMAGE =
   'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1080" height="420" viewBox="0 0 1080 420"%3E%3Crect width="1080" height="420" fill="%230e1a2b"/%3E%3Cpath d="M0 290c190-80 360 30 550-40s310-170 530-110v280H0Z" fill="%2314273d"/%3E%3C/svg%3E';
@@ -19,8 +19,15 @@ export default function SectorDetail({ name, meta, casos }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left panel */}
         <div className="ds-card p-6 lg:p-8">
-          <SectorIcon sector={name} color={meta.color} size={28} className="mb-4" />
-          <h2 className="font-serif italic text-display-sm text-base-text mb-3">{name}</h2>
+          <div className="flex items-center gap-3 mb-4">
+            <SectorThumbnail
+              src={meta.image}
+              alt=""
+              className="h-12 w-16 shrink-0"
+              sizes="64px"
+            />
+            <h2 className="font-serif italic text-display-sm text-base-text">{name}</h2>
+          </div>
           <p className="text-body-sm text-base-muted leading-relaxed mb-6">{meta.longDescription}</p>
 
           <div className="relative h-[140px] w-full overflow-hidden mb-6 border border-border">

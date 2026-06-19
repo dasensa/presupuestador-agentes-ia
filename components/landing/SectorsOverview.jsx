@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { SECTORES_META, getCasosBySector } from '../../data/casos';
 import SectionHeading from '../ui/SectionHeading';
-import SectorIcon from '../icons/SectorIcon';
+import SectorThumbnail from '../icons/SectorThumbnail';
 
 export default function SectorsOverview() {
   const sectores = Object.entries(SECTORES_META);
@@ -26,7 +26,12 @@ export default function SectorsOverview() {
                 className="group ds-card-hover p-4 transition-all duration-200"
               >
                 <div className="flex items-center gap-2.5 mb-2">
-                  <SectorIcon sector={name} color={meta.color} size={20} />
+                  <SectorThumbnail
+                    src={meta.image}
+                    alt=""
+                    className="h-8 w-12 shrink-0"
+                    sizes="48px"
+                  />
                   <span className="font-serif text-[15px] text-base-text">{name}</span>
                 </div>
                 <div className="flex items-center justify-between">

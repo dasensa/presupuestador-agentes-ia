@@ -10,7 +10,7 @@ import { calcBeneficio } from '../../lib/calculations';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import QuickROICalculator from '../../components/servicios/QuickROICalculator';
-import SectorIcon from '../../components/icons/SectorIcon';
+import SectorThumbnail from '../../components/icons/SectorThumbnail';
 
 const FALLBACK_IMAGE =
   'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400"%3E%3Crect width="1200" height="400" fill="%230e1a2b"/%3E%3Cpath d="M0 265c210-90 410 35 620-45 210-80 345-185 580-120v300H0Z" fill="%2314273d"/%3E%3C/svg%3E';
@@ -98,9 +98,12 @@ export default function AgentePage({ caso, sectorCasos, beneficio, imageSrc, sec
           </div>
 
           <div className="flex items-start gap-4 mb-6">
-            <div className="w-12 h-12 flex items-center justify-center border border-border shrink-0">
-              <SectorIcon sector={caso.s} color={meta?.color} size={28} />
-            </div>
+            <SectorThumbnail
+              src={sectorImage || meta?.image}
+              alt=""
+              className="h-12 w-16 shrink-0"
+              sizes="64px"
+            />
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <Badge type={caso.t} />
