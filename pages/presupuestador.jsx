@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Check, ArrowLeft, Plus, X } from 'lucide-react';
-import { getSectores, getCasosBySector, getCasoBySlug, buildCasosMap, CASOS_DATA } from '../data/casos';
+import { getSectores, getCasosBySector, getCasoBySlug, buildCasosMap } from '../data/casos';
 import { calcResumen } from '../lib/calculations';
 import { calcResumenPersonalizado } from '../lib/roi-calculator';
 import { descargarPropuesta } from '../components/presupuestador/ProposalGenerator';
 import CompanyForm from '../components/presupuestador/CompanyForm';
+import CompanyDetailsForm from '../components/presupuestador/CompanyDetailsForm';
 import SectorSelector from '../components/presupuestador/SectorSelector';
 import CaseList from '../components/presupuestador/CaseList';
 import SummaryPanel from '../components/presupuestador/SummaryPanel';
@@ -23,32 +24,75 @@ const STEPS = [
   { num: 3, label: 'Tu ROI real' },
 ];
 
-function StepBar({ current }) {
+function StepSidebar({ current }) {
+  const progress = ((current - 1) / (STEPS.length - 1)) * 100;
   return (
-    <div className="flex items-center justify-center gap-3 mb-10">
+    <div className="hidden lg:block w-[200px] shrink-0">
+      <div className="sticky top-20">
+        <div className="space-y-6">
+          {STEPS.map((step) => {
+            const done = current > step.num;
+            const active = current === step.num;
+            return (
+              <div key={step.num} className="flex items-center gap-3">
+                <div className={`w-7 h-7 flex items-center justify-center text-body-sm font-medium transition-all ${
+                  done ? 'bg-brand-mint text-base-bg' :
+                  active ? 'bg-brand-blue text-white' :
+                  'border border-border text-base-subtle'
+                }`}>
+                  {done ? <Check size={14} /> : step.num}
+                </div>
+                <span className={`text-body-sm ${
+                  done ? 'text-brand-mint' :
+                  active ? 'text-base-text' :
+                  'text-base-subtle'
+                }`}>
+                  {step.label}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-6 h-0.5 bg-border overflow-hidden">
+          <div
+            className="h-full transition-all duration-500"
+            style={{
+              width: `${progress}%`,
+              background: 'linear-gradient(to right, #0057ff, #00f0a0)',
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MobileStepBar({ current }) {
+  return (
+    <div className="flex items-center justify-center gap-3 mb-8 lg:hidden">
       {STEPS.map((step, i) => {
         const done = current > step.num;
         const active = current === step.num;
         return (
           <div key={step.num} className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                done ? 'bg-emerald-500 text-white' :
-                active ? 'bg-gold-400 text-navy-950' :
-                'bg-navy-700 text-slate-500 border border-navy-600'
+              <div className={`w-7 h-7 flex items-center justify-center text-body-sm font-medium ${
+                done ? 'bg-brand-mint text-base-bg' :
+                active ? 'bg-brand-blue text-white' :
+                'border border-border text-base-subtle'
               }`}>
-                {done ? <Check size={16} /> : step.num}
+                {done ? <Check size={14} /> : step.num}
               </div>
-              <span className={`text-sm font-medium hidden sm:inline ${
-                done ? 'text-emerald-400' :
-                active ? 'text-gold-400' :
-                'text-slate-500'
+              <span className={`text-body-sm hidden sm:inline ${
+                done ? 'text-brand-mint' :
+                active ? 'text-base-text' :
+                'text-base-subtle'
               }`}>
                 {step.label}
               </span>
             </div>
             {i < STEPS.length - 1 && (
-              <div className={`w-10 sm:w-20 h-0.5 ${done ? 'bg-emerald-500' : 'bg-navy-600'}`} />
+              <div className={`w-10 sm:w-16 h-px ${done ? 'bg-brand-mint' : 'bg-border'}`} />
             )}
           </div>
         );
@@ -70,6 +114,11 @@ export default function PresupuestadorPage() {
   const [roiVariables, setRoiVariables] = useState({});
   const [directAgent, setDirectAgent] = useState(null);
   const [showAddMore, setShowAddMore] = useState(false);
+  const [companyDetails, setCompanyDetails] = useState({
+    nombre: '', empresa: '', cargo: '', telefono: '',
+    empleados: '', presupuesto: '', urgencia: '',
+  });
+  const [highlightDetails, setHighlightDetails] = useState(false);
 
   const initialSector = router.query.sector && sectores.includes(router.query.sector)
     ? router.query.sector : '';
@@ -91,6 +140,9 @@ export default function PresupuestadorPage() {
   const resumen = calcResumen(selected, casosMap);
   const selectedCasos = selected.map(id => casosMap[id]);
   const resumenROI = calcResumenPersonalizado(selectedCasos, roiVariables);
+
+  const fullCompanyData = { ...companyData, ...companyDetails };
+  const detailsComplete = companyDetails.nombre && companyDetails.empresa && companyDetails.empleados;
 
   const handleCompanyComplete = (data) => {
     setCompanyData(data);
@@ -131,11 +183,18 @@ export default function PresupuestadorPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const scrollToDetails = () => {
+    setHighlightDetails(true);
+    document.getElementById('company-details')?.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => setHighlightDetails(false), 2000);
+  };
+
   const handleDownload = () => {
+    if (!detailsComplete) { scrollToDetails(); return; }
     descargarPropuesta(
       resumen.selectedCasos, sector, resumen.sinergia,
       resumen.invYear1, resumen.invBundled, resumen.roiBundled, resumen.beneficioBundled,
-      companyData, resumenROI
+      fullCompanyData, resumenROI
     );
   };
 
@@ -146,11 +205,11 @@ export default function PresupuestadorPage() {
   };
 
   const stepDescriptions = {
-    1: 'Primero cuentanos sobre tu empresa para personalizar la simulacion.',
+    1: 'Solo necesitamos tu email y sector para empezar.',
     2: directAgent
-      ? `Agente pre-seleccionado para ${companyData?.empresa || 'tu empresa'}. Puedes anadir mas agentes si lo necesitas.`
-      : `Simulacion para ${companyData?.empresa || 'tu empresa'}. Selecciona los agentes IA que necesitas.`,
-    3: 'Introduce tus datos operativos reales para calcular un ROI preciso y el coste de inaccion.',
+      ? 'Agente pre-seleccionado para tu empresa. Puedes anadir mas agentes si lo necesitas.'
+      : 'Selecciona los agentes IA que necesitas para tu sector.',
+    3: 'Introduce tus datos operativos y completa tu perfil para recibir la propuesta personalizada.',
   };
 
   return (
@@ -167,134 +226,160 @@ export default function PresupuestadorPage() {
           description={stepDescriptions[step]}
         />
 
-        <StepBar current={step} />
+        <MobileStepBar current={step} />
 
-        {step === 1 && (
-          <CompanyForm
-            initialSector={directAgent?.s || initialSector}
-            onComplete={handleCompanyComplete}
-          />
-        )}
+        <div className="flex gap-10">
+          <StepSidebar current={step} />
 
-        {step === 2 && (
-          <>
-            <div className="mb-6">
-              <button onClick={() => goToStep(1)} className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-gold-400 transition-colors">
-                <ArrowLeft size={16} /> Volver a datos de empresa
-              </button>
-            </div>
-
-            {/* Selected agents summary */}
-            {selected.length > 0 && (
-              <div className="glass-card p-4 mb-6">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-semibold text-white">{selected.length} agente{selected.length > 1 ? 's' : ''} seleccionado{selected.length > 1 ? 's' : ''}</span>
-                  {!showAddMore && (
-                    <button
-                      onClick={() => setShowAddMore(true)}
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-gold-400 hover:text-gold-300 transition-colors"
-                    >
-                      <Plus size={14} /> Anadir mas agentes
-                    </button>
-                  )}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {selected.map(id => {
-                    const c = casosMap[id];
-                    return (
-                      <div key={id} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-navy-700/50 border border-navy-600/30">
-                        <span className="text-sm text-white">{c.c}</span>
-                        <Badge type={c.t} />
-                        <button onClick={() => handleRemoveAgent(id)} className="text-slate-500 hover:text-red-400 transition-colors">
-                          <X size={14} />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+          <div className="flex-1 min-w-0">
+            {step === 1 && (
+              <CompanyForm
+                initialSector={directAgent?.s || initialSector}
+                onComplete={handleCompanyComplete}
+              />
             )}
 
-            {/* Show full catalog only if no direct agent or user clicked "add more" */}
-            {(!directAgent || showAddMore) && (
+            {step === 2 && (
               <>
-                <SectorSelector sectores={sectores} selected={sector} onChange={handleSectorChange} />
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  <div className="lg:col-span-2">
-                    <CaseList casos={casosSector} selected={selected} onToggle={handleToggle} />
-                  </div>
-                  <div>
-                    <SummaryPanel resumen={resumen} onPersonalizar={() => goToStep(3)} />
-                  </div>
+                <div className="mb-6">
+                  <button onClick={() => goToStep(1)} className="inline-flex items-center gap-2 text-body-sm text-base-muted hover:text-brand-blue transition-colors">
+                    <ArrowLeft size={16} /> Volver a datos de empresa
+                  </button>
                 </div>
-              </>
-            )}
 
-            {/* Direct agent mode: show summary directly */}
-            {directAgent && !showAddMore && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2">
-                  <div className="glass-card p-6">
-                    <h2 className="text-lg font-display font-bold text-white mb-4">Detalle del agente</h2>
-                    <div className="p-4 rounded-xl bg-navy-700/30 border border-gold-400/20">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-semibold text-white">{directAgent.c}</span>
-                        <Badge type={directAgent.t} />
+                {selected.length > 0 && (
+                  <div className="ds-card p-4 mb-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-body-sm font-medium text-base-text">{selected.length} agente{selected.length > 1 ? 's' : ''} seleccionado{selected.length > 1 ? 's' : ''}</span>
+                      {!showAddMore && (
+                        <button
+                          onClick={() => setShowAddMore(true)}
+                          className="inline-flex items-center gap-1.5 text-body-sm text-brand-blue hover:opacity-80 transition-opacity"
+                        >
+                          <Plus size={14} /> Anadir mas agentes
+                        </button>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {selected.map(id => {
+                        const c = casosMap[id];
+                        return (
+                          <div key={id} className="flex items-center gap-2 px-3 py-1.5 border border-border bg-surface-card">
+                            <span className="text-body-sm text-base-text">{c.c}</span>
+                            <Badge type={c.t} />
+                            <button onClick={() => handleRemoveAgent(id)} className="text-base-subtle hover:text-red-400 transition-colors">
+                              <X size={14} />
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {(!directAgent || showAddMore) && (
+                  <>
+                    <SectorSelector sectores={sectores} selected={sector} onChange={handleSectorChange} />
+                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                      <div className="xl:col-span-2">
+                        <CaseList casos={casosSector} selected={selected} onToggle={handleToggle} />
                       </div>
-                      <p className="text-sm text-slate-400 mb-3">{directAgent.desc}</p>
-                      <div className="grid grid-cols-3 gap-3 text-center">
-                        <div className="glass-card p-3">
-                          <p className="text-xs text-slate-500">Inversion inicial</p>
-                          <p className="text-sm font-bold text-white">&euro;{directAgent.ini.toLocaleString()}</p>
-                        </div>
-                        <div className="glass-card p-3">
-                          <p className="text-xs text-slate-500">Coste mensual</p>
-                          <p className="text-sm font-bold text-white">&euro;{directAgent.rec.toLocaleString()}</p>
-                        </div>
-                        <div className="glass-card p-3">
-                          <p className="text-xs text-slate-500">Sector</p>
-                          <p className="text-sm font-bold text-gold-400">{directAgent.s}</p>
+                      <div>
+                        <SummaryPanel resumen={resumen} onPersonalizar={() => goToStep(3)} />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {directAgent && !showAddMore && (
+                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <div className="xl:col-span-2">
+                      <div className="ds-card p-6">
+                        <h2 className="font-serif text-[20px] text-base-text mb-4">Detalle del agente</h2>
+                        <div className="p-4 border border-brand-blue/20 bg-brand-blue/5">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-serif text-[15px] text-base-text">{directAgent.c}</span>
+                            <Badge type={directAgent.t} />
+                          </div>
+                          <p className="text-body-sm text-base-muted mb-3">{directAgent.desc}</p>
+                          <div className="grid grid-cols-3 gap-3 text-center">
+                            <div className="ds-card p-3">
+                              <p className="text-label uppercase text-base-subtle">Inversion</p>
+                              <p className="font-serif italic text-[16px] text-base-text">&euro;{directAgent.ini.toLocaleString()}</p>
+                            </div>
+                            <div className="ds-card p-3">
+                              <p className="text-label uppercase text-base-subtle">Mensual</p>
+                              <p className="font-serif italic text-[16px] text-base-text">&euro;{directAgent.rec.toLocaleString()}</p>
+                            </div>
+                            <div className="ds-card p-3">
+                              <p className="text-label uppercase text-base-subtle">Sector</p>
+                              <p className="font-serif italic text-[16px] text-brand-blue-soft">{directAgent.s}</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    <div>
+                      <SummaryPanel resumen={resumen} onPersonalizar={() => goToStep(3)} />
+                    </div>
+                  </div>
+                )}
+
+                {/* Sticky bottom summary bar */}
+                {selected.length > 0 && (
+                  <div className="fixed bottom-0 left-0 right-0 z-40 bg-base-bg/95 backdrop-blur-sm border-t border-border">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-6 text-body-sm">
+                        <span className="text-base-text font-medium">{selected.length} agente{selected.length > 1 ? 's' : ''}</span>
+                        <span className="text-base-muted">
+                          Inversion: <span className="font-serif italic text-base-text">&euro;{Math.round(resumen.invBundled).toLocaleString()}</span>
+                        </span>
+                        {resumen.sinergia?.disc > 0 && (
+                          <span className="text-brand-mint">
+                            -{resumen.sinergia.disc}% sinergia detectada
+                          </span>
+                        )}
+                      </div>
+                      <Button onClick={() => goToStep(3)} variant="primary" size="sm">
+                        Ver ROI
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {step === 3 && (
+              <>
+                <div className="mb-6">
+                  <button onClick={() => goToStep(2)} className="inline-flex items-center gap-2 text-body-sm text-base-muted hover:text-brand-blue transition-colors">
+                    <ArrowLeft size={16} /> Volver a seleccion de agentes
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                  <div className="xl:col-span-2 space-y-6">
+                    <ROIForm selectedCasos={selectedCasos} values={roiVariables} onChange={handleROIVarChange} />
+                    <CompanyDetailsForm values={companyDetails} onChange={setCompanyDetails} highlight={highlightDetails} />
+                  </div>
+                  <div>
+                    <ROIResults resumen={resumenROI} onEmailClick={() => { if (!detailsComplete) { scrollToDetails(); return; } setShowEmail(true); }} onDownload={handleDownload} />
                   </div>
                 </div>
-                <div>
-                  <SummaryPanel resumen={resumen} onPersonalizar={() => goToStep(3)} />
-                </div>
-              </div>
+
+                <EmailModal
+                  isOpen={showEmail}
+                  onClose={() => setShowEmail(false)}
+                  resumen={resumen}
+                  resumenROI={resumenROI}
+                  sector={sector}
+                  companyData={fullCompanyData}
+                  onFallbackDownload={handleDownload}
+                />
+              </>
             )}
-          </>
-        )}
-
-        {step === 3 && (
-          <>
-            <div className="mb-6">
-              <button onClick={() => goToStep(2)} className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-gold-400 transition-colors">
-                <ArrowLeft size={16} /> Volver a seleccion de agentes
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2">
-                <ROIForm selectedCasos={selectedCasos} values={roiVariables} onChange={handleROIVarChange} />
-              </div>
-              <div>
-                <ROIResults resumen={resumenROI} onEmailClick={() => setShowEmail(true)} onDownload={handleDownload} />
-              </div>
-            </div>
-
-            <EmailModal
-              isOpen={showEmail}
-              onClose={() => setShowEmail(false)}
-              resumen={resumen}
-              resumenROI={resumenROI}
-              sector={sector}
-              companyData={companyData}
-              onFallbackDownload={handleDownload}
-            />
-          </>
-        )}
+          </div>
+        </div>
       </div>
     </>
   );

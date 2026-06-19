@@ -11,19 +11,20 @@ const iconMap = {
 
 export default function SectorSelector({ sectores, selected, onChange }) {
   return (
-    <div className="glass-card p-4 mb-8">
+    <div className="ds-card p-4 mb-8">
       <div className="flex gap-2 flex-wrap">
         {sectores.map(s => {
           const meta = SECTORES_META[s];
           const Icon = meta ? iconMap[meta.icon] : null;
+          const isSelected = selected === s;
           return (
             <button
               key={s}
               onClick={() => onChange(s)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                selected === s
-                  ? 'bg-gold-400/15 text-gold-400 border border-gold-400/30 shadow-sm'
-                  : 'bg-navy-700/30 text-slate-400 border border-transparent hover:bg-navy-700/60 hover:text-white'
+              className={`flex items-center gap-2 px-4 py-2 text-body-sm font-medium transition-all ${
+                isSelected
+                  ? 'bg-brand-blue/10 text-brand-blue border border-brand-blue/40'
+                  : 'text-base-muted border border-transparent hover:text-base-text hover:border-border'
               }`}
             >
               {Icon && <Icon size={14} />}

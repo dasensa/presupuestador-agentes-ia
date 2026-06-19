@@ -37,11 +37,11 @@ export default function ValueProposition() {
             const Icon = icons[prop.icon];
             return (
               <Card key={i} hover>
-                <div className="w-12 h-12 rounded-xl bg-gold-400/10 flex items-center justify-center mb-5">
-                  <Icon size={24} className="text-gold-400" />
+                <div className="w-10 h-10 flex items-center justify-center mb-5 border border-border">
+                  <Icon size={20} className="text-brand-mint" />
                 </div>
-                <h3 className="text-lg font-display font-bold text-white mb-3">{prop.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{prop.description}</p>
+                <h3 className="font-serif text-[20px] text-base-text mb-3">{prop.title}</h3>
+                <p className="text-body-sm text-base-muted leading-relaxed">{prop.description}</p>
               </Card>
             );
           })}

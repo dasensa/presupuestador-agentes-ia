@@ -47,49 +47,49 @@ export default function EmailModal({ isOpen, onClose, resumen, resumenROI, secto
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Enviar Propuesta">
       <div className="space-y-5">
-        <div className="glass-card p-4 bg-navy-800/80">
-          <p className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-semibold">Enviar a</p>
+        <div className="ds-card p-4">
+          <p className="text-label uppercase text-base-subtle tracking-wider mb-3">Enviar a</p>
           <div className="flex items-center gap-3 mb-2">
-            <User size={14} className="text-gold-400" />
-            <span className="text-sm text-white">{companyData?.nombre}{companyData?.cargo && ` — ${companyData.cargo}`}</span>
+            <User size={14} className="text-brand-mint" />
+            <span className="text-body-sm text-base-text">{companyData?.nombre}{companyData?.cargo && ` — ${companyData.cargo}`}</span>
           </div>
           <div className="flex items-center gap-3">
-            <Mail size={14} className="text-gold-400" />
-            <span className="text-sm text-slate-300">{companyData?.email}</span>
+            <Mail size={14} className="text-brand-mint" />
+            <span className="text-body-sm text-base-muted">{companyData?.email}</span>
           </div>
           {companyData?.empresa && (
-            <p className="text-xs text-slate-500 mt-2">{companyData.empresa}</p>
+            <p className="text-body-sm text-base-subtle mt-2">{companyData.empresa}</p>
           )}
         </div>
 
-        <div className="glass-card p-4 bg-navy-800/80">
+        <div className="ds-card p-4">
           <div className="grid grid-cols-3 gap-3 text-center">
             <div>
-              <p className="text-lg font-bold text-white">{resumen?.selectedCasos.length}</p>
-              <p className="text-xs text-slate-500">Agentes</p>
+              <p className="font-serif italic text-[20px] text-base-text">{resumen?.selectedCasos.length}</p>
+              <p className="text-label uppercase text-base-subtle">Agentes</p>
             </div>
             <div>
-              <p className="text-lg font-bold text-emerald-400">
+              <p className="font-serif italic text-[20px] text-brand-mint">
                 {hasROI ? `${Math.round(resumenROI.roiTotal)}%` : `${resumen ? (resumen.roiBundled * 100).toFixed(0) : 0}%`}
               </p>
-              <p className="text-xs text-slate-500">ROI</p>
+              <p className="text-label uppercase text-base-subtle">ROI</p>
             </div>
             <div>
-              <p className="text-lg font-bold text-white">
+              <p className="font-serif italic text-[20px] text-base-text">
                 &euro;{hasROI ? Math.round(resumenROI.inversionTotal).toLocaleString() : (resumen ? Math.round(resumen.invBundled).toLocaleString() : 0)}
               </p>
-              <p className="text-xs text-slate-500">Inversion</p>
+              <p className="text-label uppercase text-base-subtle">Inversion</p>
             </div>
           </div>
         </div>
 
         {hasROI && (
-          <div className="glass-card p-4 bg-red-500/5 border-red-500/20">
+          <div className="ds-card p-4" style={{ borderColor: 'rgba(239,68,68,0.2)' }}>
             <div className="flex items-center gap-2 mb-1">
               <AlertTriangle size={14} className="text-red-400" />
-              <span className="text-xs font-bold text-red-300">COSTE DE INACCION /MES</span>
+              <span className="text-label uppercase text-red-300 tracking-wider">Coste de inaccion /mes</span>
             </div>
-            <p className="text-lg font-bold text-red-400">
+            <p className="font-serif italic text-[20px] text-red-400">
               &euro;{Math.round(resumenROI.costeInaccionMensual).toLocaleString()}
             </p>
           </div>

@@ -1,43 +1,57 @@
 import Button from '../ui/Button';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { STATS } from '../../lib/constants';
 
 export default function Hero() {
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold-400/10 rounded-full blur-3xl" />
-      </div>
-      <div className="absolute inset-0" style={{
-        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(251,191,36,0.06) 1px, transparent 0)',
-        backgroundSize: '40px 40px',
-      }} />
+    <section className="relative min-h-[85vh] flex items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left column */}
+          <div>
+            <span className="text-label uppercase text-brand-mint tracking-widest mb-6 block">
+              Consultoria especializada en IA
+            </span>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold-400/10 border border-gold-400/20 mb-8 animate-fade-in">
-            <Sparkles size={14} className="text-gold-400" />
-            <span className="text-gold-400 text-sm font-medium">Consultoria especializada en IA</span>
+            <h1 className="text-display-lg md:text-display-xl font-serif text-base-text mb-6">
+              Transformamos empresas con{' '}
+              <em className="text-brand-blue-soft italic">Inteligencia Artificial</em>
+            </h1>
+
+            <p className="text-body-lg text-base-muted font-light max-w-lg mb-10 leading-relaxed">
+              Agentes IA especializados por sector. Analizamos tu caso, detectamos sinergias y garantizamos un ROI positivo desde el primer ano.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button href="/presupuestador" variant="primary" size="lg">
+                Calcular ROI
+                <ArrowRight size={16} />
+              </Button>
+              <Button href="/servicios" variant="secondary" size="lg">
+                Conocer servicios
+              </Button>
+            </div>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-white leading-tight mb-6 animate-slide-up">
-            Transformamos empresas con{' '}
-            <span className="text-gradient-gold">Inteligencia Artificial</span>
-          </h1>
+          {/* Right column — metrics */}
+          <div className="hidden lg:block border-l border-border pl-16">
+            <div className="space-y-10">
+              {STATS.slice(0, 3).map((stat, i) => (
+                <div key={i}>
+                  <div className="font-serif italic text-[48px] leading-none text-brand-blue-soft">
+                    {stat.value}{stat.suffix}
+                  </div>
+                  <div className="text-body-sm text-base-muted mt-1">{stat.label}</div>
+                </div>
+              ))}
+            </div>
 
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mb-10 leading-relaxed animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            Agentes IA especializados por sector. Analizamos tu caso, detectamos sinergias y garantizamos un ROI positivo desde el primer ano.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <Button href="/presupuestador" variant="primary" size="lg">
-              Calcular ROI
-              <ArrowRight size={18} />
-            </Button>
-            <Button href="/servicios" variant="secondary" size="lg">
-              Conocer servicios
-            </Button>
+            <div className="mt-12 pt-10 border-t border-border">
+              <div className="font-serif italic text-[64px] leading-none text-brand-mint">
+                {STATS[3].value}{STATS[3].suffix}
+              </div>
+              <div className="text-body-sm text-base-muted mt-1">{STATS[3].label}</div>
+            </div>
           </div>
         </div>
       </div>

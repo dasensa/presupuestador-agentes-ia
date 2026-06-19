@@ -1,44 +1,14 @@
 import { useState } from 'react';
-import { ArrowRight, Building2 } from 'lucide-react';
+import { ArrowRight, Zap } from 'lucide-react';
 import { getSectores } from '../../data/casos';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 
-const EMPLEADOS = ['1-50', '51-200', '201-500', '501-1.000', '1.000+'];
-const PRESUPUESTO = ['< 25.000 EUR', '25.000 - 50.000 EUR', '50.000 - 100.000 EUR', '100.000 - 250.000 EUR', '> 250.000 EUR'];
-const URGENCIA = ['Inmediata', '1-3 meses', '3-6 meses', 'Solo estoy explorando'];
-
-function Select({ label, value, onChange, options, placeholder, required }) {
-  return (
-    <div>
-      <label className="block text-sm font-semibold text-slate-300 mb-2">
-        {label}{required && ' *'}
-      </label>
-      <select
-        value={value}
-        onChange={onChange}
-        required={required}
-        className="w-full bg-navy-800 border border-navy-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-gold-400/50 focus:ring-1 focus:ring-gold-400/20 transition-colors"
-      >
-        <option value="">{placeholder}</option>
-        {options.map(o => <option key={o} value={o}>{o}</option>)}
-      </select>
-    </div>
-  );
-}
-
 export default function CompanyForm({ initialSector, onComplete }) {
   const sectores = getSectores();
   const [form, setForm] = useState({
-    nombre: '',
     email: '',
-    telefono: '',
-    empresa: '',
-    cargo: '',
     sector: initialSector || '',
-    empleados: '',
-    presupuesto: '',
-    urgencia: '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -47,7 +17,7 @@ export default function CompanyForm({ initialSector, onComplete }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.nombre || !form.email || !form.empresa || !form.sector || !form.empleados) {
+    if (!form.email || !form.sector) {
       alert('Por favor completa los campos obligatorios');
       return;
     }
@@ -67,49 +37,39 @@ export default function CompanyForm({ initialSector, onComplete }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
-      <div className="glass-card p-6 md:p-8">
+    <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
+      <div className="ds-card p-6 md:p-8">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-gold-400/10 flex items-center justify-center">
-            <Building2 size={20} className="text-gold-400" />
+          <div className="w-10 h-10 flex items-center justify-center border border-border">
+            <Zap size={20} className="text-brand-mint" />
           </div>
           <div>
-            <h2 className="text-lg font-display font-bold text-white">Cuentanos sobre tu empresa</h2>
-            <p className="text-sm text-slate-400">Estos datos nos permiten personalizar tu simulacion</p>
+            <h2 className="font-serif text-[20px] text-base-text">Empieza tu simulacion</h2>
+            <p className="text-body-sm text-base-muted">Solo necesitamos tu email y sector para comenzar</p>
           </div>
         </div>
 
         <div className="space-y-5">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <Input label="Nombre completo *" type="text" value={form.nombre} onChange={update('nombre')} placeholder="Tu nombre" required />
-            <Input label="Email corporativo *" type="email" value={form.email} onChange={update('email')} placeholder="tu@empresa.com" required />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <Input label="Empresa *" type="text" value={form.empresa} onChange={update('empresa')} placeholder="Nombre de tu empresa" required />
-            <Input label="Cargo" type="text" value={form.cargo} onChange={update('cargo')} placeholder="Ej: Director de Operaciones" />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <Input label="Telefono" type="tel" value={form.telefono} onChange={update('telefono')} placeholder="+34 600 000 000" />
-            <Select label="Sector" value={form.sector} onChange={update('sector')} options={sectores} placeholder="Seleccionar sector" required />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <Select label="Empleados" value={form.empleados} onChange={update('empleados')} options={EMPLEADOS} placeholder="Seleccionar" required />
-            <Select label="Presupuesto estimado" value={form.presupuesto} onChange={update('presupuesto')} options={PRESUPUESTO} placeholder="Seleccionar" />
-            <Select label="Urgencia" value={form.urgencia} onChange={update('urgencia')} options={URGENCIA} placeholder="Seleccionar" />
+          <Input label="Email corporativo *" type="email" value={form.email} onChange={update('email')} placeholder="tu@empresa.com" required />
+          <div>
+            <label className="block text-label uppercase text-base-muted tracking-wider mb-2">Sector *</label>
+            <select
+              value={form.sector}
+              onChange={update('sector')}
+              required
+              className="w-full bg-surface-input border border-border-input px-4 py-3 text-body-sm text-base-text focus:outline-none focus:border-border-focus transition-colors"
+            >
+              <option value="">Seleccionar sector</option>
+              {sectores.map(o => <option key={o} value={o}>{o}</option>)}
+            </select>
           </div>
         </div>
 
         <div className="mt-8">
           <Button type="submit" disabled={loading} variant="primary" size="lg" className="w-full">
-            {loading ? 'Procesando...' : 'Continuar a la simulacion'}
-            <ArrowRight size={18} />
+            {loading ? 'Procesando...' : 'Ver casos de uso de mi sector'}
+            <ArrowRight size={16} />
           </Button>
-          <p className="text-xs text-slate-500 text-center mt-3">
-            Los campos marcados con * son obligatorios
-          </p>
         </div>
       </div>
     </form>

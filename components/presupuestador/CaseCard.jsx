@@ -1,21 +1,30 @@
+import { Check } from 'lucide-react';
 import Badge from '../ui/Badge';
 
-export default function CaseCard({ caso, checked, onToggle }) {
+export default function CaseCard({ caso, checked, onToggle, popular = false }) {
+  const baseStyle = checked
+    ? 'bg-[rgba(0,87,255,0.07)] border-brand-blue'
+    : popular
+      ? 'bg-[rgba(0,240,160,0.04)] border-[rgba(0,240,160,0.25)]'
+      : 'border-border-subtle hover:border-border-hover';
+
   return (
-    <label className={`flex items-center p-4 rounded-xl cursor-pointer transition-all border ${
-      checked
-        ? 'bg-gold-400/5 border-gold-400/30'
-        : 'bg-navy-800/30 border-navy-600/30 hover:bg-navy-700/30 hover:border-navy-600/50'
-    }`}>
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={onToggle}
-        className="w-4 h-4 rounded border-navy-600 text-gold-400 focus:ring-gold-400/30 focus:ring-offset-0 bg-navy-800 shrink-0"
-      />
+    <label className={`flex items-center p-4 cursor-pointer transition-all border ${baseStyle}`}>
+      <div className={`w-5 h-5 flex items-center justify-center shrink-0 border transition-colors ${
+        checked ? 'bg-brand-blue border-brand-blue' : 'border-border-input'
+      }`}>
+        {checked && <Check size={12} className="text-white" />}
+      </div>
       <div className="ml-3 flex-1 min-w-0">
-        <div className="font-semibold text-white text-sm">{caso.c}</div>
-        <div className="text-xs text-slate-500 mt-0.5">
+        <div className="flex items-center gap-2">
+          <span className="font-serif text-[14px] text-base-text">{caso.c}</span>
+          {popular && !checked && (
+            <span className="text-[9px] uppercase tracking-wider font-medium text-brand-mint bg-brand-mint/10 px-1.5 py-0.5">
+              Mas popular
+            </span>
+          )}
+        </div>
+        <div className="text-body-sm text-base-subtle mt-0.5">
           &euro;{caso.ini.toLocaleString()} + &euro;{caso.rec.toLocaleString()}/mes &middot; {caso.prob}
         </div>
       </div>

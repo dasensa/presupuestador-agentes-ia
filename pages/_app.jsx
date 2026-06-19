@@ -1,21 +1,16 @@
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import { DM_Sans } from 'next/font/google';
 import Layout from '../components/layout/Layout';
 import '../styles/globals.css';
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ['latin'],
-  variable: '--font-inter',
-});
-
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-jakarta',
-  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-dm',
+  weight: ['300', '400', '500'],
 });
 
 export default function App({ Component, pageProps }) {
   return (
-    <div className={`${inter.variable} ${jakarta.variable} font-sans`}>
+    <div className={`${dmSans.variable} font-sans`}>
       <Layout>
         <Component {...pageProps} />
       </Layout>
