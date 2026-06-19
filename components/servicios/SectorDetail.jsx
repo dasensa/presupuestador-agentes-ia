@@ -1,17 +1,16 @@
-import {
-  ShoppingBag, Landmark, HeartPulse, Wifi, Truck,
-  Plane, Shield, Zap, GraduationCap, Code,
-} from 'lucide-react';
+import { useState } from 'react';
+import Image from 'next/image';
 import Button from '../ui/Button';
 import UseCaseList from './UseCaseList';
+import SectorIcon from '../icons/SectorIcon';
 
-const iconMap = {
-  ShoppingBag, Landmark, HeartPulse, Wifi, Truck,
-  Plane, Shield, Zap, GraduationCap, Code,
-};
+const FALLBACK_IMAGE =
+  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1080" height="420" viewBox="0 0 1080 420"%3E%3Crect width="1080" height="420" fill="%230e1a2b"/%3E%3Cpath d="M0 290c190-80 360 30 550-40s310-170 530-110v280H0Z" fill="%2314273d"/%3E%3C/svg%3E';
+const BLUR_DATA_URL =
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAzMiAxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMTgiIGZpbGw9IiMwZTFhMmIiLz48cmVjdCB4PSIxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMTQyNzNkIi8+PC9zdmc+';
 
 export default function SectorDetail({ name, meta, casos }) {
-  const Icon = iconMap[meta.icon];
+  const [imageSrc, setImageSrc] = useState(meta.image || FALLBACK_IMAGE);
   const anchor = name.toLowerCase().replace('/', '-');
   const minPrice = Math.min(...casos.map(c => c.ini));
 
@@ -20,9 +19,24 @@ export default function SectorDetail({ name, meta, casos }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left panel */}
         <div className="ds-card p-6 lg:p-8">
-          <Icon size={24} className="text-brand-mint mb-4" />
+          <SectorIcon sector={name} color={meta.color} size={24} className="mb-4" />
           <h2 className="font-serif italic text-display-sm text-base-text mb-3">{name}</h2>
           <p className="text-body-sm text-base-muted leading-relaxed mb-6">{meta.longDescription}</p>
+
+          <div className="relative h-[140px] w-full overflow-hidden mb-6 border border-border">
+            <Image
+              src={imageSrc}
+              alt=""
+              fill
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
+              onError={() => setImageSrc(FALLBACK_IMAGE)}
+              sizes="(min-width: 1024px) 33vw, 100vw"
+              style={{ objectFit: 'cover' }}
+            />
+            <div className="absolute inset-0 bg-base-bg/30" />
+          </div>
 
           <div className="space-y-3 mb-6 pt-4 border-t border-border">
             <div className="flex justify-between text-body-sm">

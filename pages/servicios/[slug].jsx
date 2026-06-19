@@ -1,20 +1,25 @@
+import fs from 'fs';
+import path from 'path';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
-import {
-  ArrowLeft, ArrowRight,
-  ShoppingBag, Landmark, HeartPulse, Wifi, Truck,
-  Plane, Shield, Zap, GraduationCap, Code,
-} from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { getCasoBySlug, getAllSlugs, getCasosBySector, SECTORES_META } from '../../data/casos';
 import { calcBeneficio } from '../../lib/calculations';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import QuickROICalculator from '../../components/servicios/QuickROICalculator';
+import SectorIcon from '../../components/icons/SectorIcon';
 
-const iconMap = {
-  ShoppingBag, Landmark, HeartPulse, Wifi, Truck,
-  Plane, Shield, Zap, GraduationCap, Code,
-};
+const FALLBACK_IMAGE =
+  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400"%3E%3Crect width="1200" height="400" fill="%230e1a2b"/%3E%3Cpath d="M0 265c210-90 410 35 620-45 210-80 345-185 580-120v300H0Z" fill="%2314273d"/%3E%3C/svg%3E';
+const BLUR_DATA_URL =
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAzMiAxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMTgiIGZpbGw9IiMwZTFhMmIiLz48cmVjdCB4PSIxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMTQyNzNkIi8+PC9zdmc+';
+
+function publicImageExists(src) {
+  return Boolean(src && fs.existsSync(path.join(process.cwd(), 'public', src.replace(/^\//, ''))));
+}
 
 export async function getStaticPaths() {
   return {
@@ -27,6 +32,11 @@ export async function getStaticProps({ params }) {
   const caso = getCasoBySlug(params.slug);
   if (!caso) return { notFound: true };
 
+  const meta = SECTORES_META[caso.s];
+  const caseImage = `/images/cases/${params.slug}.jpg`;
+  const sectorImage = meta?.image || null;
+  const availableSectorImage = publicImageExists(sectorImage) ? sectorImage : null;
+  const imageSrc = publicImageExists(caseImage) ? caseImage : availableSectorImage;
   const sectorCasos = getCasosBySector(caso.s).filter(c => c.id !== caso.id);
   const beneficio = calcBeneficio(caso.t, caso.ini, caso.rec);
 
@@ -35,13 +45,26 @@ export async function getStaticProps({ params }) {
       caso,
       sectorCasos: sectorCasos.slice(0, 4),
       beneficio,
+      imageSrc,
+      sectorImage: availableSectorImage,
     },
   };
 }
 
-export default function AgentePage({ caso, sectorCasos, beneficio }) {
+export default function AgentePage({ caso, sectorCasos, beneficio, imageSrc, sectorImage }) {
   const meta = SECTORES_META[caso.s];
-  const Icon = meta ? iconMap[meta.icon] : Zap;
+  const [visualSrc, setVisualSrc] = useState(imageSrc || FALLBACK_IMAGE);
+
+  useEffect(() => {
+    setVisualSrc(imageSrc || FALLBACK_IMAGE);
+  }, [imageSrc]);
+
+  const handleImageError = () => {
+    setVisualSrc(current => {
+      if (sectorImage && current !== sectorImage) return sectorImage;
+      return FALLBACK_IMAGE;
+    });
+  };
 
   return (
     <>
@@ -59,9 +82,24 @@ export default function AgentePage({ caso, sectorCasos, beneficio }) {
         </Link>
 
         <div className="ds-card p-8 md:p-10 mb-8">
+          <div className="relative h-[200px] w-full overflow-hidden mb-8 border border-border">
+            <Image
+              src={visualSrc}
+              alt=""
+              fill
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
+              onError={handleImageError}
+              sizes="(min-width: 1024px) 896px, 100vw"
+              style={{ objectFit: 'cover' }}
+            />
+            <div className="absolute inset-0 bg-base-bg/30" />
+          </div>
+
           <div className="flex items-start gap-4 mb-6">
             <div className="w-12 h-12 flex items-center justify-center border border-border shrink-0">
-              <Icon size={24} className="text-brand-mint" />
+              <SectorIcon sector={caso.s} color={meta?.color} size={24} />
             </div>
             <div>
               <div className="flex items-center gap-3 mb-2">

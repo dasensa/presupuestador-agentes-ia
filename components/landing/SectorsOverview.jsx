@@ -1,15 +1,8 @@
 import Link from 'next/link';
-import {
-  ShoppingBag, Landmark, HeartPulse, Wifi, Truck,
-  Plane, Shield, Zap, GraduationCap, Code, ArrowRight,
-} from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { SECTORES_META, getCasosBySector } from '../../data/casos';
 import SectionHeading from '../ui/SectionHeading';
-
-const iconMap = {
-  ShoppingBag, Landmark, HeartPulse, Wifi, Truck,
-  Plane, Shield, Zap, GraduationCap, Code,
-};
+import SectorIcon from '../icons/SectorIcon';
 
 export default function SectorsOverview() {
   const sectores = Object.entries(SECTORES_META);
@@ -25,7 +18,6 @@ export default function SectorsOverview() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {sectores.map(([name, meta]) => {
-            const Icon = iconMap[meta.icon];
             const caseCount = getCasosBySector(name).length;
             return (
               <Link
@@ -34,7 +26,7 @@ export default function SectorsOverview() {
                 className="group ds-card-hover p-4 transition-all duration-200"
               >
                 <div className="flex items-center gap-2.5 mb-2">
-                  <Icon size={16} className="text-brand-mint" />
+                  <SectorIcon sector={name} color={meta.color} size={16} />
                   <span className="font-serif text-[15px] text-base-text">{name}</span>
                 </div>
                 <div className="flex items-center justify-between">
