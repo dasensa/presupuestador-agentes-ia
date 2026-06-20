@@ -30,22 +30,22 @@ export default function ValueProposition() {
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-end mb-14">
           <SectionHeading
             eyebrow="Por que AgentIA"
-            title="Ingenieria para el futuro operativo"
+            title="Data intelligence frame"
             description="Combinamos conocimiento sectorial profundo con tecnologia de vanguardia para entregar resultados medibles."
             align="left"
           />
 
-          <div className="relative h-[300px] overflow-hidden border border-border bg-[#0c1118]">
+          <div className="relative h-[320px] overflow-hidden rounded-md border border-brand-mint/30 bg-[#071014]">
             <Image
               src="/images/sectors/tech.jpg"
               alt="Equipo de tecnologia coordinando automatizaciones de IA"
               fill
               sizes="(min-width: 1024px) 45vw, 100vw"
-              className="object-cover opacity-85"
+              className="object-cover opacity-80 saturate-125"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#070b11]/80 via-[#070b11]/20 to-transparent" />
-            <div className="absolute bottom-5 left-5 border border-border bg-[#111720]/88 p-4 backdrop-blur-md">
-              <div className="text-[28px] leading-none font-serif text-brand-amber">300%+</div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#071014]/90 via-[#071014]/25 to-transparent" />
+            <div className="absolute bottom-5 left-5 rounded-md border border-brand-mint/35 bg-[#061214]/88 p-4 backdrop-blur-md">
+              <div className="text-[28px] leading-none font-serif text-brand-mint">300%+</div>
               <div className="mt-1 text-[11px] text-base-muted">ROI medio proyectado</div>
             </div>
           </div>
@@ -56,7 +56,7 @@ export default function ValueProposition() {
             const Icon = icons[prop.icon];
             return (
               <Card key={i} hover>
-                <div className="w-11 h-11 flex items-center justify-center mb-5 rounded-full bg-brand-amber text-[#141008]">
+                <div className="w-11 h-11 flex items-center justify-center mb-5 rounded bg-brand-mint text-[#041012]">
                   <Icon size={20} />
                 </div>
                 <h3 className="font-serif text-[20px] text-base-text mb-3">{prop.title}</h3>

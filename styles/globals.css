@@ -11,35 +11,36 @@
   }
   body {
     background:
-      radial-gradient(circle at 82% 8%, rgba(255, 198, 46, 0.12), transparent 28rem),
-      linear-gradient(180deg, #11161d 0%, #070b11 26rem);
-    background-color: #070b11;
-    color: #eef2f7;
+      radial-gradient(circle at 80% 6%, rgba(0, 245, 228, 0.12), transparent 26rem),
+      radial-gradient(circle at 12% 34%, rgba(0, 222, 210, 0.08), transparent 20rem),
+      linear-gradient(180deg, #10161b 0%, #090d11 24rem);
+    background-color: #090d11;
+    color: #f2fbfb;
     font-family: var(--font-dm), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   ::selection {
-    background: rgba(255, 198, 46, 0.32);
-    color: #fff7d6;
+    background: rgba(0, 245, 228, 0.34);
+    color: #f2fbfb;
   }
 }
 
 @layer components {
   .ds-card {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
-    border: 1px solid rgba(238, 242, 247, 0.09);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    background: linear-gradient(180deg, rgba(0, 245, 228, 0.055), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(0, 245, 228, 0.22);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 45px rgba(0, 0, 0, 0.18);
   }
   .ds-card-hover {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
-    border: 1px solid rgba(238, 242, 247, 0.09);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    background: linear-gradient(180deg, rgba(0, 245, 228, 0.055), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(0, 245, 228, 0.24);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 45px rgba(0, 0, 0, 0.18);
     transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
   }
   .ds-card-hover:hover {
-    background: linear-gradient(180deg, rgba(255, 198, 46, 0.08), rgba(255, 255, 255, 0.035));
-    border-color: rgba(255, 198, 46, 0.36);
+    background: linear-gradient(180deg, rgba(0, 245, 228, 0.12), rgba(255, 255, 255, 0.035));
+    border-color: rgba(0, 245, 228, 0.62);
     transform: translateY(-2px);
   }
 }

@@ -8,17 +8,17 @@ export default function Footer() {
   return (
     <footer>
       {/* Pre-footer CTA */}
-      <div className="bg-brand-blue">
+      <div className="bg-[#071014] border-y border-brand-mint/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h2 className="font-serif text-display-sm text-white">Hablemos de tu proyecto</h2>
-            <p className="text-white/70 text-body mt-2 max-w-md">
+            <p className="text-base-muted text-body mt-2 max-w-md">
               Descubre como los agentes IA pueden transformar tu sector. Sin compromiso.
             </p>
           </div>
           <Link
             href="/contacto"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-brand-blue text-body font-medium transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded px-8 py-4 bg-brand-mint text-[#041012] text-body font-semibold transition-colors hover:bg-[#7dfcf2]"
           >
             Solicitar demo
             <ArrowRight size={16} />
@@ -27,7 +27,7 @@ export default function Footer() {
       </div>
 
       {/* Main footer */}
-      <div className="bg-base-bg border-t border-border">
+      <div className="bg-[#060a0d] border-t border-brand-mint/15">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
             {/* Col 1: Brand + Newsletter */}
@@ -51,7 +51,7 @@ export default function Footer() {
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2.5 bg-brand-blue text-white text-body-sm font-medium transition-opacity hover:opacity-90"
+                    className="px-4 py-2.5 bg-brand-mint text-[#041012] text-body-sm font-semibold transition-colors hover:bg-[#7dfcf2]"
                   >
                     <ArrowRight size={16} />
                   </button>

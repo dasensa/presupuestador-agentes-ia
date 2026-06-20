@@ -8,17 +8,17 @@ module.exports = {
     extend: {
       colors: {
         base: {
-          bg: '#070b11',
-          text: '#eef2f7',
-          muted: 'rgba(238,242,247,0.56)',
-          subtle: 'rgba(238,242,247,0.34)',
+          bg: '#090d11',
+          text: '#f2fbfb',
+          muted: 'rgba(226,246,246,0.62)',
+          subtle: 'rgba(226,246,246,0.36)',
         },
         brand: {
-          blue: '#ffc62e',
-          mint: '#ffc62e',
-          'blue-soft': '#ffe39a',
-          amber: '#ffc62e',
-          smoke: '#aab2c0',
+          blue: '#00ded2',
+          mint: '#00f5e4',
+          'blue-soft': '#7dfcf2',
+          amber: '#00f5e4',
+          smoke: '#90a7aa',
         },
         surface: {
           card: 'rgba(255,255,255,0.035)',
@@ -28,8 +28,8 @@ module.exports = {
         border: {
           DEFAULT: 'rgba(238,242,247,0.09)',
           subtle: 'rgba(238,242,247,0.12)',
-          hover: 'rgba(255,198,46,0.42)',
-          focus: 'rgba(255,198,46,0.58)',
+          hover: 'rgba(0,245,228,0.52)',
+          focus: 'rgba(0,245,228,0.66)',
           input: 'rgba(238,242,247,0.13)',
         },
         badge: {

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Button from '../ui/Button';
-import { ArrowRight, Bot, Database, Gauge } from 'lucide-react';
+import { ArrowRight, Bot, Gauge, Sparkles } from 'lucide-react';
 import { STATS } from '../../lib/constants';
 
 const BLUR_DATA_URL =
@@ -9,93 +9,115 @@ const BLUR_DATA_URL =
 export default function Hero() {
   return (
     <section className="relative min-h-[92vh] flex items-center overflow-hidden pt-28 pb-14">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(255,198,46,0.2),transparent_24rem)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(0,245,228,0.2),transparent_24rem)]" />
       <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-base-bg" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-12 lg:gap-16 items-center">
-          <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white/[0.035] px-3 py-1.5 text-label uppercase text-brand-amber mb-6">
-              <Bot size={13} />
-              Consultoria especializada en IA
-            </span>
+        <div className="relative overflow-hidden rounded-md border border-brand-mint/35 bg-gradient-to-br from-[#02d8ce] via-[#00bdb4] to-[#07837f] p-5 sm:p-8 lg:p-10 shadow-[0_0_80px_rgba(0,245,228,0.18)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_16%,rgba(255,255,255,0.32),transparent_18rem)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.18),transparent_28%,rgba(4,16,18,0.28)_74%)]" />
 
-            <h1 className="text-[46px] md:text-[66px] leading-[1.04] font-serif text-base-text mb-6">
-              Construimos el futuro con agentes de IA
-            </h1>
+          <div className="relative grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-8 items-end">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded border border-[#041012]/20 bg-[#041012] px-3 py-1.5 text-label uppercase text-brand-mint mb-5">
+                <Bot size={13} />
+                AgentIA OS
+              </span>
 
-            <p className="text-body-lg text-base-muted font-light max-w-xl mb-8 leading-relaxed">
-              Automatizacion inteligente para operaciones complejas: casos de uso por sector, sinergias entre agentes y ROI medible desde el primer ano.
-            </p>
+              <h1 className="text-[48px] md:text-[76px] lg:text-[88px] leading-[0.92] font-serif text-[#eafffb] mb-5">
+                Inteligencia operativa para empresas
+              </h1>
 
-            <div className="flex flex-col sm:flex-row gap-3 mb-8">
-              <Button href="/presupuestador" variant="primary" size="lg">
-                Calcular ROI
-                <ArrowRight size={16} />
-              </Button>
-              <Button href="/servicios" variant="secondary" size="lg">
-                Conocer servicios
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 max-w-lg">
-              {STATS.slice(0, 3).map((stat) => (
-                <div key={stat.label} className="border border-border bg-white/[0.035] p-4">
-                  <div className="text-[28px] leading-none font-serif text-base-text">
-                    {stat.value}{stat.suffix}
-                  </div>
-                  <div className="mt-2 text-[11px] leading-snug text-base-muted">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative min-h-[520px]">
-            <div className="absolute inset-0 lg:inset-y-0 lg:right-0 lg:left-10 bg-[radial-gradient(circle_at_60%_40%,rgba(255,198,46,0.18),transparent_18rem)]" />
-            <div className="relative h-[520px] overflow-hidden border border-border bg-[#0c1118]">
-              <Image
-                src="/images/hero-bg.jpg"
-                alt="Equipo trabajando con automatizacion e inteligencia artificial"
-                fill
-                priority
-                placeholder="blur"
-                blurDataURL={BLUR_DATA_URL}
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover object-center opacity-85"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#070b11] via-[#070b11]/45 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#070b11] via-transparent to-transparent" />
-            </div>
-
-            <div className="absolute left-0 bottom-8 w-[260px] border border-border bg-[#111720]/92 p-4 backdrop-blur-md">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded bg-brand-amber text-[#141008]">
-                  <Gauge size={20} />
-                </div>
-                <div>
-                  <div className="text-body-sm text-base-text">ROI operativo</div>
-                  <div className="text-[11px] text-base-muted">Priorizacion por impacto y coste</div>
-                </div>
-              </div>
-              <div className="mt-4 h-1.5 bg-white/10">
-                <div className="h-full w-[76%] bg-brand-amber" />
-              </div>
-              <div className="mt-2 flex justify-between text-[11px] text-base-muted">
-                <span>Sinergias</span>
-                <span>76%</span>
-              </div>
-            </div>
-
-            <div className="absolute right-0 top-10 hidden w-[220px] border border-border bg-[#111720]/88 p-4 backdrop-blur-md sm:block">
-              <div className="flex items-center gap-2 text-body-sm text-base-text">
-                <Database size={16} className="text-brand-amber" />
-                Datos conectados
-              </div>
-              <p className="mt-2 text-[11px] leading-relaxed text-base-muted">
-                Casos, procesos, canales y sistemas integrados en una hoja de ruta clara.
+              <p className="text-body-lg text-[#052326]/78 font-medium max-w-xl mb-7 leading-relaxed">
+                Agentes IA especializados por sector, conectados a tus procesos y medidos con ROI real desde el primer ano.
               </p>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button href="/presupuestador" variant="primary" size="lg" className="bg-[#041012] text-brand-mint hover:bg-[#0b2428]">
+                  Calcular ROI
+                  <ArrowRight size={16} />
+                </Button>
+                <Button href="/servicios" variant="secondary" size="lg" className="border-[#041012]/30 bg-white/15 text-[#041012] hover:bg-white/25">
+                  Explorar agentes
+                </Button>
+              </div>
+
+              <div className="mt-7 grid grid-cols-3 gap-3 max-w-lg">
+                {STATS.slice(0, 3).map((stat) => (
+                  <div key={stat.label} className="rounded border border-[#041012]/18 bg-[#041012]/12 p-4 backdrop-blur">
+                    <div className="text-[28px] leading-none font-serif text-[#eafffb]">
+                      {stat.value}{stat.suffix}
+                    </div>
+                    <div className="mt-2 text-[11px] leading-snug text-[#052326]/75">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative min-h-[470px]">
+              <div className="absolute inset-x-0 bottom-0 h-[390px] overflow-hidden rounded-md border border-white/25 bg-[#061214]">
+                <Image
+                  src="/images/hero-bg.jpg"
+                  alt="Equipo trabajando con automatizacion e inteligencia artificial"
+                  fill
+                  priority
+                  placeholder="blur"
+                  blurDataURL={BLUR_DATA_URL}
+                  sizes="(min-width: 1024px) 42vw, 100vw"
+                  className="object-cover object-center opacity-85 saturate-125"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#061214] via-[#061214]/15 to-transparent" />
+              </div>
+
+              <div className="absolute left-0 top-6 w-[260px] rounded-md border border-white/35 bg-[#061214]/92 p-4 backdrop-blur-md">
+                <div className="flex items-center justify-between">
+                  <span className="text-body-sm text-base-text">Agent stack</span>
+                  <Sparkles size={16} className="text-brand-mint" />
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-1">
+                  <span className="h-2 rounded bg-brand-mint" />
+                  <span className="h-2 rounded bg-brand-mint/70" />
+                  <span className="h-2 rounded bg-brand-mint/35" />
+                </div>
+                <p className="mt-3 text-[11px] leading-relaxed text-base-muted">
+                  Venta, soporte y operaciones conectadas en un unico marco de automatizacion.
+                </p>
+              </div>
+
+              <div className="absolute right-0 bottom-8 hidden w-[235px] rounded-md border border-white/35 bg-[#061214]/92 p-4 backdrop-blur-md sm:block">
+                <div className="flex items-center gap-2 text-body-sm text-base-text">
+                  <Gauge size={16} className="text-brand-mint" />
+                  Precision ROI
+                </div>
+                <div className="mt-4 h-1.5 rounded-full bg-white/10">
+                  <div className="h-full w-[82%] rounded-full bg-brand-mint" />
+                </div>
+                <div className="mt-2 flex justify-between text-[11px] text-base-muted">
+                  <span>Impacto estimado</span>
+                  <span>82%</span>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-3">
+          {[
+            ['Predictive detection', '/images/cases/antifraude-multicanal-banca.jpg'],
+            ['Autonomous behaviour', '/images/cases/chat-crm-tech.jpg'],
+            ['Directional AI sentinel', '/images/cases/soporte-premium-tech.jpg'],
+          ].map(([title, image]) => (
+            <div key={title} className="group overflow-hidden rounded-md border border-brand-mint/35 bg-[#081116]">
+              <div className="relative h-40">
+                <Image src={image} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover opacity-75 transition-transform duration-300 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#081116] via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <h3 className="font-serif text-[20px] text-base-text">{title}</h3>
+                  <span className="text-[11px] text-brand-mint">[sector intelligence]</span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

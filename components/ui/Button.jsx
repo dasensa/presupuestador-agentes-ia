@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
 const variants = {
-  primary: 'bg-brand-amber text-[#141008] font-semibold hover:bg-[#ffd766] shadow-[0_0_0_1px_rgba(255,198,46,0.18)]',
-  secondary: 'border border-border bg-white/[0.03] text-base-text hover:border-border-hover hover:bg-white/[0.06]',
+  primary: 'bg-brand-mint text-[#041012] font-semibold hover:bg-[#7dfcf2] shadow-[0_0_22px_rgba(0,245,228,0.22)]',
+  secondary: 'border border-brand-mint/45 bg-[#061214] text-base-text hover:border-brand-mint hover:bg-brand-mint/10',
   ghost: 'text-base-muted hover:text-base-text bg-transparent',
 };
 
