@@ -36,7 +36,7 @@ export async function getStaticProps({ params }) {
   const caseImage = `/images/cases/${params.slug}.jpg`;
   const sectorImage = meta?.image || null;
   const availableSectorImage = publicImageExists(sectorImage) ? sectorImage : null;
-  const imageSrc = publicImageExists(caseImage) ? caseImage : availableSectorImage;
+  const imageSrc = availableSectorImage || (publicImageExists(caseImage) ? caseImage : null);
   const sectorCasos = getCasosBySector(caso.s).filter(c => c.id !== caso.id);
   const beneficio = calcBeneficio(caso.t, caso.ini, caso.rec);
 

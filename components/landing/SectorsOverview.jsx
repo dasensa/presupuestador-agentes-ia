@@ -13,7 +13,7 @@ export default function SectorsOverview() {
         <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-8 lg:gap-16 items-start mb-14">
           <SectionHeading
             eyebrow="Sectores"
-            title="Deployment scenarios"
+            title="Escenarios de despliegue"
             description="Mas de 70 casos de uso distribuidos en 10 sectores clave. Cada agente esta disenado para resolver problemas reales de tu industria."
             align="left"
           />

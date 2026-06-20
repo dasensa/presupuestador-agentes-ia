@@ -10,10 +10,10 @@ export default function CTASection() {
           <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 lg:items-end">
             <div>
               <span className="text-label uppercase text-brand-mint tracking-widest mb-4 block">
-                Born to secure next
+                Validacion de impacto
               </span>
               <h2 className="text-display-sm md:text-display-md font-serif text-base-text mb-4 max-w-2xl">
-                Performance validation de inteligencia artificial
+                Mide el rendimiento de la IA antes de desplegar
               </h2>
               <p className="text-body-lg text-base-muted font-light max-w-2xl">
                 Usa nuestro presupuestador para calcular el impacto real de los agentes IA en tu empresa. Sin compromiso.

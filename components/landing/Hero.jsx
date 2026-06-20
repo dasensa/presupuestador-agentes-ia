@@ -21,7 +21,7 @@ export default function Hero() {
             <div>
               <span className="inline-flex items-center gap-2 rounded border border-[#041012]/20 bg-[#041012] px-3 py-1.5 text-label uppercase text-brand-mint mb-5">
                 <Bot size={13} />
-                AgentIA OS
+                IA aplicada a operaciones
               </span>
 
               <h1 className="text-[48px] md:text-[76px] lg:text-[88px] leading-[0.92] font-serif text-[#eafffb] mb-5">
@@ -57,7 +57,7 @@ export default function Hero() {
             <div className="relative min-h-[470px]">
               <div className="absolute inset-x-0 bottom-0 h-[390px] overflow-hidden rounded-md border border-white/25 bg-[#061214]">
                 <Image
-                  src="/images/hero-bg.jpg"
+                  src="/images/ai-luminous/hero.png"
                   alt="Equipo trabajando con automatizacion e inteligencia artificial"
                   fill
                   priority
@@ -103,9 +103,9 @@ export default function Hero() {
 
         <div className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-3">
           {[
-            ['Predictive detection', '/images/cases/antifraude-multicanal-banca.jpg'],
-            ['Autonomous behaviour', '/images/cases/chat-crm-tech.jpg'],
-            ['Directional AI sentinel', '/images/cases/soporte-premium-tech.jpg'],
+            ['Deteccion predictiva', '/images/ai-luminous/banca.png'],
+            ['Agentes autonomos', '/images/ai-luminous/tech.png'],
+            ['Soporte inteligente', '/images/ai-luminous/telecom.png'],
           ].map(([title, image]) => (
             <div key={title} className="group overflow-hidden rounded-md border border-brand-mint/35 bg-[#081116]">
               <div className="relative h-40">
@@ -113,7 +113,7 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#081116] via-transparent to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4">
                   <h3 className="font-serif text-[20px] text-base-text">{title}</h3>
-                  <span className="text-[11px] text-brand-mint">[sector intelligence]</span>
+                  <span className="text-[11px] text-brand-mint">[inteligencia sectorial]</span>
                 </div>
               </div>
             </div>

@@ -30,14 +30,14 @@ export default function ValueProposition() {
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-end mb-14">
           <SectionHeading
             eyebrow="Por que AgentIA"
-            title="Data intelligence frame"
+            title="IA aplicada con datos reales"
             description="Combinamos conocimiento sectorial profundo con tecnologia de vanguardia para entregar resultados medibles."
             align="left"
           />
 
           <div className="relative h-[320px] overflow-hidden rounded-md border border-brand-mint/30 bg-[#071014]">
             <Image
-              src="/images/sectors/tech.jpg"
+              src="/images/ai-luminous/tech.png"
               alt="Equipo de tecnologia coordinando automatizaciones de IA"
               fill
               sizes="(min-width: 1024px) 45vw, 100vw"
