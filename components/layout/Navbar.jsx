@@ -21,13 +21,12 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-[60] h-1" style={{ background: 'linear-gradient(to right, #0057ff, #00f0a0)' }} />
-      <nav className={`fixed top-1 left-0 right-0 z-50 transition-colors duration-300 ${scrolled ? 'bg-base-bg/95 backdrop-blur-sm border-b border-border' : 'bg-transparent'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-12">
+      <nav className="fixed top-4 left-0 right-0 z-50 px-4">
+        <div className={`max-w-7xl mx-auto px-4 sm:px-5 transition-all duration-300 border border-border ${scrolled ? 'bg-[#090d13]/92 backdrop-blur-md shadow-2xl shadow-black/20' : 'bg-[#090d13]/78 backdrop-blur-sm'}`}>
+          <div className="flex items-center justify-between h-14">
             <Link href="/" className="flex items-baseline gap-0">
               <span className="font-serif text-[22px] text-base-text">AgentIA</span>
-              <span className="text-brand-mint text-[10px] font-sans font-medium relative -top-2.5">®</span>
+              <span className="text-brand-amber text-[10px] font-sans font-medium relative -top-2.5">®</span>
             </Link>
 
             <div className="hidden md:flex items-center gap-6">
@@ -35,11 +34,11 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-body-sm font-sans transition-colors ${
-                    router.pathname === link.href
-                      ? 'text-base-text'
-                      : 'text-base-muted hover:text-base-text'
-                  }`}
+                className={`text-body-sm font-sans transition-colors ${
+                  router.pathname === link.href
+                    ? 'text-brand-amber'
+                    : 'text-base-muted hover:text-base-text'
+                }`}
                 >
                   {link.label}
                 </Link>
@@ -49,9 +48,9 @@ export default function Navbar() {
             <div className="hidden md:block">
               <Link
                 href="/contacto"
-                className="inline-flex items-center px-5 py-2 bg-brand-blue text-white text-body-sm font-medium transition-opacity hover:opacity-90"
+                className="inline-flex items-center rounded px-5 py-2 bg-brand-amber text-[#141008] text-body-sm font-semibold transition-colors hover:bg-[#ffd766]"
               >
-                Solicitar demo
+                Contactar
               </Link>
             </div>
 
@@ -65,7 +64,7 @@ export default function Navbar() {
         </div>
 
         {mobileOpen && (
-          <div className="md:hidden bg-base-bg/98 backdrop-blur-sm border-t border-border animate-fade-in">
+          <div className="md:hidden mt-2 bg-[#090d13]/98 backdrop-blur-sm border border-border animate-fade-in">
             <div className="px-4 py-4 space-y-1">
               {NAV_LINKS.map(link => (
                 <Link
@@ -73,7 +72,7 @@ export default function Navbar() {
                   href={link.href}
                   className={`block px-4 py-3 text-body-sm font-sans transition-colors ${
                     router.pathname === link.href
-                      ? 'text-base-text'
+                      ? 'text-brand-amber'
                       : 'text-base-muted hover:text-base-text'
                   }`}
                 >
@@ -83,9 +82,9 @@ export default function Navbar() {
               <div className="pt-3">
                 <Link
                   href="/contacto"
-                  className="block text-center px-5 py-3 bg-brand-blue text-white text-body-sm font-medium"
+                  className="block rounded text-center px-5 py-3 bg-brand-amber text-[#141008] text-body-sm font-semibold"
                 >
-                  Solicitar demo
+                  Contactar
                 </Link>
               </div>
             </div>

@@ -16,7 +16,7 @@ export default function SectionHeading({ eyebrow, title, description, align = 'c
   return (
     <div className={`${alignment} mb-12 max-w-3xl ${align === 'center' ? 'mx-auto' : ''}`}>
       {eyebrow && (
-        <span className="text-label uppercase text-brand-mint tracking-widest mb-3 block">
+        <span className="text-label uppercase text-brand-amber tracking-widest mb-3 block">
           {eyebrow}
         </span>
       )}

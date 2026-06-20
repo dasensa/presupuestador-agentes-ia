@@ -1,15 +1,15 @@
 import Link from 'next/link';
 
 const variants = {
-  primary: 'bg-brand-blue text-white font-medium hover:opacity-90',
-  secondary: 'border-b border-base-muted text-base-muted hover:text-base-text hover:border-base-text bg-transparent',
+  primary: 'bg-brand-amber text-[#141008] font-semibold hover:bg-[#ffd766] shadow-[0_0_0_1px_rgba(255,198,46,0.18)]',
+  secondary: 'border border-border bg-white/[0.03] text-base-text hover:border-border-hover hover:bg-white/[0.06]',
   ghost: 'text-base-muted hover:text-base-text bg-transparent',
 };
 
 const sizes = {
-  sm: 'px-4 py-2 text-body-sm',
-  md: 'px-6 py-3 text-body-sm',
-  lg: 'px-8 py-4 text-body',
+  sm: 'px-4 py-2 text-body-sm rounded',
+  md: 'px-6 py-3 text-body-sm rounded',
+  lg: 'px-7 py-3.5 text-body rounded',
 };
 
 export default function Button({ children, variant = 'primary', size = 'md', href, className = '', ...props }) {

@@ -1,8 +1,8 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { SECTORES_META, getCasosBySector } from '../../data/casos';
 import SectionHeading from '../ui/SectionHeading';
-import SectorThumbnail from '../icons/SectorThumbnail';
 
 export default function SectorsOverview() {
   const sectores = Object.entries(SECTORES_META);
@@ -10,33 +10,45 @@ export default function SectorsOverview() {
   return (
     <section className="py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="Sectores"
-          title="Soluciones para cada industria"
-          description="Mas de 70 casos de uso distribuidos en 10 sectores clave. Cada agente esta disenado para resolver problemas reales de tu industria."
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-8 lg:gap-16 items-start mb-14">
+          <SectionHeading
+            eyebrow="Sectores"
+            title="Soluciones listas para ejecutar"
+            description="Mas de 70 casos de uso distribuidos en 10 sectores clave. Cada agente esta disenado para resolver problemas reales de tu industria."
+            align="left"
+          />
+          <p className="text-body text-base-muted leading-relaxed lg:pt-12">
+            El estilo de trabajo es modular: seleccionamos el sector, priorizamos procesos de alto impacto y conectamos agentes a tus herramientas actuales sin redisenar toda la operacion.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {sectores.map(([name, meta]) => {
             const caseCount = getCasosBySector(name).length;
             return (
               <Link
                 key={name}
                 href={`/servicios#${name.toLowerCase().replace('/', '-')}`}
-                className="group ds-card-hover p-4 transition-all duration-200"
+                className="group ds-card-hover overflow-hidden transition-all duration-200"
               >
-                <div className="flex items-center gap-2.5 mb-2">
-                  <SectorThumbnail
+                <div className="relative h-32 bg-[#0c1118]">
+                  <Image
                     src={meta.image}
                     alt=""
-                    className="h-8 w-12 shrink-0"
-                    sizes="48px"
+                    fill
+                    sizes="(min-width: 1024px) 20vw, 50vw"
+                    className="object-cover opacity-75 transition-transform duration-300 group-hover:scale-105"
                   />
-                  <span className="font-serif text-[15px] text-base-text">{name}</span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#070b11] via-[#070b11]/30 to-transparent" />
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-body-sm text-base-subtle">{caseCount} casos</span>
-                  <ArrowRight size={12} className="text-base-subtle opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="p-4">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="font-serif text-[18px] text-base-text">{name}</span>
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-amber text-[#141008]">
+                      <ArrowRight size={13} />
+                    </span>
+                  </div>
+                  <span className="text-body-sm text-base-subtle">{caseCount} casos automatizables</span>
                 </div>
               </Link>
             );
