@@ -1,0 +1,21 @@
+{
+  "name": "AgentIA",
+  "short_name": "AgentIA",
+  "description": "Consultoria de agentes de inteligencia artificial especializados por sector.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090d11",
+  "theme_color": "#00f5e4",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
