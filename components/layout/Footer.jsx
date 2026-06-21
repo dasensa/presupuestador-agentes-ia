@@ -1,108 +1,80 @@
-import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
 export default function Footer() {
-  const [email, setEmail] = useState('');
-
   return (
-    <footer>
-      {/* Pre-footer CTA */}
-      <div className="bg-[#071014] border-y border-brand-mint/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <h2 className="font-serif text-display-sm text-white">Hablemos de tu proyecto</h2>
-            <p className="text-base-muted text-body mt-2 max-w-md">
-              Descubre como los agentes IA pueden transformar tu sector. Sin compromiso.
-            </p>
-          </div>
-          <Link
-            href="/contacto"
-            className="inline-flex items-center gap-2 rounded px-8 py-4 bg-brand-mint text-[#041012] text-body font-semibold transition-colors hover:bg-[#7dfcf2]"
-          >
-            Solicitar demo
-            <ArrowRight size={16} />
-          </Link>
-        </div>
-      </div>
-
-      {/* Main footer */}
-      <div className="bg-[#060a0d] border-t border-brand-mint/15">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-            {/* Col 1: Brand + Newsletter */}
+    <footer className="border-t border-slate-200 bg-white/80 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="ds-card p-8 md:p-10 mb-12">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_auto] md:items-end">
             <div>
-              <Link href="/" className="flex items-baseline gap-0">
-                <span className="font-serif text-[22px] text-base-text">AgentIA</span>
-                <span className="text-brand-mint text-[10px] font-sans font-medium relative -top-2.5">®</span>
-              </Link>
-              <p className="text-base-muted text-body-sm mt-4 leading-relaxed">
-                Consultoria de agentes de inteligencia artificial especializados por sector.
+              <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-blue-600">
+                <Sparkles size={13} />
+                Simulacion AgentIA
+              </span>
+              <h2 className="mt-5 font-serif text-display-sm text-slate-950">Empieza por una simulacion. Decide con datos.</h2>
+              <p className="mt-3 max-w-2xl text-body text-slate-500">
+                Selecciona tu sector, identifica procesos y recibe una estimacion inicial de inversion, retorno e impacto operativo.
               </p>
-              <form onSubmit={(e) => { e.preventDefault(); setEmail(''); }} className="mt-6">
-                <label className="text-label uppercase text-base-subtle block mb-2">Newsletter</label>
-                <div className="flex">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="tu@email.com"
-                    className="flex-1 min-w-0 bg-surface-input border border-border-input px-3 py-2.5 text-body-sm text-base-text placeholder:text-base-subtle focus:outline-none focus:border-border-focus transition-colors"
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 py-2.5 bg-brand-mint text-[#041012] text-body-sm font-semibold transition-colors hover:bg-[#7dfcf2]"
-                  >
-                    <ArrowRight size={16} />
-                  </button>
-                </div>
-              </form>
             </div>
+            <Link
+              href="/presupuestador"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-brand-blue to-brand-mint px-7 py-3.5 text-body font-semibold text-white shadow-[0_16px_40px_rgba(37,99,235,0.28)] transition-transform hover:-translate-y-0.5"
+            >
+              Crear mi simulacion
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
 
-            {/* Col 2: Servicios */}
-            <div>
-              <h3 className="text-label uppercase text-base-text tracking-wider mb-4">Servicios</h3>
-              <ul className="space-y-2.5">
-                {['Retail', 'Banca', 'Salud', 'Telecom', 'Logistica', 'Seguros'].map(s => (
-                  <li key={s}>
-                    <Link href={`/servicios#${s.toLowerCase()}`} className="text-body-sm text-base-muted hover:text-base-text transition-colors">
-                      Agentes {s}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Col 3: Empresa */}
-            <div>
-              <h3 className="text-label uppercase text-base-text tracking-wider mb-4">Empresa</h3>
-              <ul className="space-y-2.5">
-                <li><Link href="/servicios" className="text-body-sm text-base-muted hover:text-base-text transition-colors">Servicios</Link></li>
-                <li><Link href="/presupuestador" className="text-body-sm text-base-muted hover:text-base-text transition-colors">Presupuestador</Link></li>
-                <li><Link href="/contacto" className="text-body-sm text-base-muted hover:text-base-text transition-colors">Contacto</Link></li>
-              </ul>
-            </div>
-
-            {/* Col 4: Contacto */}
-            <div>
-              <h3 className="text-label uppercase text-base-text tracking-wider mb-4">Contacto</h3>
-              <ul className="space-y-2.5 text-body-sm text-base-muted">
-                <li>info@agentia.es</li>
-                <li>+34 900 000 000</li>
-                <li>Madrid, Espana</li>
-              </ul>
-            </div>
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <Link href="/" className="flex items-baseline gap-0">
+              <span className="font-serif text-[24px] text-slate-950">AgentIA</span>
+              <span className="text-brand-blue text-[10px] font-sans font-medium relative -top-2.5">®</span>
+            </Link>
+            <p className="mt-4 max-w-sm text-body-sm leading-relaxed text-slate-500">
+              Plataforma de simulacion y diseno de equipos de agentes IA para empresas.
+            </p>
           </div>
 
-          {/* Bottom bar */}
-          <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-body-sm text-base-subtle">
-              &copy; {new Date().getFullYear()} AgentIA. Todos los derechos reservados.
-            </p>
-            <div className="flex gap-6">
-              <span className="text-body-sm text-base-subtle hover:text-base-muted cursor-pointer transition-colors">Politica de privacidad</span>
-              <span className="text-body-sm text-base-subtle hover:text-base-muted cursor-pointer transition-colors">Terminos de servicio</span>
-            </div>
+          <div>
+            <h3 className="text-label uppercase text-slate-950 tracking-wider mb-4">Explorar</h3>
+            <ul className="space-y-2.5">
+              <li><Link className="text-body-sm text-slate-500 hover:text-slate-950" href="/servicios">Agentes por sector</Link></li>
+              <li><Link className="text-body-sm text-slate-500 hover:text-slate-950" href="/presupuestador">Presupuestador ROI</Link></li>
+              <li><Link className="text-body-sm text-slate-500 hover:text-slate-950" href="/contacto">Contacto</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-label uppercase text-slate-950 tracking-wider mb-4">Sectores</h3>
+            <ul className="space-y-2.5">
+              {['Retail', 'Banca', 'Salud', 'Telecom', 'Logistica', 'Tech/SaaS'].map((s) => (
+                <li key={s}>
+                  <Link href={`/servicios#${s.toLowerCase().replace('/', '-')}`} className="text-body-sm text-slate-500 hover:text-slate-950">
+                    {s}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-label uppercase text-slate-950 tracking-wider mb-4">Contacto</h3>
+            <ul className="space-y-2.5 text-body-sm text-slate-500">
+              <li>info@agentia.es</li>
+              <li>+34 900 000 000</li>
+              <li>Madrid, Espana</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-12 border-t border-slate-200 pt-6 flex flex-col gap-3 text-body-sm text-slate-400 md:flex-row md:items-center md:justify-between">
+          <p>&copy; {new Date().getFullYear()} AgentIA. Todos los derechos reservados.</p>
+          <div className="flex gap-6">
+            <span>Politica de privacidad</span>
+            <span>Terminos de servicio</span>
           </div>
         </div>
       </div>

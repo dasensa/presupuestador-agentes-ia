@@ -14,7 +14,7 @@ export default function ContactInfo() {
         <div className="space-y-5">
           {items.map(({ icon: Icon, label, value }) => (
             <div key={label} className="flex items-center gap-4">
-              <div className="w-10 h-10 flex items-center justify-center border border-border shrink-0">
+              <div className="w-10 h-10 flex items-center justify-center rounded-2xl bg-blue-50 text-blue-600 shrink-0">
                 <Icon size={18} className="text-brand-mint" />
               </div>
               <div>

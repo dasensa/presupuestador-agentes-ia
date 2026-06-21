@@ -1,56 +1,68 @@
 import Head from 'next/head';
-import { Calendar } from 'lucide-react';
+import { Calendar, CheckCircle2, Clock, Sparkles } from 'lucide-react';
 import ContactForm from '../components/contacto/ContactForm';
 import ContactInfo from '../components/contacto/ContactInfo';
-import SectionHeading from '../components/ui/SectionHeading';
+import {
+  GlassCard,
+  LuminousBackground,
+  SectionBadge,
+} from '../components/luminous/LuminousKit';
 
 export default function ContactoPage() {
   return (
     <>
       <Head>
         <title>Contacto — AgentIA</title>
-        <meta name="description" content="Contacta con AgentIA para una consultoria personalizada sobre agentes de inteligencia artificial." />
+        <meta name="description" content="Contacta con AgentIA para revisar procesos, agentes IA recomendados y una simulacion inicial de ROI." />
       </Head>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <SectionHeading
-          eyebrow="Contacto"
-          title="Hablemos de tu proyecto"
-          description="Cuentanos sobre tu empresa y tus objetivos. Te ayudaremos a encontrar la solucion de IA que mejor se adapte a tus necesidades."
-        />
-
-        {/* Calendly placeholder */}
-        <div className="max-w-5xl mx-auto mb-12">
-          <div className="ds-card p-8 md:p-12 text-center" style={{ borderColor: 'rgba(0,87,255,0.2)' }}>
-            <Calendar size={32} className="text-brand-blue mx-auto mb-4" />
-            <h3 className="font-serif text-display-sm text-base-text mb-2">Reserva una llamada</h3>
-            <p className="text-body text-base-muted mb-6 max-w-md mx-auto">
-              Elige el horario que mejor te convenga para una consultoria personalizada de 30 minutos.
-            </p>
-            <div className="ds-card p-6 max-w-sm mx-auto" style={{ borderColor: 'rgba(0,87,255,0.15)' }}>
-              <div className="space-y-3">
-                {['Lunes - Viernes', '9:00 — 18:00 CET'].map((text, i) => (
-                  <p key={i} className={`text-body-sm ${i === 0 ? 'text-base-text' : 'text-base-muted'}`}>{text}</p>
-                ))}
-              </div>
-              <div className="mt-4 pt-4 border-t border-border">
-                <p className="text-body-sm text-base-subtle italic">
-                  Integracion con Calendly disponible proximamente
+      <LuminousBackground>
+        <section className="pt-28 pb-20 md:pt-36 md:pb-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+              <div>
+                <SectionBadge icon={Sparkles}>Revision con consultor</SectionBadge>
+                <h1 className="mt-6 font-serif text-[48px] leading-[1] text-slate-950 md:text-[76px]">
+                  Hablemos de tu equipo de agentes IA
+                </h1>
+                <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+                  Cuentanos que procesos quieres mejorar y te ayudaremos a convertirlos en una simulacion inicial de agentes, inversion e impacto.
                 </p>
+
+                <GlassCard className="mt-8 p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                      <Calendar size={20} />
+                    </div>
+                    <div>
+                      <h2 className="font-serif text-2xl text-slate-950">Llamada de diagnostico</h2>
+                      <p className="text-sm text-slate-500">30 minutos para revisar sector, procesos y oportunidades.</p>
+                    </div>
+                  </div>
+                  <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {[
+                      ['Mapa de procesos automatizables', CheckCircle2],
+                      ['Agentes recomendados por impacto', CheckCircle2],
+                      ['Estimacion inicial de ROI', CheckCircle2],
+                      ['Roadmap de despliegue por fases', Clock],
+                    ].map(([text, Icon]) => (
+                      <div key={text} className="flex items-start gap-2 rounded-2xl bg-slate-50 p-3 text-sm text-slate-600">
+                        <Icon size={17} className="mt-0.5 shrink-0 text-emerald-500" />
+                        {text}
+                      </div>
+                    ))}
+                  </div>
+                </GlassCard>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_0.72fr]">
+                <ContactForm />
+                <ContactInfo />
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <div className="lg:col-span-2">
-            <ContactForm />
-          </div>
-          <div>
-            <ContactInfo />
-          </div>
-        </div>
-      </div>
+        </section>
+      </LuminousBackground>
     </>
   );
 }

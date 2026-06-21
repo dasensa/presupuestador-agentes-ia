@@ -1,99 +1,86 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { Check, ArrowLeft, Plus, X } from 'lucide-react';
-import { getSectores, getCasosBySector, getCasoBySlug, buildCasosMap } from '../data/casos';
+import {
+  ArrowLeft, ArrowRight, Bot, Building2, Check, CheckCircle2, Gauge,
+  Mail, Sparkles, Workflow,
+} from 'lucide-react';
+import {
+  SECTORES_META,
+  buildCasosMap,
+  getCasoBySlug,
+  getCasosBySector,
+  getSectores,
+} from '../data/casos';
 import { calcResumen } from '../lib/calculations';
-import { calcResumenPersonalizado } from '../lib/roi-calculator';
-import { descargarPropuesta } from '../components/presupuestador/ProposalGenerator';
-import CompanyForm from '../components/presupuestador/CompanyForm';
-import CompanyDetailsForm from '../components/presupuestador/CompanyDetailsForm';
-import SectorSelector from '../components/presupuestador/SectorSelector';
-import CaseList from '../components/presupuestador/CaseList';
-import SummaryPanel from '../components/presupuestador/SummaryPanel';
-import ROIForm from '../components/presupuestador/ROIForm';
-import ROIResults from '../components/presupuestador/ROIResults';
-import EmailModal from '../components/presupuestador/EmailModal';
-import SectionHeading from '../components/ui/SectionHeading';
+import {
+  GlassCard,
+  LuminousBackground,
+  LuminousButton,
+  SectionBadge,
+} from '../components/luminous/LuminousKit';
 import Badge from '../components/ui/Badge';
-import Button from '../components/ui/Button';
 
-const STEPS = [
-  { num: 1, label: 'Tu empresa' },
-  { num: 2, label: 'Simulacion' },
-  { num: 3, label: 'Tu ROI real' },
+const PROCESS_OPTIONS = [
+  'Atencion al cliente',
+  'Captacion comercial',
+  'Soporte tecnico',
+  'Backoffice',
+  'Reporting',
+  'Gestion de incidencias',
+  'Reservas/citas',
+  'Retencion/churn',
+  'Analisis documental',
 ];
 
-function StepSidebar({ current }) {
-  const progress = ((current - 1) / (STEPS.length - 1)) * 100;
-  return (
-    <div className="hidden lg:block w-[200px] shrink-0">
-      <div className="sticky top-20">
-        <div className="space-y-6">
-          {STEPS.map((step) => {
-            const done = current > step.num;
-            const active = current === step.num;
-            return (
-              <div key={step.num} className="flex items-center gap-3">
-                <div className={`w-7 h-7 flex items-center justify-center text-body-sm font-medium transition-all ${
-                  done ? 'bg-brand-mint text-base-bg' :
-                  active ? 'bg-brand-blue text-white' :
-                  'border border-border text-base-subtle'
-                }`}>
-                  {done ? <Check size={14} /> : step.num}
-                </div>
-                <span className={`text-body-sm ${
-                  done ? 'text-brand-mint' :
-                  active ? 'text-base-text' :
-                  'text-base-subtle'
-                }`}>
-                  {step.label}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-        <div className="mt-6 h-0.5 bg-border overflow-hidden">
-          <div
-            className="h-full transition-all duration-500"
-            style={{
-              width: `${progress}%`,
-              background: 'linear-gradient(to right, #0057ff, #00f0a0)',
-            }}
-          />
-        </div>
-      </div>
-    </div>
-  );
+const CONTEXT_MULTIPLIERS = {
+  empleados: { '1-20': 0.85, '21-100': 1, '101-500': 1.25, '500+': 1.55 },
+  volumen: { bajo: 0.85, medio: 1, alto: 1.28, enterprise: 1.6 },
+  integracion: { baja: 0.9, media: 1, alta: 1.22, core: 1.45 },
+  urgencia: { flexible: 0.95, normal: 1, rapida: 1.14 },
+};
+
+const STEPS = [
+  'Sector',
+  'Procesos',
+  'Agentes',
+  'Contexto',
+  'ROI preliminar',
+  'Informe',
+];
+
+function currency(value) {
+  return `${Math.round(value).toLocaleString()} EUR`;
 }
 
-function MobileStepBar({ current }) {
+function processMatches(caso, processes) {
+  if (!processes.length) return true;
+  const text = `${caso.c} ${caso.desc} ${caso.prob} ${caso.t}`.toLowerCase();
+  const map = {
+    'Atencion al cliente': ['atencion', 'cliente', 'postventa', 'consultas', 'resultados'],
+    'Captacion comercial': ['lead', 'conversion', 'admisiones', 'prestamos', 'upselling', 'ventas'],
+    'Soporte tecnico': ['soporte', 'diagnostico', 'averias', 'incidencias', 'knowledge'],
+    Backoffice: ['documental', 'devoluciones', 'becas', 'impagos', 'validacion', 'backoffice'],
+    Reporting: ['reporting', 'analisis', 'datos', 'eficiencia'],
+    'Gestion de incidencias': ['incidencias', 'reclamaciones', 'averias', 'cortes'],
+    'Reservas/citas': ['reservas', 'citas', 'check-in', 'conserjeria'],
+    'Retencion/churn': ['retencion', 'churn', 'loyalty', 'fidelizacion'],
+    'Analisis documental': ['documental', 'kyc', 'polizas', 'peritaje', 'validacion'],
+  };
+  return processes.some((process) => map[process]?.some((word) => text.includes(word)));
+}
+
+function Stepper({ step }) {
   return (
-    <div className="flex items-center justify-center gap-3 mb-8 lg:hidden">
-      {STEPS.map((step, i) => {
-        const done = current > step.num;
-        const active = current === step.num;
+    <div className="grid grid-cols-3 gap-2 md:grid-cols-6">
+      {STEPS.map((label, index) => {
+        const current = index + 1;
+        const active = step === current;
+        const done = step > current;
         return (
-          <div key={step.num} className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className={`w-7 h-7 flex items-center justify-center text-body-sm font-medium ${
-                done ? 'bg-brand-mint text-base-bg' :
-                active ? 'bg-brand-blue text-white' :
-                'border border-border text-base-subtle'
-              }`}>
-                {done ? <Check size={14} /> : step.num}
-              </div>
-              <span className={`text-body-sm hidden sm:inline ${
-                done ? 'text-brand-mint' :
-                active ? 'text-base-text' :
-                'text-base-subtle'
-              }`}>
-                {step.label}
-              </span>
-            </div>
-            {i < STEPS.length - 1 && (
-              <div className={`w-10 sm:w-16 h-px ${done ? 'bg-brand-mint' : 'bg-border'}`} />
-            )}
+          <div key={label} className={`rounded-2xl border px-3 py-2 text-center text-xs font-semibold transition-all ${active ? 'border-blue-300 bg-blue-50 text-blue-700' : done ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white/70 text-slate-400'}`}>
+            <span className="block font-mono">{done ? <Check size={13} className="mx-auto" /> : `0${current}`}</span>
+            <span className="mt-1 block">{label}</span>
           </div>
         );
       })}
@@ -101,286 +88,340 @@ function MobileStepBar({ current }) {
   );
 }
 
+function BudgetSummarySidebar({ sector, processes, selectedCasos, context, adjusted }) {
+  return (
+    <GlassCard className="sticky top-24 p-5">
+      <SectionBadge icon={Gauge}>Simulacion</SectionBadge>
+      <div className="mt-5 space-y-4">
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">Sector</div>
+          <div className="mt-1 font-serif text-2xl text-slate-950">{sector || 'Pendiente'}</div>
+        </div>
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">Procesos</div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {(processes.length ? processes : ['Sin seleccionar']).map((item) => (
+              <span key={item} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">{item}</span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">Agentes</div>
+          <div className="mt-1 text-sm text-slate-600">{selectedCasos.length} seleccionados</div>
+        </div>
+        <div className="grid grid-cols-1 gap-3 border-t border-slate-200 pt-4">
+          <div className="rounded-2xl bg-blue-50 p-3">
+            <div className="text-xs font-semibold text-blue-600">Inversion estimada</div>
+            <div className="font-serif text-2xl text-slate-950">{currency(adjusted.inversion)}</div>
+          </div>
+          <div className="rounded-2xl bg-emerald-50 p-3">
+            <div className="text-xs font-semibold text-emerald-600">ROI preliminar</div>
+            <div className="font-serif text-2xl text-emerald-600">{adjusted.roi}%</div>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white/70 p-3 text-xs leading-relaxed text-slate-500">
+          Estado: {selectedCasos.length ? 'simulacion lista para ajustar' : 'elige agentes para calcular impacto'}.
+          {context.integracion === 'core' ? ' Integracion core considerada.' : ''}
+        </div>
+      </div>
+    </GlassCard>
+  );
+}
+
 export default function PresupuestadorPage() {
   const router = useRouter();
-  const sectores = getSectores();
-  const casosMap = buildCasosMap();
-
+  const sectores = useMemo(() => getSectores(), []);
+  const casosMap = useMemo(() => buildCasosMap(), []);
   const [step, setStep] = useState(1);
-  const [companyData, setCompanyData] = useState(null);
   const [sector, setSector] = useState(sectores[0]);
+  const [processes, setProcesses] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [showEmail, setShowEmail] = useState(false);
-  const [roiVariables, setRoiVariables] = useState({});
-  const [directAgent, setDirectAgent] = useState(null);
-  const [showAddMore, setShowAddMore] = useState(false);
-  const [companyDetails, setCompanyDetails] = useState({
-    nombre: '', empresa: '', cargo: '', telefono: '',
-    empleados: '', presupuesto: '', urgencia: '',
+  const [context, setContext] = useState({
+    empleados: '21-100',
+    volumen: 'medio',
+    integracion: 'media',
+    urgencia: 'normal',
   });
-  const [highlightDetails, setHighlightDetails] = useState(false);
-
-  const initialSector = router.query.sector && sectores.includes(router.query.sector)
-    ? router.query.sector : '';
+  const [lead, setLead] = useState({ nombre: '', email: '', empresa: '', telefono: '' });
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const querySector = router.query.sector;
+    if (querySector && sectores.includes(querySector)) setSector(querySector);
     if (router.query.agent) {
       const caso = getCasoBySlug(router.query.agent);
       if (caso) {
-        setDirectAgent(caso);
         setSector(caso.s);
         setSelected([caso.id]);
+        setStep(3);
       }
-    } else if (initialSector) {
-      setSector(initialSector);
     }
-  }, [router.query.agent, initialSector]);
+  }, [router.query.agent, router.query.sector, sectores]);
 
-  const casosSector = getCasosBySector(sector);
-  const resumen = calcResumen(selected, casosMap);
-  const selectedCasos = selected.map(id => casosMap[id]);
-  const resumenROI = calcResumenPersonalizado(selectedCasos, roiVariables);
+  const sectorCases = useMemo(() => getCasosBySector(sector), [sector]);
+  const recommended = useMemo(() => (
+    sectorCases
+      .filter((caso) => processMatches(caso, processes))
+      .slice(0, 6)
+  ), [sectorCases, processes]);
 
-  const fullCompanyData = { ...companyData, ...companyDetails };
-  const detailsComplete = companyDetails.nombre && companyDetails.empresa && companyDetails.empleados;
-
-  const handleCompanyComplete = (data) => {
-    setCompanyData(data);
-    if (!directAgent) {
-      setSector(data.sector);
-      setSelected([]);
-    }
-    setStep(2);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleSectorChange = (s) => {
-    setSector(s);
-    setSelected(prev => {
-      if (directAgent) return prev.filter(id => id === directAgent.id);
-      return [];
+  useEffect(() => {
+    setSelected((prevIds) => {
+      if (prevIds.length) return prevIds.filter((id) => sectorCases.some((caso) => caso.id === id));
+      return recommended.slice(0, 3).map((caso) => caso.id);
     });
+  }, [recommended, sectorCases]);
+
+  const selectedCasos = selected.map((id) => casosMap[id]).filter(Boolean);
+  const resumen = calcResumen(selected, casosMap);
+  const factor = CONTEXT_MULTIPLIERS.empleados[context.empleados]
+    * CONTEXT_MULTIPLIERS.volumen[context.volumen]
+    * CONTEXT_MULTIPLIERS.integracion[context.integracion]
+    * CONTEXT_MULTIPLIERS.urgencia[context.urgencia];
+  const adjusted = {
+    inversion: resumen.invBundled * factor,
+    retorno: resumen.beneficioBundled * factor,
+    ahorro: resumen.beneficioBundled * factor - resumen.invBundled * factor,
+    roi: resumen.invBundled > 0 ? Math.round(((resumen.beneficioBundled - resumen.invBundled) / resumen.invBundled) * 100) : 0,
+    meses: context.urgencia === 'rapida' ? '6-8 semanas' : context.integracion === 'core' ? '12-16 semanas' : '8-12 semanas',
   };
 
-  const handleToggle = (id) => {
-    setSelected(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]);
+  const next = () => setStep((value) => Math.min(6, value + 1));
+  const prev = () => setStep((value) => Math.max(1, value - 1));
+  const toggle = (id) => setSelected((prevIds) => prevIds.includes(id) ? prevIds.filter((item) => item !== id) : [...prevIds, id]);
+  const toggleProcess = (name) => setProcesses((prevItems) => prevItems.includes(name) ? prevItems.filter((item) => item !== name) : [...prevItems, name]);
+  const selectSector = (name) => {
+    setSector(name);
+    setProcesses([]);
+    setSelected([]);
   };
 
-  const handleRemoveAgent = (id) => {
-    setSelected(prev => prev.filter(s => s !== id));
-    if (id === directAgent?.id) setDirectAgent(null);
-  };
-
-  const handleROIVarChange = (category, key, value) => {
-    setRoiVariables(prev => ({
-      ...prev,
-      [category]: { ...(prev[category] || {}), [key]: value },
-    }));
-  };
-
-  const goToStep = (n) => {
-    setStep(n);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const scrollToDetails = () => {
-    setHighlightDetails(true);
-    document.getElementById('company-details')?.scrollIntoView({ behavior: 'smooth' });
-    setTimeout(() => setHighlightDetails(false), 2000);
-  };
-
-  const handleDownload = () => {
-    if (!detailsComplete) { scrollToDetails(); return; }
-    descargarPropuesta(
-      resumen.selectedCasos, sector, resumen.sinergia,
-      resumen.invYear1, resumen.invBundled, resumen.roiBundled, resumen.beneficioBundled,
-      fullCompanyData, resumenROI
-    );
-  };
-
-  const stepTitles = {
-    1: 'Calcula tu inversion en IA',
-    2: directAgent ? `Simulacion: ${directAgent.c}` : 'Selecciona tus casos de uso',
-    3: 'Personaliza tu ROI',
-  };
-
-  const stepDescriptions = {
-    1: 'Solo necesitamos tu email y sector para empezar.',
-    2: directAgent
-      ? 'Agente pre-seleccionado para tu empresa. Puedes anadir mas agentes si lo necesitas.'
-      : 'Selecciona los agentes IA que necesitas para tu sector.',
-    3: 'Introduce tus datos operativos y completa tu perfil para recibir la propuesta personalizada.',
+  const submitLead = async (e) => {
+    e.preventDefault();
+    if (!lead.nombre || !lead.email || !lead.empresa) return;
+    setLoading(true);
+    try {
+      await fetch('/api/registrar-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...lead,
+          sector,
+          empleados: context.empleados,
+          presupuesto: currency(adjusted.inversion),
+          urgencia: context.urgencia,
+        }),
+      });
+      setSent(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
       <Head>
-        <title>Presupuestador — AgentIA</title>
-        <meta name="description" content="Calcula el ROI de implementar agentes IA en tu empresa. Selecciona casos de uso y descubre sinergias." />
+        <title>Crear simulacion ROI — AgentIA</title>
+        <meta name="description" content="Disena tu equipo de agentes IA en seis pasos y recibe una estimacion preliminar de inversion, retorno y ROI." />
       </Head>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <SectionHeading
-          eyebrow="Presupuestador"
-          title={stepTitles[step]}
-          description={stepDescriptions[step]}
-        />
+      <LuminousBackground>
+        <section className="pt-28 pb-20 md:pt-36 md:pb-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-10">
+              <SectionBadge icon={Sparkles}>BudgetWizard</SectionBadge>
+              <h1 className="mt-6 font-serif text-[46px] leading-[1] text-slate-950 md:text-[74px]">Crea tu simulacion de agentes IA</h1>
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
+                Primero entregamos una estimacion visual. Al final, si quieres el informe completo, te pedimos los datos de contacto.
+              </p>
+            </div>
 
-        <MobileStepBar current={step} />
+            <Stepper step={step} />
 
-        <div className="flex gap-10">
-          <StepSidebar current={step} />
-
-          <div className="flex-1 min-w-0">
-            {step === 1 && (
-              <CompanyForm
-                initialSector={directAgent?.s || initialSector}
-                onComplete={handleCompanyComplete}
-              />
-            )}
-
-            {step === 2 && (
-              <>
-                <div className="mb-6">
-                  <button onClick={() => goToStep(1)} className="inline-flex items-center gap-2 text-body-sm text-base-muted hover:text-brand-blue transition-colors">
-                    <ArrowLeft size={16} /> Volver a datos de empresa
+            <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
+              <GlassCard className="p-6 md:p-8">
+                {step > 1 && (
+                  <button onClick={prev} className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-950">
+                    <ArrowLeft size={16} />
+                    Volver
                   </button>
-                </div>
+                )}
 
-                {selected.length > 0 && (
-                  <div className="ds-card p-4 mb-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-body-sm font-medium text-base-text">{selected.length} agente{selected.length > 1 ? 's' : ''} seleccionado{selected.length > 1 ? 's' : ''}</span>
-                      {!showAddMore && (
-                        <button
-                          onClick={() => setShowAddMore(true)}
-                          className="inline-flex items-center gap-1.5 text-body-sm text-brand-blue hover:opacity-80 transition-opacity"
-                        >
-                          <Plus size={14} /> Anadir mas agentes
+                {step === 1 && (
+                  <div>
+                    <h2 className="font-serif text-display-sm text-slate-950">En que sector opera tu empresa?</h2>
+                    <p className="mt-3 text-slate-500">Selecciona el sector para cargar procesos, agentes y precios orientativos.</p>
+                    <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                      {sectores.map((name) => (
+                        <button key={name} onClick={() => selectSector(name)} className={`rounded-3xl border p-5 text-left transition-all ${sector === name ? 'border-blue-300 bg-blue-50 shadow-[0_18px_45px_rgba(37,99,235,0.12)]' : 'border-slate-200 bg-white/70 hover:border-cyan-200'}`}>
+                          <Building2 className="text-blue-600" size={22} />
+                          <div className="mt-4 font-serif text-2xl text-slate-950">{name}</div>
+                          <p className="mt-2 text-sm text-slate-500">{SECTORES_META[name].description}</p>
                         </button>
-                      )}
+                      ))}
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {selected.map(id => {
-                        const c = casosMap[id];
+                  </div>
+                )}
+
+                {step === 2 && (
+                  <div>
+                    <h2 className="font-serif text-display-sm text-slate-950">Que procesos quieres mejorar?</h2>
+                    <p className="mt-3 text-slate-500">Elige uno o varios procesos. AgentIA recomendara agentes segun tu foco.</p>
+                    <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {PROCESS_OPTIONS.map((item) => (
+                        <button key={item} onClick={() => toggleProcess(item)} className={`rounded-3xl border p-4 text-left transition-all ${processes.includes(item) ? 'border-cyan-300 bg-cyan-50 text-cyan-900' : 'border-slate-200 bg-white/70 text-slate-700 hover:border-cyan-200'}`}>
+                          <Workflow size={18} className="mb-3 text-blue-600" />
+                          <span className="font-semibold">{item}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {step === 3 && (
+                  <div>
+                    <h2 className="font-serif text-display-sm text-slate-950">Agentes recomendados</h2>
+                    <p className="mt-3 text-slate-500">Puedes ajustar la seleccion. La inversion y el ROI se actualizan al instante.</p>
+                    <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+                      {recommended.map((caso) => {
+                        const active = selected.includes(caso.id);
                         return (
-                          <div key={id} className="flex items-center gap-2 px-3 py-1.5 border border-border bg-surface-card">
-                            <span className="text-body-sm text-base-text">{c.c}</span>
-                            <Badge type={c.t} />
-                            <button onClick={() => handleRemoveAgent(id)} className="text-base-subtle hover:text-red-400 transition-colors">
-                              <X size={14} />
-                            </button>
-                          </div>
+                          <button key={caso.id} onClick={() => toggle(caso.id)} className={`rounded-3xl border p-5 text-left transition-all ${active ? 'border-blue-300 bg-blue-50 shadow-[0_18px_45px_rgba(37,99,235,0.12)]' : 'border-slate-200 bg-white/70 hover:border-cyan-200'}`}>
+                            <div className="flex items-start justify-between gap-4">
+                              <Bot size={22} className="text-blue-600" />
+                              <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${active ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>{active ? 'Incluido' : 'Anadir'}</span>
+                            </div>
+                            <h3 className="mt-4 font-serif text-2xl text-slate-950">{caso.c}</h3>
+                            <p className="mt-2 text-sm leading-relaxed text-slate-500">{caso.desc}</p>
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              <Badge type={caso.t} />
+                              <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-500">Desde {caso.ini.toLocaleString()} EUR</span>
+                              <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600">Impacto {caso.prob}</span>
+                            </div>
+                          </button>
                         );
                       })}
                     </div>
                   </div>
                 )}
 
-                {(!directAgent || showAddMore) && (
-                  <>
-                    <SectorSelector sectores={sectores} selected={sector} onChange={handleSectorChange} />
-                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                      <div className="xl:col-span-2">
-                        <CaseList casos={casosSector} selected={selected} onToggle={handleToggle} />
-                      </div>
-                      <div>
-                        <SummaryPanel resumen={resumen} onPersonalizar={() => goToStep(3)} />
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {directAgent && !showAddMore && (
-                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                    <div className="xl:col-span-2">
-                      <div className="ds-card p-6">
-                        <h2 className="font-serif text-[20px] text-base-text mb-4">Detalle del agente</h2>
-                        <div className="p-4 border border-brand-blue/20 bg-brand-blue/5">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="font-serif text-[15px] text-base-text">{directAgent.c}</span>
-                            <Badge type={directAgent.t} />
-                          </div>
-                          <p className="text-body-sm text-base-muted mb-3">{directAgent.desc}</p>
-                          <div className="grid grid-cols-3 gap-3 text-center">
-                            <div className="ds-card p-3">
-                              <p className="text-label uppercase text-base-subtle">Inversion</p>
-                              <p className="font-serif italic text-[16px] text-base-text">&euro;{directAgent.ini.toLocaleString()}</p>
-                            </div>
-                            <div className="ds-card p-3">
-                              <p className="text-label uppercase text-base-subtle">Mensual</p>
-                              <p className="font-serif italic text-[16px] text-base-text">&euro;{directAgent.rec.toLocaleString()}</p>
-                            </div>
-                            <div className="ds-card p-3">
-                              <p className="text-label uppercase text-base-subtle">Sector</p>
-                              <p className="font-serif italic text-[16px] text-brand-blue-soft">{directAgent.s}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <SummaryPanel resumen={resumen} onPersonalizar={() => goToStep(3)} />
-                    </div>
-                  </div>
-                )}
-
-                {/* Sticky bottom summary bar */}
-                {selected.length > 0 && (
-                  <div className="fixed bottom-0 left-0 right-0 z-40 bg-base-bg/95 backdrop-blur-sm border-t border-border">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-6 text-body-sm">
-                        <span className="text-base-text font-medium">{selected.length} agente{selected.length > 1 ? 's' : ''}</span>
-                        <span className="text-base-muted">
-                          Inversion: <span className="font-serif italic text-base-text">&euro;{Math.round(resumen.invBundled).toLocaleString()}</span>
-                        </span>
-                        {resumen.sinergia?.disc > 0 && (
-                          <span className="text-brand-mint">
-                            -{resumen.sinergia.disc}% sinergia detectada
-                          </span>
-                        )}
-                      </div>
-                      <Button onClick={() => goToStep(3)} variant="primary" size="sm">
-                        Ver ROI
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-
-            {step === 3 && (
-              <>
-                <div className="mb-6">
-                  <button onClick={() => goToStep(2)} className="inline-flex items-center gap-2 text-body-sm text-base-muted hover:text-brand-blue transition-colors">
-                    <ArrowLeft size={16} /> Volver a seleccion de agentes
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                  <div className="xl:col-span-2 space-y-6">
-                    <ROIForm selectedCasos={selectedCasos} values={roiVariables} onChange={handleROIVarChange} />
-                    <CompanyDetailsForm values={companyDetails} onChange={setCompanyDetails} highlight={highlightDetails} />
-                  </div>
+                {step === 4 && (
                   <div>
-                    <ROIResults resumen={resumenROI} onEmailClick={() => { if (!detailsComplete) { scrollToDetails(); return; } setShowEmail(true); }} onDownload={handleDownload} />
+                    <h2 className="font-serif text-display-sm text-slate-950">Ajusta el contexto de tu empresa</h2>
+                    <p className="mt-3 text-slate-500">Estos factores ajustan la estimacion preliminar sin pedir datos personales.</p>
+                    <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2">
+                      {[
+                        ['empleados', 'Tamano empresa', [['1-20', '1-20'], ['21-100', '21-100'], ['101-500', '101-500'], ['500+', '500+']]],
+                        ['volumen', 'Volumen mensual', [['bajo', 'Bajo'], ['medio', 'Medio'], ['alto', 'Alto'], ['enterprise', 'Enterprise']]],
+                        ['integracion', 'Nivel de integracion', [['baja', 'Baja'], ['media', 'Media'], ['alta', 'Alta'], ['core', 'Core/ERP']]],
+                        ['urgencia', 'Urgencia despliegue', [['flexible', 'Flexible'], ['normal', 'Normal'], ['rapida', 'Rapida']]],
+                      ].map(([key, label, options]) => (
+                        <label key={key} className="block">
+                          <span className="text-label uppercase tracking-wider text-slate-500">{label}</span>
+                          <select
+                            value={context[key]}
+                            onChange={(e) => setContext((prev) => ({ ...prev, [key]: e.target.value }))}
+                            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-cyan-400 focus:outline-none focus:ring-4 focus:ring-cyan-100"
+                          >
+                            {options.map(([value, text]) => <option key={value} value={value}>{text}</option>)}
+                          </select>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <EmailModal
-                  isOpen={showEmail}
-                  onClose={() => setShowEmail(false)}
-                  resumen={resumen}
-                  resumenROI={resumenROI}
-                  sector={sector}
-                  companyData={fullCompanyData}
-                  onFallbackDownload={handleDownload}
-                />
-              </>
-            )}
+                {step === 5 && (
+                  <div>
+                    <h2 className="font-serif text-display-sm text-slate-950">Estimacion preliminar</h2>
+                    <p className="mt-3 text-slate-500">Una primera lectura para decidir si merece avanzar a un informe completo.</p>
+                    <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+                      {[
+                        ['Inversion estimada', currency(adjusted.inversion), 'blue'],
+                        ['Retorno estimado', currency(adjusted.retorno), 'emerald'],
+                        ['ROI estimado', `${adjusted.roi}%`, 'emerald'],
+                        ['Despliegue aproximado', adjusted.meses, 'blue'],
+                      ].map(([label, value, tone]) => (
+                        <div key={label} className={`rounded-3xl p-5 ${tone === 'emerald' ? 'bg-emerald-50' : 'bg-blue-50'}`}>
+                          <div className={`text-xs font-semibold uppercase tracking-[0.12em] ${tone === 'emerald' ? 'text-emerald-600' : 'text-blue-600'}`}>{label}</div>
+                          <div className="mt-2 font-serif text-3xl text-slate-950">{value}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-8 rounded-3xl border border-slate-200 bg-white/75 p-5">
+                      <div className="mb-3 flex justify-between text-sm font-semibold text-slate-500">
+                        <span>Ahorro operativo estimado</span>
+                        <span>{currency(adjusted.ahorro)}</span>
+                      </div>
+                      <div className="h-4 overflow-hidden rounded-full bg-slate-100">
+                        <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {step === 6 && (
+                  <div>
+                    <h2 className="font-serif text-display-sm text-slate-950">Recibe el informe completo</h2>
+                    <p className="mt-3 text-slate-500">Te pedimos los datos al final para enviarte el informe y revisar el caso con un consultor.</p>
+                    {sent ? (
+                      <div className="mt-8 rounded-3xl bg-emerald-50 p-6">
+                        <CheckCircle2 className="text-emerald-600" size={30} />
+                        <h3 className="mt-4 font-serif text-2xl text-slate-950">Solicitud recibida</h3>
+                        <p className="mt-2 text-sm text-slate-600">Revisaremos la simulacion y contactaremos contigo.</p>
+                      </div>
+                    ) : (
+                      <form onSubmit={submitLead} className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+                        {[
+                          ['nombre', 'Nombre', 'text', true],
+                          ['email', 'Email corporativo', 'email', true],
+                          ['empresa', 'Empresa', 'text', true],
+                          ['telefono', 'Telefono opcional', 'tel', false],
+                        ].map(([key, label, type, required]) => (
+                          <label key={key} className="block">
+                            <span className="text-label uppercase tracking-wider text-slate-500">{label}{required ? ' *' : ''}</span>
+                            <input
+                              type={type}
+                              required={required}
+                              value={lead[key]}
+                              onChange={(e) => setLead((prev) => ({ ...prev, [key]: e.target.value }))}
+                              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-cyan-400 focus:outline-none focus:ring-4 focus:ring-cyan-100"
+                            />
+                          </label>
+                        ))}
+                        <div className="md:col-span-2">
+                          <LuminousButton type="submit" disabled={loading}>
+                            <Mail size={16} />
+                            {loading ? 'Enviando...' : 'Recibir informe y revisar con un consultor'}
+                          </LuminousButton>
+                        </div>
+                      </form>
+                    )}
+                  </div>
+                )}
+
+                {step < 6 && (
+                  <div className="mt-10 flex justify-end">
+                    <LuminousButton onClick={next}>
+                      {step === 5 ? 'Recibir informe completo' : 'Continuar'}
+                      <ArrowRight size={16} />
+                    </LuminousButton>
+                  </div>
+                )}
+              </GlassCard>
+
+              <BudgetSummarySidebar
+                sector={sector}
+                processes={processes}
+                selectedCasos={selectedCasos}
+                context={context}
+                adjusted={adjusted}
+              />
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
+      </LuminousBackground>
     </>
   );
 }

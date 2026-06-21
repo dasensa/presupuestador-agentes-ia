@@ -42,7 +42,7 @@ export default function ContactForm() {
   if (sent) {
     return (
       <div className="ds-card p-8 text-center">
-        <div className="w-14 h-14 flex items-center justify-center border border-border mx-auto mb-4">
+        <div className="w-14 h-14 flex items-center justify-center rounded-2xl bg-cyan-50 mx-auto mb-4">
           <Send size={24} className="text-brand-mint" />
         </div>
         <h3 className="font-serif text-display-sm text-base-text mb-2">Mensaje enviado</h3>
@@ -67,7 +67,7 @@ export default function ContactForm() {
           <select
             value={form.sector}
             onChange={update('sector')}
-            className="w-full bg-surface-input border border-border-input px-4 py-3 text-body-sm text-base-text focus:outline-none focus:border-border-focus transition-colors"
+            className="w-full rounded-2xl bg-white/80 border border-border-input px-4 py-3 text-body-sm text-base-text shadow-sm focus:outline-none focus:border-border-focus focus:ring-4 focus:ring-cyan-100 transition-colors"
           >
             <option value="">Seleccionar sector</option>
             {sectores.map(s => <option key={s} value={s}>{s}</option>)}
@@ -81,7 +81,7 @@ export default function ContactForm() {
           onChange={update('mensaje')}
           placeholder="Cuentanos sobre tu proyecto..."
           rows={4}
-          className="w-full bg-surface-input border border-border-input px-4 py-3 text-body-sm text-base-text placeholder:text-base-subtle focus:outline-none focus:border-border-focus transition-colors resize-none"
+          className="w-full rounded-2xl bg-white/80 border border-border-input px-4 py-3 text-body-sm text-base-text placeholder:text-base-subtle shadow-sm focus:outline-none focus:border-border-focus focus:ring-4 focus:ring-cyan-100 transition-colors resize-none"
         />
       </div>
       <Button type="submit" disabled={loading} variant="primary" className="w-full">
