@@ -8,19 +8,20 @@ function money(value) {
   return `${Math.round(value).toLocaleString()} €`;
 }
 
-export default function QuickROICalculator({ caso }) {
+export default function QuickROICalculator({ caso, pricing }) {
   const category = getCategoryForCaso(caso);
   const cat = ROI_CATEGORIES[category];
   const [values, setValues] = useState({});
+  const [usageVolume, setUsageVolume] = useState('');
   const [factors, setFactors] = useState({ alcance: 60, efectividad: Math.round(cat.mejora * 100), adopcion: 80 });
 
   if (!cat) return null;
 
-  const complete = cat.fields.every((field) => Number(values[field.key]) > 0);
+  const complete = cat.fields.every((field) => Number(values[field.key]) > 0) && Number(usageVolume) > 0;
   const models = Object.keys(ROI_SCENARIOS).map((scenario) => ({
     scenario,
     ...ROI_SCENARIOS[scenario],
-    ...calcROIModel({ category, vars: values, initialCost: caso.ini, monthlyCost: caso.rec, scenario, factors }),
+    ...calcROIModel({ category, vars: values, initialCost: caso.ini, pricing, usageVolume, scenario, factors }),
   }));
 
   return (
@@ -42,6 +43,12 @@ export default function QuickROICalculator({ caso }) {
             <input id={`roi-${field.key}`} type={field.type} min="0" step={field.step || '1'} placeholder={field.placeholder} value={values[field.key] || ''} onChange={(event) => setValues((prev) => ({ ...prev, [field.key]: event.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400 focus:outline-none focus:ring-4 focus:ring-cyan-100" />
           </div>
         ))}
+        <div>
+          <label htmlFor="roi-usage-volume" className="mb-1.5 flex items-center text-xs font-semibold uppercase tracking-wider text-slate-500">
+            Consumo facturable mensual ({pricing.unitPlural})
+          </label>
+          <input id="roi-usage-volume" type="number" min="0" step="1" placeholder={String(pricing.included)} value={usageVolume} onChange={(event) => setUsageVolume(event.target.value)} className="w-full rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400 focus:outline-none focus:ring-4 focus:ring-cyan-100" />
+        </div>
       </div>
 
       <div className="mt-8 border-t border-slate-200 pt-7">
@@ -71,6 +78,7 @@ export default function QuickROICalculator({ caso }) {
               <div className="mt-5 space-y-2 border-t border-slate-200 pt-4 text-sm">
                 <div className="flex justify-between gap-3 text-slate-500"><span>Beneficio anual</span><strong className="text-slate-800">{money(model.beneficioAnual)}</strong></div>
                 <div className="flex justify-between gap-3 text-slate-500"><span>Coste primer año</span><strong className="text-slate-800">{money(model.costePrimerAno)}</strong></div>
+                <div className="flex justify-between gap-3 text-slate-500"><span>Operación mensual</span><strong className="text-slate-800">{money(model.monthlyOperationCost)}</strong></div>
                 <div className="flex justify-between gap-3 text-slate-500"><span>Beneficio neto</span><strong className="text-slate-800">{money(model.beneficioNeto)}</strong></div>
                 <div className="flex justify-between gap-3 text-slate-500"><span>Payback</span><strong className="text-slate-800">{model.paybackMonths ? `${model.paybackMonths.toFixed(1)} meses` : 'No alcanzado'}</strong></div>
               </div>
@@ -81,7 +89,7 @@ export default function QuickROICalculator({ caso }) {
 
       <div className="mt-6 flex items-start gap-3 rounded-2xl bg-slate-100 p-4 text-xs leading-5 text-slate-500">
         <Clock3 size={16} className="mt-0.5 shrink-0" />
-        <p>Estimación orientativa sin IVA. La cuota publicada es una base operativa y no incluye consumos variables de telefonía, mensajes, modelos o servicios de terceros. El escenario probable usa las hipótesis visibles; conservador y alto aplican −35% y +30%.</p>
+        <p>Estimación orientativa sin IVA. El coste incluye la cuota base y el exceso calculado con el consumo indicado. Servicios externos extraordinarios se presupuestan aparte. El escenario probable usa las hipótesis visibles; conservador y alto aplican −35% y +30%.</p>
       </div>
     </div>
   );

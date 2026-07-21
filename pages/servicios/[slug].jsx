@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { getCasoBySlug, getAllSlugs, getCasosBySector, SECTORES_META } from '../../data/casos';
 import { getAgentDesign } from '../../lib/agent-design';
+import { getAgentPricing } from '../../lib/agent-pricing';
 import Badge from '../../components/ui/Badge';
 import QuickROICalculator from '../../components/servicios/QuickROICalculator';
 import {
@@ -31,6 +32,7 @@ export async function getStaticProps({ params }) {
     props: {
       caso,
       design: getAgentDesign(caso),
+      pricing: getAgentPricing(caso),
       sectorCasos: sectorCasos.slice(0, 4),
       imageSrc: SECTORES_META[caso.s].image,
     },
@@ -48,10 +50,10 @@ function DetailSection({ id, badge, title, intro, children }) {
   );
 }
 
-export default function AgentePage({ caso, design, sectorCasos, imageSrc }) {
+export default function AgentePage({ caso, design, pricing, sectorCasos, imageSrc }) {
   const canonical = `${SITE.url}/servicios/${caso.slug}`;
   const socialImage = `${SITE.url}${imageSrc}`;
-  const annualCost = caso.ini + (caso.rec * 12);
+  const annualCost = pricing.initial + (pricing.baseMonthly * 12);
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -125,7 +127,7 @@ export default function AgentePage({ caso, design, sectorCasos, imageSrc }) {
               <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
                 {[
                   ['Inversión inicial', `${caso.ini.toLocaleString()} EUR`, Target],
-                  ['Operación mensual', `${caso.rec.toLocaleString()} EUR`, Gauge],
+                  ['Cuota mensual', `${pricing.baseMonthly.toLocaleString()} EUR`, Gauge],
                   ['Coste primer año', `${annualCost.toLocaleString()} EUR`, Sparkles],
                   ['ROI', 'Calculable con tus datos', CheckCircle2],
                 ].map(([label, value, Icon]) => (
@@ -146,6 +148,7 @@ export default function AgentePage({ caso, design, sectorCasos, imageSrc }) {
               <a href="#integraciones" className="whitespace-nowrap hover:text-blue-600">Integraciones</a>
               <a href="#seguridad" className="whitespace-nowrap hover:text-blue-600">Seguridad</a>
               <a href="#implantacion" className="whitespace-nowrap hover:text-blue-600">Implantación</a>
+              <a href="#precios" className="whitespace-nowrap hover:text-blue-600">Precios</a>
               <a href="#roi" className="whitespace-nowrap hover:text-blue-600">ROI</a>
             </nav>
           </div>
@@ -246,8 +249,20 @@ export default function AgentePage({ caso, design, sectorCasos, imageSrc }) {
               </div>
             </DetailSection>
 
+            <DetailSection id="precios" badge="Modelo de precios" title="Cuota predecible y consumo transparente" intro="La cuota cubre operación, monitorización, mantenimiento y una bolsa mensual. Solo se factura el exceso que termina correctamente.">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {[
+                  ['Implantación desde', `${pricing.initial.toLocaleString()} EUR`],
+                  ['Cuota mensual', `${pricing.baseMonthly.toLocaleString()} EUR`],
+                  ['Uso incluido', `${pricing.included.toLocaleString()} ${pricing.unitPlural}`],
+                  ['Exceso', `${pricing.overage.toLocaleString('es-ES', { minimumFractionDigits: 2 })} EUR/${pricing.unit}`],
+                ].map(([label, value]) => <GlassCard key={label} className="p-5"><p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-400">{label}</p><p className="mt-3 font-serif text-2xl text-slate-950">{value}</p></GlassCard>)}
+              </div>
+              <div className="mt-4 rounded-3xl border border-emerald-200 bg-emerald-50 p-5 text-sm leading-6 text-emerald-800"><strong>Regla de facturación:</strong> {pricing.billingRule} La bolsa se reinicia mensualmente y pueden configurarse alertas y un límite máximo de gasto.</div>
+            </DetailSection>
+
             <section id="roi" className="scroll-mt-28 py-10 md:py-14">
-              <QuickROICalculator caso={caso} />
+              <QuickROICalculator caso={caso} pricing={pricing} />
             </section>
 
             {sectorCasos.length > 0 && (

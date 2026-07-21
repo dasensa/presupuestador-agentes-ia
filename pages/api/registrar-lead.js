@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import { buildCasosMap, SECTORES_META } from '../../data/casos';
 import { calcResumen } from '../../lib/calculations';
 import { adjustBudget } from '../../lib/budget-context';
+import { getAgentPricing } from '../../lib/agent-pricing';
 import { escapeHtml, mailConfig, methodNotAllowed, rejectAbuse, text, validEmail } from '../../lib/api-security';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -30,7 +31,10 @@ export default async function handler(req, res) {
   const resumen = calcResumen(validIds, casosMap);
   const adjusted = adjustBudget(resumen, req.body?.context);
   const { from, leadsTo } = mailConfig();
-  const rows = resumen.selectedCasos.map((caso) => `<tr><td style="padding:10px;border-bottom:1px solid #e2e8f0">${escapeHtml(caso.c)}</td><td style="padding:10px;border-bottom:1px solid #e2e8f0">${escapeHtml(caso.t)}</td><td style="padding:10px;border-bottom:1px solid #e2e8f0;text-align:right">${currency(caso.ini + caso.rec * 12)}</td></tr>`).join('');
+  const rows = resumen.selectedCasos.map((caso) => {
+    const pricing = getAgentPricing(caso);
+    return `<tr><td style="padding:10px;border-bottom:1px solid #e2e8f0">${escapeHtml(caso.c)}</td><td style="padding:10px;border-bottom:1px solid #e2e8f0">${escapeHtml(caso.t)}</td><td style="padding:10px;border-bottom:1px solid #e2e8f0;text-align:right">${currency(pricing.initial + pricing.baseMonthly * 12)}</td></tr>`;
+  }).join('');
 
   try {
     const userMail = await resend.emails.send({

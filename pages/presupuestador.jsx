@@ -14,6 +14,7 @@ import {
 } from '../data/casos';
 import { calcResumen } from '../lib/calculations';
 import { adjustBudget, DEFAULT_CONTEXT } from '../lib/budget-context';
+import { getAgentPricing } from '../lib/agent-pricing';
 import { SITE } from '../lib/constants';
 import {
   GlassCard,
@@ -188,7 +189,7 @@ export default function PresupuestadorPage() {
   }, [recommended, sectorCases]);
 
   const selectedCasos = selected.map((id) => casosMap[id]).filter(Boolean);
-  const recurringBase = selectedCasos.reduce((sum, caso) => sum + caso.rec, 0);
+  const recurringBase = selectedCasos.reduce((sum, caso) => sum + getAgentPricing(caso).baseMonthly, 0);
   const resumen = calcResumen(selected, casosMap);
   const adjusted = adjustBudget(resumen, context);
   const canContinue = step === 2
