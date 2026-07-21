@@ -62,8 +62,7 @@ components/     → Componentes React organizados por dominio
   layout/       → Navbar, Footer, Layout
   ui/           → Button, Card, Modal, Input, Badge...
   landing/      → Hero, Stats, ValueProposition...
-  servicios/    → SectorDetail, UseCaseList
-  presupuestador/ → SectorSelector, CaseList, SummaryPanel...
+  servicios/    → Calculadora rápida de ROI
   contacto/     → ContactForm, ContactInfo
 data/           → Datos de casos de uso y metadata de sectores
 lib/            → Logica de calculo y constantes

@@ -2,7 +2,7 @@ import { Mail, MapPin } from 'lucide-react';
 
 const items = [
   { icon: Mail, label: 'Email', value: 'info@agentia.es' },
-  { icon: MapPin, label: 'Ubicacion', value: 'Madrid, Espana' },
+  { icon: MapPin, label: 'Ubicación', value: 'Madrid, España' },
 ];
 
 export default function ContactInfo() {

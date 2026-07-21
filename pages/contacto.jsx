@@ -7,13 +7,20 @@ import {
   LuminousBackground,
   SectionBadge,
 } from '../components/luminous/LuminousKit';
+import { SITE } from '../lib/constants';
 
 export default function ContactoPage() {
   return (
     <>
       <Head>
         <title>Contacto — AgentIA</title>
-        <meta name="description" content="Contacta con AgentIA para revisar procesos, agentes IA recomendados y una simulacion inicial de ROI." />
+        <meta name="description" content="Contacta con AgentIA para revisar procesos, agentes IA recomendados y una simulación inicial de ROI." />
+        <link rel="canonical" href={`${SITE.url}/contacto`} />
+        <meta property="og:title" content="Contacto — AgentIA" />
+        <meta property="og:description" content="Revisa con AgentIA tus procesos, agentes recomendados y un escenario inicial de ROI." />
+        <meta property="og:url" content={`${SITE.url}/contacto`} />
+        <meta property="og:image" content={`${SITE.url}/images/verticals-editorial/tech.webp`} />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
       <LuminousBackground>
@@ -26,7 +33,7 @@ export default function ContactoPage() {
                   Hablemos de tu equipo de agentes IA
                 </h1>
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-                  Cuentanos que procesos quieres mejorar y te ayudaremos a convertirlos en una simulacion inicial de agentes, inversion e impacto.
+                  Cuéntanos qué procesos quieres mejorar y te ayudaremos a convertirlos en una simulación inicial de agentes, inversión e impacto.
                 </p>
 
                 <GlassCard className="mt-8 p-6">
@@ -35,7 +42,7 @@ export default function ContactoPage() {
                       <Calendar size={20} />
                     </div>
                     <div>
-                      <h2 className="font-serif text-2xl text-slate-950">Llamada de diagnostico</h2>
+                      <h2 className="font-serif text-2xl text-slate-950">Llamada de diagnóstico</h2>
                       <p className="text-sm text-slate-500">30 minutos para revisar sector, procesos y oportunidades.</p>
                     </div>
                   </div>

@@ -22,10 +22,10 @@ export default function Custom500() {
               Error 500
             </span>
             <h1 className="mt-6 font-serif text-[44px] md:text-[64px] leading-[1] text-base-text">
-              Algo no ha respondido como esperabamos
+              Algo no ha respondido como esperábamos
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-body-lg text-base-muted">
-              Puede ser una incidencia temporal. Intenta recargar la pagina o contacta con AgentIA para que revisemos tu caso.
+              Puede ser una incidencia temporal. Intenta recargar la página o contacta con AgentIA para que revisemos tu caso.
             </p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Button href="/" variant="primary" size="lg">

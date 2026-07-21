@@ -12,16 +12,16 @@ export default function Footer() {
                 <Sparkles size={13} />
                 Simulacion AgentIA
               </span>
-              <h2 className="mt-5 font-serif text-display-sm text-slate-950">Empieza por una simulacion. Decide con datos.</h2>
+              <h2 className="mt-5 font-serif text-display-sm text-slate-950">Empieza por una simulación. Decide con datos.</h2>
               <p className="mt-3 max-w-2xl text-body text-slate-500">
-                Selecciona tu sector, identifica procesos y recibe una estimacion inicial de inversion, retorno e impacto operativo.
+                Selecciona tu sector, identifica procesos y recibe una estimación inicial de inversión, retorno e impacto operativo.
               </p>
             </div>
             <Link
               href="/presupuestador"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-brand-blue to-brand-mint px-7 py-3.5 text-body font-semibold text-white shadow-[0_16px_40px_rgba(37,99,235,0.28)] transition-transform hover:-translate-y-0.5"
             >
-              Crear mi simulacion
+              Crear mi simulación
               <ArrowRight size={16} />
             </Link>
           </div>
@@ -34,7 +34,7 @@ export default function Footer() {
               <span className="text-brand-blue text-[10px] font-sans font-medium relative -top-2.5">®</span>
             </Link>
             <p className="mt-4 max-w-sm text-body-sm leading-relaxed text-slate-500">
-              Plataforma de simulacion y diseno de equipos de agentes IA para empresas.
+              Plataforma de simulación y diseño de equipos de agentes IA para empresas.
             </p>
           </div>
 
@@ -64,7 +64,7 @@ export default function Footer() {
             <h3 className="text-label uppercase text-slate-950 tracking-wider mb-4">Contacto</h3>
             <ul className="space-y-2.5 text-body-sm text-slate-500">
               <li>info@agentia.es</li>
-              <li>Madrid, Espana</li>
+              <li>Madrid, España</li>
             </ul>
           </div>
         </div>

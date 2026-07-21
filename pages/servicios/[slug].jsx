@@ -1,6 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,15 +8,10 @@ import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import QuickROICalculator from '../../components/servicios/QuickROICalculator';
 import SectorThumbnail from '../../components/icons/SectorThumbnail';
+import { SITE } from '../../lib/constants';
 
-const FALLBACK_IMAGE =
-  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400"%3E%3Crect width="1200" height="400" fill="%230e1a2b"/%3E%3Cpath d="M0 265c210-90 410 35 620-45 210-80 345-185 580-120v300H0Z" fill="%2314273d"/%3E%3C/svg%3E';
 const BLUR_DATA_URL =
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAzMiAxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMTgiIGZpbGw9IiMwZTFhMmIiLz48cmVjdCB4PSIxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMTQyNzNkIi8+PC9zdmc+';
-
-function publicImageExists(src) {
-  return Boolean(src && fs.existsSync(path.join(process.cwd(), 'public', src.replace(/^\//, ''))));
-}
 
 export async function getStaticPaths() {
   return {
@@ -33,10 +25,7 @@ export async function getStaticProps({ params }) {
   if (!caso) return { notFound: true };
 
   const meta = SECTORES_META[caso.s];
-  const caseImage = `/images/cases/${params.slug}.jpg`;
-  const sectorImage = meta?.image || null;
-  const availableSectorImage = publicImageExists(sectorImage) ? sectorImage : null;
-  const imageSrc = availableSectorImage || (publicImageExists(caseImage) ? caseImage : null);
+  const imageSrc = meta.image;
   const sectorCasos = getCasosBySector(caso.s).filter(c => c.id !== caso.id);
   const beneficio = calcBeneficio(caso.t, caso.ini, caso.rec);
 
@@ -46,24 +35,24 @@ export async function getStaticProps({ params }) {
       sectorCasos: sectorCasos.slice(0, 4),
       beneficio,
       imageSrc,
-      sectorImage: availableSectorImage,
+      sectorImage: imageSrc,
     },
   };
 }
 
 export default function AgentePage({ caso, sectorCasos, beneficio, imageSrc, sectorImage }) {
   const meta = SECTORES_META[caso.s];
-  const [visualSrc, setVisualSrc] = useState(imageSrc || FALLBACK_IMAGE);
-
-  useEffect(() => {
-    setVisualSrc(imageSrc || FALLBACK_IMAGE);
-  }, [imageSrc]);
-
-  const handleImageError = () => {
-    setVisualSrc(current => {
-      if (sectorImage && current !== sectorImage) return sectorImage;
-      return FALLBACK_IMAGE;
-    });
+  const canonical = `${SITE.url}/servicios/${caso.slug}`;
+  const socialImage = `${SITE.url}${imageSrc}`;
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: caso.c,
+    description: caso.desc,
+    serviceType: `Agente IA de ${caso.t}`,
+    areaServed: 'ES',
+    provider: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+    offers: { '@type': 'Offer', priceCurrency: 'EUR', price: caso.ini, url: canonical },
   };
 
   return (
@@ -71,6 +60,14 @@ export default function AgentePage({ caso, sectorCasos, beneficio, imageSrc, sec
       <Head>
         <title>{`${caso.c} — ${caso.s} | AgentIA`}</title>
         <meta name="description" content={caso.desc} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={`${caso.c} — ${caso.s} | AgentIA`} />
+        <meta property="og:description" content={caso.desc} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={socialImage} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       </Head>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -84,13 +81,13 @@ export default function AgentePage({ caso, sectorCasos, beneficio, imageSrc, sec
         <div className="ds-card p-8 md:p-10 mb-8">
           <div className="relative h-[200px] w-full overflow-hidden mb-8 border border-border">
             <Image
-              src={visualSrc}
-              alt=""
+              src={imageSrc}
+              alt={`Profesionales del sector ${caso.s} trabajando con herramientas digitales`}
               fill
-              loading="lazy"
+              priority
+              fetchPriority="high"
               placeholder="blur"
               blurDataURL={BLUR_DATA_URL}
-              onError={handleImageError}
               sizes="(min-width: 1024px) 896px, 100vw"
               style={{ objectFit: 'cover' }}
             />
@@ -100,7 +97,7 @@ export default function AgentePage({ caso, sectorCasos, beneficio, imageSrc, sec
           <div className="flex items-start gap-4 mb-6">
             <SectorThumbnail
               src={sectorImage || meta?.image}
-              alt=""
+              alt={`Sector ${caso.s}`}
               className="h-12 w-16 shrink-0"
               sizes="64px"
             />
@@ -121,7 +118,7 @@ export default function AgentePage({ caso, sectorCasos, beneficio, imageSrc, sec
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="ds-card p-4 text-center">
-              <p className="text-label uppercase text-base-subtle mb-1">Inversion inicial</p>
+              <p className="text-label uppercase text-base-subtle mb-1">Inversión inicial</p>
               <p className="font-serif italic text-[20px] text-base-text">&euro;{caso.ini.toLocaleString()}</p>
             </div>
             <div className="ds-card p-4 text-center">
@@ -144,7 +141,7 @@ export default function AgentePage({ caso, sectorCasos, beneficio, imageSrc, sec
               <ArrowRight size={16} />
             </Button>
             <Button href="/contacto" variant="secondary" size="lg">
-              Solicitar mas informacion
+              Solicitar más información
             </Button>
           </div>
         </div>

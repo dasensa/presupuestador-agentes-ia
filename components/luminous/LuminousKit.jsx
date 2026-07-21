@@ -13,9 +13,9 @@ export function LuminousBackground({ children, className = '' }) {
     <div className={`relative overflow-hidden ${className}`}>
       <div className="absolute inset-0 -z-20 bg-white" />
       <div className="absolute inset-0 -z-10 luminous-grid opacity-70" />
-      <div className="absolute -left-32 top-10 -z-10 h-80 w-80 rounded-full bg-cyan-200/45 blur-3xl" />
-      <div className="absolute -right-24 top-20 -z-10 h-96 w-96 rounded-full bg-violet-200/45 blur-3xl" />
-      <div className="absolute bottom-0 left-1/3 -z-10 h-96 w-96 rounded-full bg-blue-200/35 blur-3xl" />
+      <div className="absolute -left-32 top-10 -z-10 hidden h-80 w-80 rounded-full bg-cyan-200/45 blur-3xl md:block" />
+      <div className="absolute -right-24 top-20 -z-10 hidden h-96 w-96 rounded-full bg-violet-200/45 blur-3xl md:block" />
+      <div className="absolute bottom-0 left-1/3 -z-10 hidden h-96 w-96 rounded-full bg-blue-200/35 blur-3xl md:block" />
       {children}
     </div>
   );
@@ -42,7 +42,7 @@ export function LuminousButton({ href, children, variant = 'primary', className 
   const classes = variant === 'primary'
     ? 'bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-[0_16px_40px_rgba(37,99,235,0.28)] hover:-translate-y-0.5 hover:shadow-[0_22px_52px_rgba(37,99,235,0.34)]'
     : 'border border-slate-200 bg-white/75 text-slate-900 shadow-sm hover:-translate-y-0.5 hover:border-cyan-300 hover:shadow-[0_18px_45px_rgba(6,182,212,0.14)]';
-  const all = `inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 ${classes} ${className}`;
+  const all = `inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0 ${classes} ${className}`;
 
   if (href) return <Link href={href} className={all} {...props}>{children}</Link>;
   return <button className={all} {...props}>{children}</button>;
@@ -117,18 +117,27 @@ export function ProcessFlowCard({ step, title, description, icon: Icon }) {
   );
 }
 
-export function AgentFunctionCard({ title, description, badge, icon: Icon = Bot }) {
+export function AgentFunctionCard({ title, description, badge, process, icon: Icon = Bot }) {
   return (
-    <GlassCard hover className="p-5">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-50 text-blue-600 ring-1 ring-slate-200">
-          <Icon size={20} />
+    <Link
+      href={`/servicios?funcion=${process}#agentes`}
+      aria-label={`Ver agentes recomendados para ${title}`}
+      className="group block rounded-[1.75rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2"
+    >
+      <GlassCard hover className="h-full p-5">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-50 text-blue-600 ring-1 ring-slate-200">
+            <Icon size={20} />
+          </div>
+          <span className="rounded-full bg-cyan-50 px-2.5 py-1 text-[11px] font-semibold text-cyan-700">{badge}</span>
         </div>
-        <span className="rounded-full bg-cyan-50 px-2.5 py-1 text-[11px] font-semibold text-cyan-700">{badge}</span>
-      </div>
-      <h3 className="mt-5 font-serif text-xl text-slate-950">{title}</h3>
-      <p className="mt-3 text-sm leading-relaxed text-slate-500">{description}</p>
-    </GlassCard>
+        <h3 className="mt-5 font-serif text-xl text-slate-950">{title}</h3>
+        <p className="mt-3 text-sm leading-relaxed text-slate-500">{description}</p>
+        <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-blue-600">
+          Ver agentes <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
+        </span>
+      </GlassCard>
+    </Link>
   );
 }
 
@@ -168,17 +177,20 @@ export function RoiPreviewCard({ sector = 'Telecom', selectedIds }) {
   const fallbackIds = getCasosBySector(sector).slice(0, 3).map((caso) => caso.id);
   const resumen = calcResumen(selectedIds?.length ? selectedIds : fallbackIds, casosMap);
   const roi = Math.round(resumen.roiBundled * 100);
+  const roiLow = Math.min(180, Math.max(0, Math.round(roi * 0.25)));
+  const roiHigh = Math.min(320, Math.max(roiLow, Math.round(roi * 0.4)));
   return (
     <GlassCard className="overflow-hidden p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
           <SectionBadge icon={Gauge}>Preview ROI</SectionBadge>
           <h3 className="mt-5 font-serif text-3xl text-slate-950">Visualiza el impacto antes de invertir</h3>
-          <p className="mt-3 text-sm leading-relaxed text-slate-500">Una estimacion preliminar para decidir con datos antes del despliegue.</p>
+          <p className="mt-3 text-sm leading-relaxed text-slate-500">Una estimación preliminar para decidir con datos antes del despliegue.</p>
         </div>
         <div className="hidden rounded-2xl bg-emerald-50 px-4 py-3 text-right sm:block">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-600">ROI estimado</div>
-          <div className="font-serif text-4xl text-emerald-600">{roi}%</div>
+          <div className="font-serif text-4xl text-emerald-600">{roiLow}–{roiHigh}%</div>
+          <div className="mt-1 text-[10px] text-emerald-700">rango preliminar</div>
         </div>
       </div>
       <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -212,20 +224,20 @@ export function RoiPreviewCard({ sector = 'Telecom', selectedIds }) {
 }
 
 export const agentFunctions = [
-  { title: 'Ventas', description: 'Cualifica leads, recomienda ofertas y activa oportunidades comerciales.', badge: 'conversion', icon: BriefcaseBusiness },
-  { title: 'Atencion cliente', description: 'Resuelve consultas frecuentes y escala casos complejos con contexto.', badge: 'servicio', icon: Headphones },
-  { title: 'Soporte tecnico', description: 'Diagnostica incidencias y guia pasos de resolucion automatizados.', badge: 'N1/N2', icon: CircuitBoard },
-  { title: 'Operaciones', description: 'Coordina tareas repetitivas, incidencias y flujos entre sistemas.', badge: 'workflow', icon: Workflow },
-  { title: 'Finanzas', description: 'Automatiza cobros, validaciones y reporting financiero operativo.', badge: 'control', icon: Euro },
-  { title: 'RR. HH.', description: 'Acompana onboarding, preguntas internas y solicitudes administrativas.', badge: 'people ops', icon: Users },
-  { title: 'Backoffice', description: 'Procesa documentos, actualiza datos y reduce trabajo manual.', badge: 'documental', icon: Cpu },
-  { title: 'Reporting', description: 'Genera resumenes ejecutivos y alertas accionables sobre KPIs.', badge: 'insights', icon: LineChart },
+  { title: 'Ventas', process: 'ventas', description: 'Cualifica leads, recomienda ofertas y activa oportunidades comerciales.', badge: 'conversion', icon: BriefcaseBusiness },
+  { title: 'Atención al cliente', process: 'atencion-cliente', description: 'Resuelve consultas frecuentes y escala casos complejos con contexto.', badge: 'servicio', icon: Headphones },
+  { title: 'Soporte técnico', process: 'soporte-tecnico', description: 'Diagnostica incidencias y guía pasos de resolución automatizados.', badge: 'N1/N2', icon: CircuitBoard },
+  { title: 'Operaciones', process: 'operaciones', description: 'Coordina tareas repetitivas, incidencias y flujos entre sistemas.', badge: 'workflow', icon: Workflow },
+  { title: 'Finanzas', process: 'finanzas', description: 'Automatiza cobros, validaciones y reporting financiero operativo.', badge: 'control', icon: Euro },
+  { title: 'RR. HH.', process: 'rrhh', description: 'Acompaña onboarding, preguntas internas y solicitudes administrativas.', badge: 'people ops', icon: Users },
+  { title: 'Backoffice', process: 'backoffice', description: 'Procesa documentos, actualiza datos y reduce trabajo manual.', badge: 'documental', icon: Cpu },
+  { title: 'Reporting', process: 'reporting', description: 'Genera resúmenes ejecutivos y alertas accionables sobre KPIs.', badge: 'insights', icon: LineChart },
 ];
 
 export const processSteps = [
   { step: '01', title: 'Detectamos procesos', description: 'Priorizamos tareas repetitivas y cuellos de botella con impacto economico.', icon: Network },
-  { step: '02', title: 'Disenamos agentes', description: 'Convertimos procesos en agentes por funcion, canal y nivel de integracion.', icon: Bot },
-  { step: '03', title: 'Calculamos impacto', description: 'Estimamos inversion, ahorro, retorno y sinergias antes de decidir.', icon: TrendingUp },
+  { step: '02', title: 'Diseñamos agentes', description: 'Convertimos procesos en agentes por función, canal y nivel de integración.', icon: Bot },
+  { step: '03', title: 'Calculamos impacto', description: 'Estimamos inversión, ahorro, retorno y sinergias antes de decidir.', icon: TrendingUp },
   { step: '04', title: 'Desplegamos por fases', description: 'Creamos un roadmap realista con pilotos, integraciones y escalado.', icon: Zap },
 ];
 

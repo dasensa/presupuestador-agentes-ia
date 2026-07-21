@@ -18,11 +18,10 @@ function escapeXml(value) {
     .replace(/'/g, '&apos;');
 }
 
-function buildUrl({ path, priority, changefreq, lastmod }) {
+function buildUrl({ path, priority, changefreq }) {
   return [
     '  <url>',
     `    <loc>${escapeXml(`${SITE_URL}${path}`)}</loc>`,
-    `    <lastmod>${lastmod}</lastmod>`,
     `    <changefreq>${changefreq}</changefreq>`,
     `    <priority>${priority}</priority>`,
     '  </url>',
@@ -30,7 +29,6 @@ function buildUrl({ path, priority, changefreq, lastmod }) {
 }
 
 function buildSitemap() {
-  const lastmod = new Date().toISOString();
   const serviceRoutes = getAllSlugs().map((slug) => ({
     path: `/servicios/${slug}`,
     priority: '0.8',
@@ -38,7 +36,7 @@ function buildSitemap() {
   }));
 
   const urls = [...staticRoutes, ...serviceRoutes]
-    .map((route) => buildUrl({ ...route, lastmod }))
+    .map(buildUrl)
     .join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>

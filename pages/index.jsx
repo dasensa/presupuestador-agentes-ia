@@ -23,11 +23,18 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <title>{`${SITE.name} — Disena tu equipo de agentes IA`}</title>
+        <title>{`${SITE.name} — Diseña tu equipo de agentes IA`}</title>
         <meta
           name="description"
-          content="Disena tu equipo de agentes IA, identifica procesos de alto impacto y calcula una simulacion de ROI antes de desplegar."
+          content="Diseña tu equipo de agentes IA, identifica procesos de alto impacto y calcula una simulación de ROI antes de desplegar."
         />
+        <link rel="canonical" href={SITE.url} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={`${SITE.name} — Diseña tu equipo de agentes IA`} />
+        <meta property="og:description" content={SITE.description} />
+        <meta property="og:url" content={SITE.url} />
+        <meta property="og:image" content={`${SITE.url}/images/verticals-editorial/banca.webp`} />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
       <LuminousBackground>
@@ -37,14 +44,14 @@ export default function HomePage() {
               <div>
                 <SectionBadge>{'Procesos -> Agentes -> Impacto -> ROI'}</SectionBadge>
                 <h1 className="mt-7 max-w-4xl font-serif text-[54px] leading-[0.96] tracking-tight text-slate-950 md:text-[82px]">
-                  Disena tu equipo de agentes IA
+                  Diseña tu equipo de agentes IA
                 </h1>
                 <p className="mt-7 max-w-2xl text-lg leading-8 text-slate-600">
-                  Identificamos los procesos con mayor potencial, disenamos agentes inteligentes por funcion y calculamos el impacto economico antes de desplegarlos.
+                  Identificamos los procesos con mayor potencial, diseñamos agentes inteligentes por función y calculamos el impacto económico antes de desplegarlos.
                 </p>
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                   <LuminousButton href="/presupuestador">
-                    Crear mi simulacion
+                    Crear mi simulación
                     <ArrowRight size={16} />
                   </LuminousButton>
                   <LuminousButton href="/servicios" variant="secondary">
@@ -74,7 +81,7 @@ export default function HomePage() {
               <SectionBadge icon={LineChart}>De proceso a agente</SectionBadge>
               <h2 className="mt-5 font-serif text-display-md text-slate-950">Convierte procesos repetitivos en agentes inteligentes</h2>
               <p className="mt-4 text-body-lg text-slate-500">
-                Del diagnostico al despliegue: una ruta clara para automatizar con impacto medible.
+                Del diagnóstico al despliegue: una ruta clara para automatizar con impacto medible.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -97,6 +104,12 @@ export default function HomePage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {agentFunctions.map((agent) => <AgentFunctionCard key={agent.title} {...agent} />)}
             </div>
+            <div className="mt-8 text-center">
+              <LuminousButton href="/servicios" variant="secondary">
+                Explorar todos los agentes y sectores
+                <ArrowRight size={16} />
+              </LuminousButton>
+            </div>
           </div>
         </section>
 
@@ -105,7 +118,7 @@ export default function HomePage() {
             <div className="mb-12 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
               <div>
                 <SectionBadge>Sectores inteligentes</SectionBadge>
-                <h2 className="mt-5 font-serif text-display-md text-slate-950">IA disenada para cada sector</h2>
+                <h2 className="mt-5 font-serif text-display-md text-slate-950">IA diseñada para cada sector</h2>
               </div>
               <p className="max-w-xl text-body text-slate-500">
                 Cada industria tiene procesos, restricciones y oportunidades distintas. AgentIA prioriza los casos de mayor impacto.
@@ -132,13 +145,13 @@ export default function HomePage() {
               <div className="relative">
                 <SectionBadge>Simulacion inicial</SectionBadge>
                 <h2 className="mx-auto mt-5 max-w-3xl font-serif text-display-md text-slate-950">
-                  Empieza por una simulacion. Decide con datos.
+                  Empieza por una simulación. Decide con datos.
                 </h2>
                 <p className="mx-auto mt-4 max-w-2xl text-body-lg text-slate-500">
-                  Selecciona tu sector, identifica procesos y recibe una estimacion inicial de inversion, retorno e impacto operativo.
+                  Selecciona tu sector, identifica procesos y recibe una estimación inicial de inversión, retorno e impacto operativo.
                 </p>
                 <LuminousButton href="/presupuestador" className="mt-8">
-                  Crear mi simulacion
+                  Crear mi simulación
                   <ArrowRight size={16} />
                 </LuminousButton>
               </div>

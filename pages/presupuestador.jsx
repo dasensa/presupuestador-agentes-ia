@@ -14,6 +14,7 @@ import {
 } from '../data/casos';
 import { calcResumen } from '../lib/calculations';
 import { adjustBudget, DEFAULT_CONTEXT } from '../lib/budget-context';
+import { SITE } from '../lib/constants';
 import {
   GlassCard,
   LuminousBackground,
@@ -23,16 +24,30 @@ import {
 import Badge from '../components/ui/Badge';
 
 const PROCESS_OPTIONS = [
-  'Atencion al cliente',
-  'Captacion comercial',
-  'Soporte tecnico',
+  'Atención al cliente',
+  'Captación comercial',
+  'Soporte técnico',
+  'Operaciones',
+  'Finanzas',
+  'Recursos humanos',
   'Backoffice',
   'Reporting',
-  'Gestion de incidencias',
+  'Gestión de incidencias',
   'Reservas/citas',
-  'Retencion/churn',
-  'Analisis documental',
+  'Retención/churn',
+  'Análisis documental',
 ];
+
+const PROCESS_QUERY_MAP = {
+  ventas: 'Captación comercial',
+  'atencion-cliente': 'Atención al cliente',
+  'soporte-tecnico': 'Soporte técnico',
+  operaciones: 'Operaciones',
+  finanzas: 'Finanzas',
+  rrhh: 'Recursos humanos',
+  backoffice: 'Backoffice',
+  reporting: 'Reporting',
+};
 
 const STEPS = [
   'Sector',
@@ -51,15 +66,18 @@ function processMatches(caso, processes) {
   if (!processes.length) return true;
   const text = `${caso.c} ${caso.desc} ${caso.prob} ${caso.t}`.toLowerCase();
   const map = {
-    'Atencion al cliente': ['atencion', 'cliente', 'postventa', 'consultas', 'resultados'],
-    'Captacion comercial': ['lead', 'conversion', 'admisiones', 'prestamos', 'upselling', 'ventas'],
-    'Soporte tecnico': ['soporte', 'diagnostico', 'averias', 'incidencias', 'knowledge'],
+    'Atención al cliente': ['atencion', 'cliente', 'postventa', 'consultas', 'resultados'],
+    'Captación comercial': ['lead', 'conversion', 'admisiones', 'prestamos', 'upselling', 'ventas'],
+    'Soporte técnico': ['soporte', 'diagnostico', 'averias', 'incidencias', 'knowledge'],
+    Operaciones: ['operacion', 'automatizacion', 'procesamiento', 'workflow', 'gestion'],
+    Finanzas: ['cobro', 'factura', 'impagos', 'financ', 'fraude', 'kyc'],
+    'Recursos humanos': ['onboarding', 'empleado', 'interno', 'solicitudes', 'people'],
     Backoffice: ['documental', 'devoluciones', 'becas', 'impagos', 'validacion', 'backoffice'],
     Reporting: ['reporting', 'analisis', 'datos', 'eficiencia'],
-    'Gestion de incidencias': ['incidencias', 'reclamaciones', 'averias', 'cortes'],
+    'Gestión de incidencias': ['incidencias', 'reclamaciones', 'averias', 'cortes'],
     'Reservas/citas': ['reservas', 'citas', 'check-in', 'conserjeria'],
-    'Retencion/churn': ['retencion', 'churn', 'loyalty', 'fidelizacion'],
-    'Analisis documental': ['documental', 'kyc', 'polizas', 'peritaje', 'validacion'],
+    'Retención/churn': ['retencion', 'churn', 'loyalty', 'fidelizacion'],
+    'Análisis documental': ['documental', 'kyc', 'polizas', 'peritaje', 'validacion'],
   };
   return processes.some((process) => map[process]?.some((word) => text.includes(word)));
 }
@@ -105,7 +123,7 @@ function BudgetSummarySidebar({ sector, processes, selectedCasos, context, adjus
         </div>
         <div className="grid grid-cols-1 gap-3 border-t border-slate-200 pt-4">
           <div className="rounded-2xl bg-blue-50 p-3">
-            <div className="text-xs font-semibold text-blue-600">Inversion estimada</div>
+            <div className="text-xs font-semibold text-blue-600">Inversión estimada</div>
             <div className="font-serif text-2xl text-slate-950">{currency(adjusted.inversion)}</div>
           </div>
           <div className="rounded-2xl bg-emerald-50 p-3">
@@ -114,8 +132,8 @@ function BudgetSummarySidebar({ sector, processes, selectedCasos, context, adjus
           </div>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white/70 p-3 text-xs leading-relaxed text-slate-500">
-          Estado: {selectedCasos.length ? 'simulacion lista para ajustar' : 'elige agentes para calcular impacto'}.
-          {context.integracion === 'core' ? ' Integracion core considerada.' : ''}
+          Estado: {selectedCasos.length ? 'simulación lista para ajustar' : 'elige agentes para calcular impacto'}.
+          {context.integracion === 'core' ? ' Integración core considerada.' : ''}
         </div>
       </div>
     </GlassCard>
@@ -139,6 +157,12 @@ export default function PresupuestadorPage() {
   useEffect(() => {
     const querySector = router.query.sector;
     if (querySector && sectores.includes(querySector)) setSector(querySector);
+    const queryProcess = PROCESS_QUERY_MAP[router.query.proceso];
+    if (queryProcess) {
+      setProcesses([queryProcess]);
+      setSelected([]);
+      setStep(3);
+    }
     if (router.query.agent) {
       const caso = getCasoBySlug(router.query.agent);
       if (caso) {
@@ -147,7 +171,7 @@ export default function PresupuestadorPage() {
         setStep(3);
       }
     }
-  }, [router.query.agent, router.query.sector, sectores]);
+  }, [router.query.agent, router.query.proceso, router.query.sector, sectores]);
 
   const sectorCases = useMemo(() => getCasosBySector(sector), [sector]);
   const recommended = useMemo(() => (
@@ -166,11 +190,19 @@ export default function PresupuestadorPage() {
   const selectedCasos = selected.map((id) => casosMap[id]).filter(Boolean);
   const resumen = calcResumen(selected, casosMap);
   const adjusted = adjustBudget(resumen, context);
+  const canContinue = step === 2
+    ? processes.length > 0
+    : step === 3
+      ? selected.length > 0
+      : true;
 
   const next = () => setStep((value) => Math.min(6, value + 1));
   const prev = () => setStep((value) => Math.max(1, value - 1));
   const toggle = (id) => setSelected((prevIds) => prevIds.includes(id) ? prevIds.filter((item) => item !== id) : [...prevIds, id]);
-  const toggleProcess = (name) => setProcesses((prevItems) => prevItems.includes(name) ? prevItems.filter((item) => item !== name) : [...prevItems, name]);
+  const toggleProcess = (name) => {
+    setProcesses((prevItems) => prevItems.includes(name) ? prevItems.filter((item) => item !== name) : [...prevItems, name]);
+    setSelected([]);
+  };
   const selectSector = (name) => {
     setSector(name);
     setProcesses([]);
@@ -211,8 +243,14 @@ export default function PresupuestadorPage() {
   return (
     <>
       <Head>
-        <title>Crear simulacion ROI — AgentIA</title>
-        <meta name="description" content="Disena tu equipo de agentes IA en seis pasos y recibe una estimacion preliminar de inversion, retorno y ROI." />
+        <title>Crear simulación ROI — AgentIA</title>
+        <meta name="description" content="Diseña tu equipo de agentes IA en seis pasos y recibe una estimación preliminar de inversión, retorno y ROI." />
+        <link rel="canonical" href={`${SITE.url}/presupuestador`} />
+        <meta property="og:title" content="Crear simulación ROI — AgentIA" />
+        <meta property="og:description" content="Configura un equipo de agentes IA y contrasta un escenario preliminar de inversión y retorno." />
+        <meta property="og:url" content={`${SITE.url}/presupuestador`} />
+        <meta property="og:image" content={`${SITE.url}/images/verticals-editorial/tech.webp`} />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
       <LuminousBackground>
@@ -220,9 +258,9 @@ export default function PresupuestadorPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-10">
               <SectionBadge icon={Sparkles}>BudgetWizard</SectionBadge>
-              <h1 className="mt-6 font-serif text-[46px] leading-[1] text-slate-950 md:text-[74px]">Crea tu simulacion de agentes IA</h1>
+              <h1 className="mt-6 font-serif text-[46px] leading-[1] text-slate-950 md:text-[74px]">Crea tu simulación de agentes IA</h1>
               <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-                Primero entregamos una estimacion visual. Al final, si quieres el informe completo, te pedimos los datos de contacto.
+                Primero entregamos una estimación visual. Al final, si quieres el informe completo, te pedimos los datos de contacto.
               </p>
             </div>
 
@@ -243,7 +281,7 @@ export default function PresupuestadorPage() {
                     <p className="mt-3 text-slate-500">Selecciona el sector para cargar procesos, agentes y precios orientativos.</p>
                     <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                       {sectores.map((name) => (
-                        <button key={name} onClick={() => selectSector(name)} className={`rounded-3xl border p-5 text-left transition-all ${sector === name ? 'border-blue-300 bg-blue-50 shadow-[0_18px_45px_rgba(37,99,235,0.12)]' : 'border-slate-200 bg-white/70 hover:border-cyan-200'}`}>
+                        <button type="button" aria-pressed={sector === name} key={name} onClick={() => selectSector(name)} className={`rounded-3xl border p-5 text-left transition-all ${sector === name ? 'border-blue-300 bg-blue-50 shadow-[0_18px_45px_rgba(37,99,235,0.12)]' : 'border-slate-200 bg-white/70 hover:border-cyan-200'}`}>
                           <Building2 className="text-blue-600" size={22} />
                           <div className="mt-4 font-serif text-2xl text-slate-950">{name}</div>
                           <p className="mt-2 text-sm text-slate-500">{SECTORES_META[name].description}</p>
@@ -259,7 +297,7 @@ export default function PresupuestadorPage() {
                     <p className="mt-3 text-slate-500">Elige uno o varios procesos. AgentIA recomendara agentes segun tu foco.</p>
                     <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                       {PROCESS_OPTIONS.map((item) => (
-                        <button key={item} onClick={() => toggleProcess(item)} className={`rounded-3xl border p-4 text-left transition-all ${processes.includes(item) ? 'border-cyan-300 bg-cyan-50 text-cyan-900' : 'border-slate-200 bg-white/70 text-slate-700 hover:border-cyan-200'}`}>
+                        <button type="button" aria-pressed={processes.includes(item)} key={item} onClick={() => toggleProcess(item)} className={`rounded-3xl border p-4 text-left transition-all ${processes.includes(item) ? 'border-cyan-300 bg-cyan-50 text-cyan-900' : 'border-slate-200 bg-white/70 text-slate-700 hover:border-cyan-200'}`}>
                           <Workflow size={18} className="mb-3 text-blue-600" />
                           <span className="font-semibold">{item}</span>
                         </button>
@@ -271,12 +309,12 @@ export default function PresupuestadorPage() {
                 {step === 3 && (
                   <div>
                     <h2 className="font-serif text-display-sm text-slate-950">Agentes recomendados</h2>
-                    <p className="mt-3 text-slate-500">Puedes ajustar la seleccion. La inversion y el ROI se actualizan al instante.</p>
+                    <p className="mt-3 text-slate-500">Puedes ajustar la selección. La inversión y el ROI se actualizan al instante.</p>
                     <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
                       {recommended.map((caso) => {
                         const active = selected.includes(caso.id);
                         return (
-                          <button key={caso.id} onClick={() => toggle(caso.id)} className={`rounded-3xl border p-5 text-left transition-all ${active ? 'border-blue-300 bg-blue-50 shadow-[0_18px_45px_rgba(37,99,235,0.12)]' : 'border-slate-200 bg-white/70 hover:border-cyan-200'}`}>
+                          <button type="button" aria-pressed={active} key={caso.id} onClick={() => toggle(caso.id)} className={`rounded-3xl border p-5 text-left transition-all ${active ? 'border-blue-300 bg-blue-50 shadow-[0_18px_45px_rgba(37,99,235,0.12)]' : 'border-slate-200 bg-white/70 hover:border-cyan-200'}`}>
                             <div className="flex items-start justify-between gap-4">
                               <Bot size={22} className="text-blue-600" />
                               <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${active ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>{active ? 'Incluido' : 'Anadir'}</span>
@@ -298,7 +336,7 @@ export default function PresupuestadorPage() {
                 {step === 4 && (
                   <div>
                     <h2 className="font-serif text-display-sm text-slate-950">Ajusta el contexto de tu empresa</h2>
-                    <p className="mt-3 text-slate-500">Estos factores ajustan la estimacion preliminar sin pedir datos personales.</p>
+                    <p className="mt-3 text-slate-500">Estos factores ajustan la estimación preliminar sin pedir datos personales.</p>
                     <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2">
                       {[
                         ['empleados', 'Tamano empresa', [['1-20', '1-20'], ['21-100', '21-100'], ['101-500', '101-500'], ['500+', '500+']]],
@@ -306,9 +344,10 @@ export default function PresupuestadorPage() {
                         ['integracion', 'Nivel de integracion', [['baja', 'Baja'], ['media', 'Media'], ['alta', 'Alta'], ['core', 'Core/ERP']]],
                         ['urgencia', 'Urgencia despliegue', [['flexible', 'Flexible'], ['normal', 'Normal'], ['rapida', 'Rapida']]],
                       ].map(([key, label, options]) => (
-                        <label key={key} className="block">
+                        <label key={key} htmlFor={`context-${key}`} className="block">
                           <span className="text-label uppercase tracking-wider text-slate-500">{label}</span>
                           <select
+                            id={`context-${key}`}
                             value={context[key]}
                             onChange={(e) => setContext((prev) => ({ ...prev, [key]: e.target.value }))}
                             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-cyan-400 focus:outline-none focus:ring-4 focus:ring-cyan-100"
@@ -327,7 +366,7 @@ export default function PresupuestadorPage() {
                     <p className="mt-3 text-slate-500">Una primera lectura para decidir si merece avanzar a un informe completo.</p>
                     <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
                       {[
-                        ['Inversion estimada', currency(adjusted.inversion), 'blue'],
+                        ['Inversión estimada', currency(adjusted.inversion), 'blue'],
                         ['Retorno estimado', currency(adjusted.retorno), 'emerald'],
                         ['ROI estimado', `${adjusted.roi}%`, 'emerald'],
                         ['Despliegue aproximado', adjusted.meses, 'blue'],
@@ -358,7 +397,7 @@ export default function PresupuestadorPage() {
                       <div className="mt-8 rounded-3xl bg-emerald-50 p-6">
                         <CheckCircle2 className="text-emerald-600" size={30} />
                         <h3 className="mt-4 font-serif text-2xl text-slate-950">Solicitud recibida</h3>
-                        <p className="mt-2 text-sm text-slate-600">Revisaremos la simulacion y contactaremos contigo.</p>
+                        <p className="mt-2 text-sm text-slate-600">Revisaremos la simulación y contactaremos contigo.</p>
                       </div>
                     ) : (
                       <form onSubmit={submitLead} className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -385,7 +424,7 @@ export default function PresupuestadorPage() {
                             {loading ? 'Enviando...' : 'Recibir informe y revisar con un consultor'}
                           </LuminousButton>
                           {submitError && <p role="alert" className="mt-3 text-sm text-red-600">{submitError}</p>}
-                          <p className="mt-3 text-xs leading-relaxed text-slate-500">Al enviar aceptas que usemos estos datos para remitirte la simulacion y responder a tu solicitud. Consulta nuestra politica de privacidad.</p>
+                          <p className="mt-3 text-xs leading-relaxed text-slate-500">Al enviar aceptas que usemos estos datos para remitirte la simulación y responder a tu solicitud. Consulta nuestra política de privacidad.</p>
                         </div>
                       </form>
                     )}
@@ -394,10 +433,11 @@ export default function PresupuestadorPage() {
 
                 {step < 6 && (
                   <div className="mt-10 flex justify-end">
-                    <LuminousButton onClick={next}>
+                    <LuminousButton onClick={next} disabled={!canContinue}>
                       {step === 5 ? 'Recibir informe completo' : 'Continuar'}
                       <ArrowRight size={16} />
                     </LuminousButton>
+                    {!canContinue && <p className="ml-4 self-center text-sm text-slate-500">Selecciona al menos una opcion para continuar.</p>}
                   </div>
                 )}
               </GlassCard>

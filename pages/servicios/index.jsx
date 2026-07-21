@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -13,23 +14,68 @@ import {
   SectionBadge,
 } from '../../components/luminous/LuminousKit';
 import Badge from '../../components/ui/Badge';
+import { SITE } from '../../lib/constants';
 
 function anchorFor(name) {
   return name.toLowerCase().replace('/', '-');
 }
 
+const FUNCTION_LABELS = {
+  ventas: 'Ventas',
+  'atencion-cliente': 'Atención al cliente',
+  'soporte-tecnico': 'Soporte técnico',
+  operaciones: 'Operaciones',
+  finanzas: 'Finanzas',
+  rrhh: 'Recursos humanos',
+  backoffice: 'Backoffice',
+  reporting: 'Reporting',
+};
+
+const FUNCTION_KEYWORDS = {
+  ventas: ['lead', 'conversion', 'admisiones', 'prestamos', 'upselling', 'ventas', 'recomendador'],
+  'atencion-cliente': ['atencion', 'cliente', 'postventa', 'consultas', 'resultados', 'conserjeria'],
+  'soporte-tecnico': ['soporte', 'diagnostico', 'averias', 'incidencias', 'knowledge', 'tickets'],
+  operaciones: ['operacion', 'automatizacion', 'procesamiento', 'reabastecimiento', 'rutas', 'check-in'],
+  finanzas: ['cobro', 'factura', 'impagos', 'financ', 'fraude', 'kyc'],
+  rrhh: ['onboarding', 'empleado', 'interno', 'solicitudes', 'orientacion'],
+  backoffice: ['documental', 'devoluciones', 'becas', 'validacion', 'matriculacion', 'peritaje'],
+  reporting: ['reporting', 'analisis', 'datos', 'eficiencia', 'consumo', 'lectura'],
+};
+
+function matchesFunction(caso, functionSlug) {
+  if (!functionSlug || !FUNCTION_KEYWORDS[functionSlug]) return true;
+  const text = `${caso.c} ${caso.desc} ${caso.prob} ${caso.t}`.toLowerCase();
+  return FUNCTION_KEYWORDS[functionSlug].some((keyword) => text.includes(keyword));
+}
+
 export default function ServiciosPage() {
+  const router = useRouter();
   const sectores = getSectores();
   const [active, setActive] = useState(sectores[0]);
+  const activeFunction = typeof router.query.funcion === 'string' && FUNCTION_LABELS[router.query.funcion]
+    ? router.query.funcion
+    : '';
   const activeCases = getCasosBySector(active);
+  const visibleCases = activeFunction
+    ? activeCases.filter((caso) => matchesFunction(caso, activeFunction))
+    : activeCases;
   const activeMeta = SECTORES_META[active];
   const minPrice = Math.min(...activeCases.map((caso) => caso.ini));
+
+  useEffect(() => {
+    if (!activeFunction) return;
+    const matchingSector = sectores.find((name) => (
+      getCasosBySector(name).some((caso) => matchesFunction(caso, activeFunction))
+    ));
+    if (matchingSector) setActive(matchingSector);
+  }, [activeFunction]);
+
   const bestCases = useMemo(() => (
-    activeCases
+    visibleCases
       .map((caso) => ({ ...caso, beneficio: calcBeneficio(caso.t, caso.ini, caso.rec) }))
       .sort((a, b) => b.beneficio - a.beneficio)
       .slice(0, 5)
-  ), [activeCases]);
+  ), [visibleCases]);
 
   return (
     <>
@@ -37,8 +83,14 @@ export default function ServiciosPage() {
         <title>Agentes IA por sector — AgentIA</title>
         <meta
           name="description"
-          content="Mapa de inteligencia sectorial para disenar agentes IA por industria, priorizar casos de uso y simular inversion y ROI."
+          content="Mapa de inteligencia sectorial para diseñar agentes IA por industria, priorizar casos de uso y simular inversión y ROI."
         />
+        <link rel="canonical" href={`${SITE.url}/servicios`} />
+        <meta property="og:title" content="Agentes IA por sector — AgentIA" />
+        <meta property="og:description" content="Explora agentes IA y casos de uso priorizados para diez sectores." />
+        <meta property="og:url" content={`${SITE.url}/servicios`} />
+        <meta property="og:image" content={`${SITE.url}/images/verticals-editorial/retail.webp`} />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
       <LuminousBackground>
@@ -48,7 +100,7 @@ export default function ServiciosPage() {
               <div>
                 <SectionBadge icon={Building2}>Sector Intelligence Map</SectionBadge>
                 <h1 className="mt-6 max-w-3xl font-serif text-[48px] leading-[1] text-slate-950 md:text-[76px]">
-                  Agentes IA disenados por sector
+                  Agentes IA diseñados por sector
                 </h1>
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
                   Cada industria tiene procesos, restricciones y oportunidades distintas. AgentIA prioriza los casos de uso con mayor impacto.
@@ -98,10 +150,10 @@ export default function ServiciosPage() {
                 </div>
               </GlassCard>
 
-              <GlassCard className="p-6 md:p-8">
+              <GlassCard id="agentes" className="scroll-mt-28 p-6 md:p-8">
                 <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                   <div>
-                    <SectionBadge icon={Target}>Panel sectorial</SectionBadge>
+                    <SectionBadge icon={Target}>{activeFunction ? `Función: ${FUNCTION_LABELS[activeFunction]}` : 'Panel sectorial'}</SectionBadge>
                     <h2 className="mt-5 font-serif text-display-sm text-slate-950">{active}</h2>
                     <p className="mt-4 max-w-2xl text-body text-slate-500">{activeMeta.longDescription}</p>
                   </div>
@@ -118,7 +170,7 @@ export default function ServiciosPage() {
                   </div>
                   <div className="rounded-3xl border border-slate-200 bg-white/75 p-4">
                     <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">Agentes recomendados</div>
-                    <div className="mt-2 text-sm font-medium text-slate-700">{activeCases.slice(0, 2).map((c) => c.c).join(' + ')}</div>
+                    <div className="mt-2 text-sm font-medium text-slate-700">{visibleCases.slice(0, 2).map((c) => c.c).join(' + ') || 'Sin coincidencias en este sector'}</div>
                   </div>
                   <div className="rounded-3xl border border-slate-200 bg-white/75 p-4">
                     <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">ROI orientativo</div>
@@ -127,7 +179,9 @@ export default function ServiciosPage() {
                 </div>
 
                 <div className="mt-8">
-                  <h3 className="font-serif text-2xl text-slate-950">Casos de uso prioritarios</h3>
+                  <h3 className="font-serif text-2xl text-slate-950">
+                    {activeFunction ? `Agentes de ${FUNCTION_LABELS[activeFunction]}` : 'Casos de uso prioritarios'}
+                  </h3>
                   <div className="mt-4 grid grid-cols-1 gap-3">
                     {bestCases.map((caso) => (
                       <Link

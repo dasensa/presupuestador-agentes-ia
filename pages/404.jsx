@@ -7,7 +7,7 @@ export default function Custom404() {
   return (
     <>
       <Head>
-        <title>Pagina no encontrada | AgentIA</title>
+        <title>Página no encontrada | AgentIA</title>
         <meta
           name="description"
           content="La pagina solicitada no existe. Explora los servicios de AgentIA o calcula el ROI de tus agentes IA."
@@ -28,7 +28,7 @@ export default function Custom404() {
                   Esta ruta no tiene agente asignado
                 </h1>
                 <p className="mt-6 max-w-2xl text-body-lg text-base-muted">
-                  La pagina que buscas no existe o ha cambiado de ubicacion. Puedes volver al inicio, explorar los agentes por sector o calcular directamente el ROI.
+                  La página que buscas no existe o ha cambiado de ubicación. Puedes volver al inicio, explorar los agentes por sector o calcular directamente el ROI.
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <Button href="/" variant="primary" size="lg">

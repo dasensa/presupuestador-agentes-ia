@@ -25,19 +25,20 @@ export default function QuickROICalculator({ caso }) {
           <Calculator size={20} className="text-brand-mint" />
         </div>
         <div>
-          <h2 className="font-serif text-[20px] text-base-text">Calcula tu ROI real</h2>
-          <p className="text-body-sm text-base-muted">Introduce tus datos para un calculo personalizado</p>
+          <h2 className="font-serif text-[20px] text-base-text">Calcula un escenario de ROI</h2>
+          <p className="text-body-sm text-base-muted">Introduce tus datos para obtener una estimación personalizada</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         {cat.fields.map(field => (
           <div key={field.key}>
-            <label className="flex items-center text-label uppercase text-base-muted tracking-wider mb-1.5">
+            <label htmlFor={`roi-${field.key}`} className="flex items-center text-label uppercase text-base-muted tracking-wider mb-1.5">
               {field.label}{field.unit && ` (${field.unit})`}
               {field.tooltip && <Tooltip text={field.tooltip} />}
             </label>
             <input
+              id={`roi-${field.key}`}
               type={field.type}
               step={field.step || '1'}
               placeholder={field.placeholder}
@@ -54,7 +55,7 @@ export default function QuickROICalculator({ caso }) {
           <div className="ds-card p-4" style={{ borderColor: 'rgba(239,68,68,0.3)' }}>
             <div className="flex items-center gap-2 mb-1">
               <AlertTriangle size={14} className="text-red-400" />
-              <span className="text-label uppercase text-red-300 tracking-wider">Coste de inaccion /mes</span>
+              <span className="text-label uppercase text-red-300 tracking-wider">Oportunidad estimada /mes</span>
             </div>
             <p className="font-serif italic text-[28px] text-red-400">
               &euro;{Math.round(benefMensual).toLocaleString()}

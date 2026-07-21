@@ -50,7 +50,7 @@ export default function Navbar() {
                 href="/presupuestador"
                 className="inline-flex items-center rounded-full px-5 py-2 bg-gradient-to-br from-brand-blue to-brand-mint text-white text-body-sm font-semibold shadow-[0_12px_28px_rgba(37,99,235,0.24)] transition-transform hover:-translate-y-0.5"
               >
-                Crear simulacion
+                Crear simulación
               </Link>
             </div>
 
@@ -87,7 +87,7 @@ export default function Navbar() {
                   href="/presupuestador"
                   className="block rounded-full text-center px-5 py-3 bg-gradient-to-br from-brand-blue to-brand-mint text-white text-body-sm font-semibold"
                 >
-                  Crear simulacion
+                  Crear simulación
                 </Link>
               </div>
             </div>
