@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Building2, Layers3, Target, TrendingUp } from 'lucide-react';
 import { SECTORES_META, getCasosBySector, getSectores } from '../../data/casos';
-import { calcBeneficio } from '../../lib/calculations';
 import {
   GlassCard,
   LuminousBackground,
@@ -72,8 +71,8 @@ export default function ServiciosPage() {
 
   const bestCases = useMemo(() => (
     visibleCases
-      .map((caso) => ({ ...caso, beneficio: calcBeneficio(caso.t, caso.ini, caso.rec) }))
-      .sort((a, b) => b.beneficio - a.beneficio)
+      .slice()
+      .sort((a, b) => a.ini - b.ini)
       .slice(0, 5)
   ), [visibleCases]);
 
@@ -173,8 +172,8 @@ export default function ServiciosPage() {
                     <div className="mt-2 text-sm font-medium text-slate-700">{visibleCases.slice(0, 2).map((c) => c.c).join(' + ') || 'Sin coincidencias en este sector'}</div>
                   </div>
                   <div className="rounded-3xl border border-slate-200 bg-white/75 p-4">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">ROI orientativo</div>
-                    <div className="mt-2 text-sm font-medium text-emerald-600">Estimable en presupuestador</div>
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">ROI verificable</div>
+                    <div className="mt-2 text-sm font-medium text-emerald-600">Calculable con datos operativos</div>
                   </div>
                 </div>
 

@@ -54,7 +54,7 @@ const STEPS = [
   'Procesos',
   'Agentes',
   'Contexto',
-  'ROI preliminar',
+  'Inversión',
   'Informe',
 ];
 
@@ -127,8 +127,8 @@ function BudgetSummarySidebar({ sector, processes, selectedCasos, context, adjus
             <div className="font-serif text-2xl text-slate-950">{currency(adjusted.inversion)}</div>
           </div>
           <div className="rounded-2xl bg-emerald-50 p-3">
-            <div className="text-xs font-semibold text-emerald-600">ROI preliminar</div>
-            <div className="font-serif text-2xl text-emerald-600">{adjusted.roi}%</div>
+            <div className="text-xs font-semibold text-emerald-600">ROI</div>
+            <div className="font-serif text-lg text-emerald-600">Con datos operativos</div>
           </div>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white/70 p-3 text-xs leading-relaxed text-slate-500">
@@ -188,6 +188,7 @@ export default function PresupuestadorPage() {
   }, [recommended, sectorCases]);
 
   const selectedCasos = selected.map((id) => casosMap[id]).filter(Boolean);
+  const recurringBase = selectedCasos.reduce((sum, caso) => sum + caso.rec, 0);
   const resumen = calcResumen(selected, casosMap);
   const adjusted = adjustBudget(resumen, context);
   const canContinue = step === 2
@@ -243,11 +244,11 @@ export default function PresupuestadorPage() {
   return (
     <>
       <Head>
-        <title>Crear simulación ROI — AgentIA</title>
-        <meta name="description" content="Diseña tu equipo de agentes IA en seis pasos y recibe una estimación preliminar de inversión, retorno y ROI." />
+        <title>Crear simulación de inversión — AgentIA</title>
+        <meta name="description" content="Diseña tu equipo de agentes IA y recibe una estimación preliminar de inversión; calcula el ROI con tus datos operativos." />
         <link rel="canonical" href={`${SITE.url}/presupuestador`} />
-        <meta property="og:title" content="Crear simulación ROI — AgentIA" />
-        <meta property="og:description" content="Configura un equipo de agentes IA y contrasta un escenario preliminar de inversión y retorno." />
+        <meta property="og:title" content="Crear simulación de inversión — AgentIA" />
+        <meta property="og:description" content="Configura un equipo de agentes IA y estima la inversión antes de calcular el ROI con datos reales." />
         <meta property="og:url" content={`${SITE.url}/presupuestador`} />
         <meta property="og:image" content={`${SITE.url}/images/verticals-editorial/tech.webp`} />
         <meta name="twitter:card" content="summary_large_image" />
@@ -309,7 +310,7 @@ export default function PresupuestadorPage() {
                 {step === 3 && (
                   <div>
                     <h2 className="font-serif text-display-sm text-slate-950">Agentes recomendados</h2>
-                    <p className="mt-3 text-slate-500">Puedes ajustar la selección. La inversión y el ROI se actualizan al instante.</p>
+                    <p className="mt-3 text-slate-500">Puedes ajustar la selección. La inversión se actualiza al instante; el ROI se calcula después con datos operativos.</p>
                     <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
                       {recommended.map((caso) => {
                         const active = selected.includes(caso.id);
@@ -362,13 +363,13 @@ export default function PresupuestadorPage() {
 
                 {step === 5 && (
                   <div>
-                    <h2 className="font-serif text-display-sm text-slate-950">Estimacion preliminar</h2>
-                    <p className="mt-3 text-slate-500">Una primera lectura para decidir si merece avanzar a un informe completo.</p>
+                    <h2 className="font-serif text-display-sm text-slate-950">Estimación preliminar de inversión</h2>
+                    <p className="mt-3 text-slate-500">El retorno no se deduce del precio: requiere volumen, coste unitario y tasas de realización del caso.</p>
                     <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
                       {[
                         ['Inversión estimada', currency(adjusted.inversion), 'blue'],
-                        ['Retorno estimado', currency(adjusted.retorno), 'emerald'],
-                        ['ROI estimado', `${adjusted.roi}%`, 'emerald'],
+                        ['Cuota base mensual', currency(recurringBase), 'blue'],
+                        ['ROI', 'Pendiente de datos operativos', 'emerald'],
                         ['Despliegue aproximado', adjusted.meses, 'blue'],
                       ].map(([label, value, tone]) => (
                         <div key={label} className={`rounded-3xl p-5 ${tone === 'emerald' ? 'bg-emerald-50' : 'bg-blue-50'}`}>
@@ -377,14 +378,8 @@ export default function PresupuestadorPage() {
                         </div>
                       ))}
                     </div>
-                    <div className="mt-8 rounded-3xl border border-slate-200 bg-white/75 p-5">
-                      <div className="mb-3 flex justify-between text-sm font-semibold text-slate-500">
-                        <span>Impacto neto estimado</span>
-                        <span>{currency(adjusted.ahorro)}</span>
-                      </div>
-                      <div className="h-4 overflow-hidden rounded-full bg-slate-100">
-                        <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400" />
-                      </div>
+                    <div className="mt-8 rounded-3xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-800">
+                      Esta estimación no incluye IVA ni consumos variables de telefonía, mensajes, modelos o servicios de terceros. El informe deberá incorporar esos consumos y los datos operativos para calcular beneficio neto, ROI y payback.
                     </div>
                   </div>
                 )}

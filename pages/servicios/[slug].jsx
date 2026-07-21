@@ -7,7 +7,6 @@ import {
   Target, UserCheck, Workflow,
 } from 'lucide-react';
 import { getCasoBySlug, getAllSlugs, getCasosBySector, SECTORES_META } from '../../data/casos';
-import { calcBeneficio } from '../../lib/calculations';
 import { getAgentDesign } from '../../lib/agent-design';
 import Badge from '../../components/ui/Badge';
 import QuickROICalculator from '../../components/servicios/QuickROICalculator';
@@ -33,7 +32,6 @@ export async function getStaticProps({ params }) {
       caso,
       design: getAgentDesign(caso),
       sectorCasos: sectorCasos.slice(0, 4),
-      beneficio: calcBeneficio(caso.t, caso.ini, caso.rec),
       imageSrc: SECTORES_META[caso.s].image,
     },
   };
@@ -50,11 +48,10 @@ function DetailSection({ id, badge, title, intro, children }) {
   );
 }
 
-export default function AgentePage({ caso, design, sectorCasos, beneficio, imageSrc }) {
+export default function AgentePage({ caso, design, sectorCasos, imageSrc }) {
   const canonical = `${SITE.url}/servicios/${caso.slug}`;
   const socialImage = `${SITE.url}${imageSrc}`;
   const annualCost = caso.ini + (caso.rec * 12);
-  const roi = annualCost > 0 ? Math.round(((beneficio - annualCost) / annualCost) * 100) : 0;
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -129,8 +126,8 @@ export default function AgentePage({ caso, design, sectorCasos, beneficio, image
                 {[
                   ['Inversión inicial', `${caso.ini.toLocaleString()} EUR`, Target],
                   ['Operación mensual', `${caso.rec.toLocaleString()} EUR`, Gauge],
-                  ['Beneficio estimado', `${Math.round(beneficio).toLocaleString()} EUR/año`, Sparkles],
-                  ['ROI orientativo', `${roi}%`, CheckCircle2],
+                  ['Coste primer año', `${annualCost.toLocaleString()} EUR`, Sparkles],
+                  ['ROI', 'Calculable con tus datos', CheckCircle2],
                 ].map(([label, value, Icon]) => (
                   <GlassCard key={label} className="p-4 md:p-5">
                     <Icon size={18} className="text-blue-600" />

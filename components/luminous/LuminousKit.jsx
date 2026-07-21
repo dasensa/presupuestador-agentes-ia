@@ -176,9 +176,6 @@ export function RoiPreviewCard({ sector = 'Telecom', selectedIds }) {
   const casosMap = buildCasosMap();
   const fallbackIds = getCasosBySector(sector).slice(0, 3).map((caso) => caso.id);
   const resumen = calcResumen(selectedIds?.length ? selectedIds : fallbackIds, casosMap);
-  const roi = Math.round(resumen.roiBundled * 100);
-  const roiLow = Math.min(180, Math.max(0, Math.round(roi * 0.25)));
-  const roiHigh = Math.min(320, Math.max(roiLow, Math.round(roi * 0.4)));
   return (
     <GlassCard className="overflow-hidden p-6">
       <div className="flex items-start justify-between gap-4">
@@ -188,9 +185,9 @@ export function RoiPreviewCard({ sector = 'Telecom', selectedIds }) {
           <p className="mt-3 text-sm leading-relaxed text-slate-500">Una estimación preliminar para decidir con datos antes del despliegue.</p>
         </div>
         <div className="hidden rounded-2xl bg-emerald-50 px-4 py-3 text-right sm:block">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-600">ROI estimado</div>
-          <div className="font-serif text-4xl text-emerald-600">{roiLow}–{roiHigh}%</div>
-          <div className="mt-1 text-[10px] text-emerald-700">rango preliminar</div>
+          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-600">ROI verificable</div>
+          <div className="font-serif text-2xl text-emerald-600">Con datos reales</div>
+          <div className="mt-1 text-[10px] text-emerald-700">sin porcentajes prefijados</div>
         </div>
       </div>
       <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -198,7 +195,7 @@ export function RoiPreviewCard({ sector = 'Telecom', selectedIds }) {
           ['Sector', sector],
           ['Agentes', `${resumen.selectedCasos.length}`],
           ['Inversion', `${Math.round(resumen.invBundled).toLocaleString()} EUR`],
-          ['Retorno anual', `${Math.round(resumen.beneficioBundled).toLocaleString()} EUR`],
+          ['Modelo', '3 escenarios'],
         ].map(([label, value]) => (
           <div key={label} className="rounded-2xl border border-slate-200 bg-white/75 p-4">
             <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">{label}</div>
@@ -209,7 +206,7 @@ export function RoiPreviewCard({ sector = 'Telecom', selectedIds }) {
       <div className="mt-8">
         <div className="mb-2 flex justify-between text-xs font-semibold text-slate-500">
           <span>Impacto operativo</span>
-          <span>{Math.min(95, Math.max(35, roi / 4))}%</span>
+          <span>Datos + hipótesis</span>
         </div>
         <div className="h-3 overflow-hidden rounded-full bg-slate-100">
           <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400" />
