@@ -21,9 +21,9 @@ export function LuminousBackground({ children, className = '' }) {
   );
 }
 
-export function GlassCard({ children, className = '', hover = false }) {
+export function GlassCard({ children, className = '', hover = false, ...props }) {
   return (
-    <div className={`${hover ? 'ds-card-hover' : 'ds-card'} ${className}`}>
+    <div className={`${hover ? 'ds-card-hover' : 'ds-card'} ${className}`} {...props}>
       {children}
     </div>
   );
