@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { ArrowRight, Bot, Building2, Layers3, Target, TrendingUp } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight, Building2, Layers3, Target, TrendingUp } from 'lucide-react';
 import { SECTORES_META, getCasosBySector, getSectores } from '../../data/casos';
 import { calcBeneficio } from '../../lib/calculations';
 import {
@@ -76,20 +77,21 @@ export default function ServiciosPage() {
                         key={name}
                         id={anchorFor(name)}
                         onClick={() => setActive(name)}
-                        className={`rounded-3xl border p-4 text-left transition-all ${
+                        className={`group overflow-hidden rounded-3xl border text-left transition-all ${
                           selected
                             ? 'border-blue-300 bg-blue-50/70 shadow-[0_18px_45px_rgba(37,99,235,0.12)]'
                             : 'border-slate-200 bg-white/70 hover:border-cyan-200 hover:bg-white'
                         }`}
                       >
-                        <div className="mb-4 flex items-center justify-between">
-                          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm">
-                            <Bot size={20} />
-                          </span>
-                          <span className="text-xs font-semibold text-slate-400">{casos.length} casos</span>
+                        <div className="relative h-32 overflow-hidden">
+                          <Image src={meta.image} alt={`Equipo del sector ${name}`} fill sizes="(min-width:1024px) 22vw, (min-width:640px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 to-transparent" />
+                          <span className="absolute bottom-3 right-3 rounded-full border border-white/30 bg-white/85 px-2.5 py-1 text-xs font-semibold text-slate-600 backdrop-blur">{casos.length} casos</span>
                         </div>
+                        <div className="p-4">
                         <h2 className="font-serif text-2xl text-slate-950">{name}</h2>
                         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-500">{meta.description}</p>
+                        </div>
                       </button>
                     );
                   })}

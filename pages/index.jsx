@@ -111,7 +111,7 @@ export default function HomePage() {
                 Cada industria tiene procesos, restricciones y oportunidades distintas. AgentIA prioriza los casos de mayor impacto.
               </p>
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
               {sectores.map(([name, meta]) => (
                 <SectorCard key={name} name={name} meta={meta} casos={getCasosBySector(name)} />
               ))}

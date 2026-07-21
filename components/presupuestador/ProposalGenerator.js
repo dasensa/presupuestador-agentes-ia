@@ -14,7 +14,7 @@ export const generarPropuestaHTML = (selectedCasos, sector, sinergia, invYear1, 
     <div style="background: rgba(239, 68, 68, 0.08); border-left: 4px solid #f87171; padding: 20px; border-radius: 8px; margin-bottom: 24px;">
       <p style="color: #f87171; font-weight: bold; font-size: 14px; margin: 0 0 4px;">COSTE DE INACCION MENSUAL</p>
       <p style="font-size: 28px; font-weight: bold; color: #f87171; margin: 0;">&euro;${Math.round(resumenROI.costeInaccionMensual).toLocaleString()}</p>
-      <p style="color: #fca5a5; font-size: 12px; margin: 8px 0 0;">Este es el coste de no actuar: lo que tu empresa pierde cada mes por no implementar.</p>
+      <p style="color: #fca5a5; font-size: 12px; margin: 8px 0 0;">Oportunidad mensual estimada bajo las hipotesis introducidas.</p>
     </div>
 
     <div style="display: flex; gap: 16px; margin-bottom: 24px;">

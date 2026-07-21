@@ -25,7 +25,7 @@ export default function ROIResults({ resumen, onEmailClick, onDownload }) {
         </div>
         {hasData && (
           <p className="text-body-sm text-red-300/70 mt-2">
-            Este es el coste de no actuar: lo que tu empresa pierde cada mes por no implementar.
+            Oportunidad mensual estimada bajo las hipotesis introducidas.
           </p>
         )}
       </div>

@@ -47,7 +47,7 @@ export default function Navbar() {
 
             <div className="hidden md:block">
               <Link
-                href="/contacto"
+                href="/presupuestador"
                 className="inline-flex items-center rounded-full px-5 py-2 bg-gradient-to-br from-brand-blue to-brand-mint text-white text-body-sm font-semibold shadow-[0_12px_28px_rgba(37,99,235,0.24)] transition-transform hover:-translate-y-0.5"
               >
                 Crear simulacion
@@ -55,6 +55,9 @@ export default function Navbar() {
             </div>
 
             <button
+              type="button"
+              aria-label={mobileOpen ? 'Cerrar menu' : 'Abrir menu'}
+              aria-expanded={mobileOpen}
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden text-slate-500 hover:text-slate-950 p-2"
             >
@@ -81,7 +84,7 @@ export default function Navbar() {
               ))}
               <div className="pt-3">
                 <Link
-                  href="/contacto"
+                  href="/presupuestador"
                   className="block rounded-full text-center px-5 py-3 bg-gradient-to-br from-brand-blue to-brand-mint text-white text-body-sm font-semibold"
                 >
                   Crear simulacion

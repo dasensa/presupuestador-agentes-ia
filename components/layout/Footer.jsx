@@ -64,7 +64,6 @@ export default function Footer() {
             <h3 className="text-label uppercase text-slate-950 tracking-wider mb-4">Contacto</h3>
             <ul className="space-y-2.5 text-body-sm text-slate-500">
               <li>info@agentia.es</li>
-              <li>+34 900 000 000</li>
               <li>Madrid, Espana</li>
             </ul>
           </div>
@@ -73,8 +72,8 @@ export default function Footer() {
         <div className="mt-12 border-t border-slate-200 pt-6 flex flex-col gap-3 text-body-sm text-slate-400 md:flex-row md:items-center md:justify-between">
           <p>&copy; {new Date().getFullYear()} AgentIA. Todos los derechos reservados.</p>
           <div className="flex gap-6">
-            <span>Politica de privacidad</span>
-            <span>Terminos de servicio</span>
+            <Link href="/privacidad" className="hover:text-slate-700">Politica de privacidad</Link>
+            <Link href="/terminos" className="hover:text-slate-700">Terminos de servicio</Link>
           </div>
         </div>
       </div>

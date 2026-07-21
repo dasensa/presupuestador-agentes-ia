@@ -6,7 +6,7 @@ import Button from '../ui/Button';
 
 export default function ContactForm() {
   const sectores = getSectores();
-  const [form, setForm] = useState({ nombre: '', email: '', empresa: '', sector: '', mensaje: '' });
+  const [form, setForm] = useState({ nombre: '', email: '', empresa: '', sector: '', mensaje: '', website: '' });
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
@@ -28,7 +28,7 @@ export default function ContactForm() {
       });
       if (res.ok) {
         setSent(true);
-        setForm({ nombre: '', email: '', empresa: '', sector: '', mensaje: '' });
+        setForm({ nombre: '', email: '', empresa: '', sector: '', mensaje: '', website: '' });
       } else {
         alert('Error al enviar el formulario. Intentalo de nuevo.');
       }
@@ -56,6 +56,7 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="ds-card p-6 md:p-8 space-y-5">
+      <input className="hidden" tabIndex="-1" autoComplete="off" aria-hidden="true" name="website" value={form.website} onChange={update('website')} />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <Input label="Nombre *" type="text" value={form.nombre} onChange={update('nombre')} placeholder="Tu nombre" />
         <Input label="Email *" type="email" value={form.email} onChange={update('email')} placeholder="tu@empresa.com" />
@@ -87,6 +88,7 @@ export default function ContactForm() {
       <Button type="submit" disabled={loading} variant="primary" className="w-full">
         <Send size={16} /> {loading ? 'Enviando...' : 'Enviar mensaje'}
       </Button>
+      <p className="text-xs leading-relaxed text-base-muted">Usaremos tus datos para responder a tu solicitud. Consulta la <a href="/privacidad" className="text-brand-blue hover:underline">politica de privacidad</a>.</p>
     </form>
   );
 }

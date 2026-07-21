@@ -13,6 +13,7 @@ import {
   getSectores,
 } from '../data/casos';
 import { calcResumen } from '../lib/calculations';
+import { adjustBudget, DEFAULT_CONTEXT } from '../lib/budget-context';
 import {
   GlassCard,
   LuminousBackground,
@@ -32,13 +33,6 @@ const PROCESS_OPTIONS = [
   'Retencion/churn',
   'Analisis documental',
 ];
-
-const CONTEXT_MULTIPLIERS = {
-  empleados: { '1-20': 0.85, '21-100': 1, '101-500': 1.25, '500+': 1.55 },
-  volumen: { bajo: 0.85, medio: 1, alto: 1.28, enterprise: 1.6 },
-  integracion: { baja: 0.9, media: 1, alta: 1.22, core: 1.45 },
-  urgencia: { flexible: 0.95, normal: 1, rapida: 1.14 },
-};
 
 const STEPS = [
   'Sector',
@@ -136,15 +130,11 @@ export default function PresupuestadorPage() {
   const [sector, setSector] = useState(sectores[0]);
   const [processes, setProcesses] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [context, setContext] = useState({
-    empleados: '21-100',
-    volumen: 'medio',
-    integracion: 'media',
-    urgencia: 'normal',
-  });
+  const [context, setContext] = useState(DEFAULT_CONTEXT);
   const [lead, setLead] = useState({ nombre: '', email: '', empresa: '', telefono: '' });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
     const querySector = router.query.sector;
@@ -175,17 +165,7 @@ export default function PresupuestadorPage() {
 
   const selectedCasos = selected.map((id) => casosMap[id]).filter(Boolean);
   const resumen = calcResumen(selected, casosMap);
-  const factor = CONTEXT_MULTIPLIERS.empleados[context.empleados]
-    * CONTEXT_MULTIPLIERS.volumen[context.volumen]
-    * CONTEXT_MULTIPLIERS.integracion[context.integracion]
-    * CONTEXT_MULTIPLIERS.urgencia[context.urgencia];
-  const adjusted = {
-    inversion: resumen.invBundled * factor,
-    retorno: resumen.beneficioBundled * factor,
-    ahorro: resumen.beneficioBundled * factor - resumen.invBundled * factor,
-    roi: resumen.invBundled > 0 ? Math.round(((resumen.beneficioBundled - resumen.invBundled) / resumen.invBundled) * 100) : 0,
-    meses: context.urgencia === 'rapida' ? '6-8 semanas' : context.integracion === 'core' ? '12-16 semanas' : '8-12 semanas',
-  };
+  const adjusted = adjustBudget(resumen, context);
 
   const next = () => setStep((value) => Math.min(6, value + 1));
   const prev = () => setStep((value) => Math.max(1, value - 1));
@@ -201,8 +181,9 @@ export default function PresupuestadorPage() {
     e.preventDefault();
     if (!lead.nombre || !lead.email || !lead.empresa) return;
     setLoading(true);
+    setSubmitError('');
     try {
-      await fetch('/api/registrar-lead', {
+      const response = await fetch('/api/registrar-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -211,9 +192,17 @@ export default function PresupuestadorPage() {
           empleados: context.empleados,
           presupuesto: currency(adjusted.inversion),
           urgencia: context.urgencia,
+          selectedIds: selected,
+          context,
         }),
       });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || 'No se pudo enviar la simulacion');
+      }
       setSent(true);
+    } catch (error) {
+      setSubmitError(error.message);
     } finally {
       setLoading(false);
     }
@@ -351,7 +340,7 @@ export default function PresupuestadorPage() {
                     </div>
                     <div className="mt-8 rounded-3xl border border-slate-200 bg-white/75 p-5">
                       <div className="mb-3 flex justify-between text-sm font-semibold text-slate-500">
-                        <span>Ahorro operativo estimado</span>
+                        <span>Impacto neto estimado</span>
                         <span>{currency(adjusted.ahorro)}</span>
                       </div>
                       <div className="h-4 overflow-hidden rounded-full bg-slate-100">
@@ -395,6 +384,8 @@ export default function PresupuestadorPage() {
                             <Mail size={16} />
                             {loading ? 'Enviando...' : 'Recibir informe y revisar con un consultor'}
                           </LuminousButton>
+                          {submitError && <p role="alert" className="mt-3 text-sm text-red-600">{submitError}</p>}
+                          <p className="mt-3 text-xs leading-relaxed text-slate-500">Al enviar aceptas que usemos estos datos para remitirte la simulacion y responder a tu solicitud. Consulta nuestra politica de privacidad.</p>
                         </div>
                       </form>
                     )}

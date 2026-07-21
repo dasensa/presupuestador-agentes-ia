@@ -1,8 +1,7 @@
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, MapPin } from 'lucide-react';
 
 const items = [
   { icon: Mail, label: 'Email', value: 'info@agentia.es' },
-  { icon: Phone, label: 'Telefono', value: '+34 900 000 000' },
   { icon: MapPin, label: 'Ubicacion', value: 'Madrid, Espana' },
 ];
 

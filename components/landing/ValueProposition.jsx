@@ -18,7 +18,7 @@ const VALUE_PROPS = [
   },
   {
     icon: 'TrendingUp',
-    title: 'ROI Garantizado',
+    title: 'ROI orientativo',
     description: 'Modelos de calculo probados que aseguran un retorno positivo desde el primer ano con metricas transparentes.',
   },
 ];
@@ -45,7 +45,7 @@ export default function ValueProposition() {
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#071014]/90 via-[#071014]/25 to-transparent" />
             <div className="absolute bottom-5 left-5 rounded-md border border-brand-mint/35 bg-[#061214]/88 p-4 backdrop-blur-md">
-              <div className="text-[28px] leading-none font-serif text-brand-mint">300%+</div>
+              <div className="text-[28px] leading-none font-serif text-brand-mint">Datos</div>
               <div className="mt-1 text-[11px] text-base-muted">ROI medio proyectado</div>
             </div>
           </div>

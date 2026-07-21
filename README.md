@@ -20,6 +20,13 @@ npm run dev
 
 La app estara disponible en `http://localhost:3000`.
 
+## Verificacion
+
+```bash
+npm test
+npm run build
+```
+
 ## Paginas
 
 - `/` — Landing page con propuesta de valor y sectores
@@ -33,7 +40,12 @@ Crea un archivo `.env.local` con:
 
 ```env
 RESEND_API_KEY=tu_api_key
+RESEND_FROM_EMAIL=AgentIA <propuestas@tu-dominio-verificado.com>
+LEADS_TO_EMAIL=info@tu-dominio.com
+NEXT_PUBLIC_SITE_URL=https://tu-dominio.com
 ```
+
+`RESEND_FROM_EMAIL` debe pertenecer a un dominio verificado en Resend. Antes de publicar, completa la identidad juridica en las paginas de privacidad y terminos.
 
 ## Stack
 

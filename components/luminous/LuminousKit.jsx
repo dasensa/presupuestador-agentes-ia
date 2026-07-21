@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowRight, Bot, BrainCircuit, BriefcaseBusiness, Building2, CheckCircle2,
   CircuitBoard, Cpu, Euro, Gauge, Headphones, LineChart, Network, Sparkles,
@@ -74,51 +75,16 @@ export function FloatingAgentNode({ label, icon: Icon = Bot, className = '', sty
 
 export function AgentConstellation() {
   return (
-    <GlassCard className="relative min-h-[430px] overflow-hidden p-6">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(6,182,212,0.22),transparent_34%),radial-gradient(circle_at_64%_35%,rgba(139,92,246,0.18),transparent_24%)]" />
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        {nodePositions.map((node) => (
-          <line
-            key={node.label}
-            x1="50"
-            y1="50"
-            x2={parseFloat(node.x) + 8}
-            y2={parseFloat(node.y) + 4}
-            stroke="url(#agentLine)"
-            strokeWidth="0.35"
-          />
-        ))}
-        <defs>
-          <linearGradient id="agentLine" x1="0" x2="1">
-            <stop stopColor="#2563eb" stopOpacity="0.14" />
-            <stop offset="1" stopColor="#06b6d4" stopOpacity="0.55" />
-          </linearGradient>
-        </defs>
-      </svg>
-      <div className="absolute left-1/2 top-1/2 flex h-36 w-36 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[2rem] border border-white/80 bg-white/85 shadow-[0_28px_80px_rgba(37,99,235,0.22)] backdrop-blur-2xl">
-        <div className="text-center">
-          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-400 text-white">
-            <BrainCircuit size={25} />
-          </div>
-          <div className="font-serif text-2xl text-slate-950">AgentIA</div>
-          <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">builder</div>
+    <GlassCard className="relative min-h-[500px] overflow-hidden border-white/80">
+      <Image src="/images/verticals-editorial/banca.webp" alt="Equipo profesional analizando una oportunidad de automatizacion" fill priority sizes="(min-width:1024px) 54vw, 100vw" className="object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#07182f]/75 via-transparent to-white/10" />
+      <div className="absolute left-5 top-5 rounded-full border border-white/70 bg-white/85 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-blue-700 backdrop-blur-xl">Estrategia + personas + IA</div>
+      <div className="absolute inset-x-5 bottom-5 rounded-[1.5rem] border border-white/25 bg-[#07182f]/75 p-5 text-white backdrop-blur-xl">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-cyan-300 text-slate-950"><BrainCircuit size={21} /></div>
+          <div><div className="font-serif text-2xl">De la oportunidad al agente</div><p className="mt-1 text-sm text-slate-200">Diseno, integracion y medicion con equipos reales.</p></div>
         </div>
       </div>
-      {nodePositions.map((node, i) => (
-        <FloatingAgentNode
-          key={node.label}
-          label={node.label}
-          icon={node.icon}
-          className={i % 2 === 0 ? 'animate-[float_7s_ease-in-out_infinite]' : 'animate-[float_8s_ease-in-out_infinite_reverse]'}
-          style={{ left: node.x, top: node.y }}
-        />
-      ))}
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translate3d(0, 0, 0); }
-          50% { transform: translate3d(0, -8px, 0); }
-        }
-      `}</style>
     </GlassCard>
   );
 }
@@ -170,16 +136,16 @@ export function SectorCard({ name, meta, casos }) {
   const minPrice = Math.min(...casos.map((caso) => caso.ini));
   const recommended = casos.slice(0, 2).map((caso) => caso.c).join(' + ');
   return (
-    <GlassCard hover className="flex h-full flex-col p-5">
-      <div className="mb-5 flex items-start justify-between">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-600 ring-1 ring-blue-100">
-          <Building2 size={22} />
-        </div>
-        <span className="text-xs font-semibold text-slate-400">{casos.length} casos</span>
+    <GlassCard hover className="flex h-full flex-col overflow-hidden p-0">
+      <div className="relative h-44 overflow-hidden">
+        <Image src={meta.image} alt={`Profesionales del sector ${name}`} fill sizes="(min-width:1280px) 30vw, (min-width:768px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 to-transparent" />
+        <span className="absolute bottom-4 left-4 rounded-full border border-white/35 bg-white/85 px-3 py-1 text-xs font-semibold text-slate-700 backdrop-blur">{casos.length} casos</span>
       </div>
-      <h3 className="font-serif text-2xl text-slate-950">{name}</h3>
+      <div className="flex flex-1 flex-col p-5">
+      <h3 className="font-serif text-3xl text-slate-950">{name}</h3>
       <p className="mt-3 text-sm leading-relaxed text-slate-500">{meta.description}</p>
-      <div className="mt-5 rounded-2xl bg-slate-50 p-4">
+      <div className="mt-5 border-l-2 border-cyan-400 bg-slate-50/70 p-4">
         <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">Agentes recomendados</div>
         <div className="mt-2 text-sm font-medium text-slate-700">{recommended}</div>
       </div>
@@ -191,6 +157,7 @@ export function SectorCard({ name, meta, casos }) {
         <Link href={`/presupuestador?sector=${encodeURIComponent(name)}`} className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-white transition-transform hover:-translate-y-0.5">
           <ArrowRight size={16} />
         </Link>
+      </div>
       </div>
     </GlassCard>
   );
