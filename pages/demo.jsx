@@ -5,6 +5,7 @@ import { SITE } from '../lib/constants';
 import { LuminousBackground, GlassCard, SectionBadge } from '../components/luminous/LuminousKit';
 import Badge from '../components/ui/Badge';
 import ChatWidgetDemo from '../components/demo/ChatWidgetDemo';
+import VozWidgetDemo from '../components/demo/VozWidgetDemo';
 import { DEMOS } from '../components/demo/demoData';
 
 export default function DemoPage() {
@@ -15,7 +16,7 @@ export default function DemoPage() {
     <>
       <Head>
         <title>Demo interactiva de agentes — AgentIA</title>
-        <meta name="description" content="Prueba una simulación interactiva de tres agentes del catálogo AgentIA: chatbot recomendador, chat postventa y automatización de devoluciones." />
+        <meta name="description" content="Prueba simulaciones interactivas de los cuatro tipos de agente AgentIA: Chat, Voz, Automatización e Integración, con escenarios reales por sector." />
         <link rel="canonical" href={`${SITE.url}/demo`} />
         <meta property="og:title" content="Demo interactiva de agentes — AgentIA" />
         <meta property="og:description" content="Mira un agente de AgentIA funcionando sobre una web simulada, antes de desplegarlo en la tuya." />
@@ -62,7 +63,9 @@ export default function DemoPage() {
             </div>
 
             <div className="mt-6">
-              <ChatWidgetDemo key={demo.code} demo={demo} />
+              {demo.channel === 'Voz'
+                ? <VozWidgetDemo key={demo.code} demo={demo} />
+                : <ChatWidgetDemo key={demo.code} demo={demo} />}
             </div>
 
             <GlassCard className="mt-8 p-6">

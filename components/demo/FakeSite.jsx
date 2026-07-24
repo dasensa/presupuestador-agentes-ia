@@ -1,4 +1,5 @@
 const TILE_TINTS = ['bg-blue-50', 'bg-cyan-50', 'bg-amber-50', 'bg-violet-50'];
+const TILE_ICONS_TINTS = ['bg-blue-50', 'bg-amber-50', 'bg-emerald-50'];
 
 function SiteNav({ logo, links, activeLink }) {
   return (
@@ -107,6 +108,82 @@ function ReturnsBody({ page }) {
   );
 }
 
+function ContactBody({ page }) {
+  return (
+    <>
+      <div className="px-6 pb-6 pt-9">
+        <h1 className="font-serif text-[26px] text-slate-950">{page.heading}</h1>
+        <div className="mt-5 flex items-center gap-3">
+          <span className="text-2xl">📞</span>
+          <div>
+            <div className="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">Llámanos</div>
+            <div className="font-mono text-[22px] font-bold text-slate-950">{page.phone}</div>
+          </div>
+        </div>
+      </div>
+      <div className="px-6 pb-10">
+        <div className="grid grid-cols-1 gap-3">
+          {page.departments.map((d, i) => (
+            <div key={d.label} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-3.5">
+              <div className={`flex h-9 w-9 flex-none items-center justify-center rounded-xl text-base ${TILE_ICONS_TINTS[i % TILE_ICONS_TINTS.length]}`}>
+                {d.icon}
+              </div>
+              <div>
+                <div className="font-serif text-[13px] text-slate-950">{d.label}</div>
+                <div className="mt-0.5 text-[11.5px] text-slate-500">{d.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+function PortalBody({ page }) {
+  return (
+    <div className="flex min-h-[460px]">
+      <div className="w-36 flex-none border-r border-slate-200 bg-slate-50 py-5">
+        {page.menuItems.map((item, i) => (
+          <div
+            key={item}
+            className={`cursor-default px-4 py-2.5 text-[11.5px] font-semibold ${
+              i === page.activeMenu
+                ? 'border-r-2 border-brand-blue bg-blue-50/50 text-brand-blue'
+                : 'text-slate-500'
+            }`}
+          >
+            {item}
+          </div>
+        ))}
+      </div>
+      <div className="flex-1 px-5 pb-8 pt-6">
+        <h1 className="font-serif text-[20px] text-slate-950">{page.heading}</h1>
+        <p className="mt-1 text-[11.5px] text-slate-400">{page.sub}</p>
+        <div className="mt-4 flex gap-2 rounded-xl border border-slate-200 bg-white p-2.5">
+          <div className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[12px] text-slate-400">
+            IBAN o nombre del cliente…
+          </div>
+          <button type="button" className="rounded-lg bg-gradient-to-br from-brand-blue to-brand-mint px-3 text-[12px] font-semibold text-white">
+            Buscar
+          </button>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          {[
+            { label: 'Clientes activos', value: '12.847' },
+            { label: 'Operaciones hoy', value: '3.291' },
+          ].map((s) => (
+            <div key={s.label} className="rounded-xl border border-slate-200 bg-white p-3">
+              <div className="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">{s.label}</div>
+              <div className="mt-1 font-serif text-[22px] text-slate-950">{s.value}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function FakeSite({ page }) {
   return (
     <div aria-hidden="true">
@@ -114,6 +191,8 @@ export default function FakeSite({ page }) {
       {page.type === 'shop' && <ShopBody page={page} />}
       {page.type === 'help' && <HelpBody page={page} />}
       {page.type === 'returns' && <ReturnsBody page={page} />}
+      {page.type === 'contact' && <ContactBody page={page} />}
+      {page.type === 'portal' && <PortalBody page={page} />}
     </div>
   );
 }

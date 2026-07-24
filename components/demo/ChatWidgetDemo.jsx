@@ -61,6 +61,43 @@ function StepBubble({ step }) {
       </div>
     );
   }
+  if (step.kind === 'multi_query') {
+    return (
+      <div className="flex flex-col gap-1.5">
+        <div className="text-center font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+          Consultando sistemas en paralelo
+        </div>
+        <div className="grid grid-cols-3 gap-1.5">
+          {step.queries.map((q) => (
+            <div
+              key={q}
+              className="flex items-center gap-1.5 rounded-lg border border-blue-100 bg-blue-50 px-2 py-1.5 text-[10.5px] font-semibold text-blue-600"
+            >
+              <span className="h-1.5 w-1.5 flex-none animate-pulse rounded-full bg-brand-mint" />
+              {q}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  if (step.kind === 'data_panel') {
+    return (
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+          Datos recuperados
+        </div>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+          {step.fields.map((f) => (
+            <div key={f.label}>
+              <div className="text-[10px] text-slate-400">{f.label}</div>
+              <div className="text-[12.5px] font-semibold text-slate-800">{f.value}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
   return null;
 }
 
