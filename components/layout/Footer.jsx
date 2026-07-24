@@ -50,7 +50,7 @@ export default function Footer() {
           <div>
             <h3 className="text-label uppercase text-slate-950 tracking-wider mb-4">Sectores</h3>
             <ul className="space-y-2.5">
-              {['Retail', 'Banca', 'Salud', 'Telecom', 'Logistica', 'Tech/SaaS'].map((s) => (
+              {['Retail', 'Actividades Deportivas', 'Salud', 'Telecom', 'Logistica', 'Tech/SaaS'].map((s) => (
                 <li key={s}>
                   <Link href={`/servicios#${s.toLowerCase().replace('/', '-')}`} className="text-body-sm text-slate-500 hover:text-slate-950">
                     {s}
