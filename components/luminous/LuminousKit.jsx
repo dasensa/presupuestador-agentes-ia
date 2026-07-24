@@ -82,7 +82,7 @@ export function AgentConstellation() {
       <div className="absolute inset-x-5 bottom-5 rounded-[1.5rem] border border-white/25 bg-[#07182f]/75 p-5 text-white backdrop-blur-xl">
         <div className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-cyan-300 text-slate-950"><BrainCircuit size={21} /></div>
-          <div><div className="font-serif text-2xl">De la oportunidad al agente</div><p className="mt-1 text-sm text-slate-200">Diseno, integracion y medicion con equipos reales.</p></div>
+          <div><div className="font-serif text-2xl">De la oportunidad al agente</div><p className="mt-1 text-sm text-slate-200">Diseño, integración y medición con equipos reales.</p></div>
         </div>
       </div>
     </GlassCard>
