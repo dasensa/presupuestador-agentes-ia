@@ -10,18 +10,18 @@ export default function Footer() {
             <div>
               <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-blue-600">
                 <Sparkles size={13} />
-                Simulacion AgentIA
+                Agent Factory
               </span>
-              <h2 className="mt-5 font-serif text-display-sm text-slate-950">Empieza por una simulación. Decide con datos.</h2>
+              <h2 className="mt-5 font-serif text-display-sm text-slate-950">Describe el agente. Genera su primera versión.</h2>
               <p className="mt-3 max-w-2xl text-body text-slate-500">
-                Selecciona tu sector, identifica procesos y recibe una estimación inicial de inversión, retorno e impacto operativo.
+                Configura misión, canal y autonomía. AgentIA prepara el blueprint, los controles y las pruebas antes del sandbox.
               </p>
             </div>
             <Link
-              href="/presupuestador"
+              href="/crear-agente"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-brand-blue to-brand-mint px-7 py-3.5 text-body font-semibold text-white shadow-[0_16px_40px_rgba(37,99,235,0.28)] transition-transform hover:-translate-y-0.5"
             >
-              Crear mi simulación
+              Crear mi agente
               <ArrowRight size={16} />
             </Link>
           </div>
@@ -34,13 +34,14 @@ export default function Footer() {
               <span className="text-brand-blue text-[10px] font-sans font-medium relative -top-2.5">®</span>
             </Link>
             <p className="mt-4 max-w-sm text-body-sm leading-relaxed text-slate-500">
-              Plataforma de simulación y diseño de equipos de agentes IA para empresas.
+              Plataforma para construir, evaluar y desplegar agentes IA con control humano antes de producción.
             </p>
           </div>
 
           <div>
             <h3 className="text-label uppercase text-slate-950 tracking-wider mb-4">Explorar</h3>
             <ul className="space-y-2.5">
+              <li><Link className="text-body-sm text-slate-500 hover:text-slate-950" href="/crear-agente">Crear mi agente</Link></li>
               <li><Link className="text-body-sm text-slate-500 hover:text-slate-950" href="/servicios">Agentes por sector</Link></li>
               <li><Link className="text-body-sm text-slate-500 hover:text-slate-950" href="/presupuestador">Presupuestador ROI</Link></li>
               <li><Link className="text-body-sm text-slate-500 hover:text-slate-950" href="/contacto">Contacto</Link></li>
@@ -72,8 +73,8 @@ export default function Footer() {
         <div className="mt-12 border-t border-slate-200 pt-6 flex flex-col gap-3 text-body-sm text-slate-400 md:flex-row md:items-center md:justify-between">
           <p>&copy; {new Date().getFullYear()} AgentIA. Todos los derechos reservados.</p>
           <div className="flex gap-6">
-            <Link href="/privacidad" className="hover:text-slate-700">Politica de privacidad</Link>
-            <Link href="/terminos" className="hover:text-slate-700">Terminos de servicio</Link>
+            <Link href="/privacidad" className="hover:text-slate-700">Política de privacidad</Link>
+            <Link href="/terminos" className="hover:text-slate-700">Términos de servicio</Link>
           </div>
         </div>
       </div>
