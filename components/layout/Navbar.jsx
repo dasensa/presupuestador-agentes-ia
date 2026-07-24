@@ -47,10 +47,10 @@ export default function Navbar() {
 
             <div className="hidden md:block">
               <Link
-                href="/presupuestador"
+                href="/crear-agente"
                 className="inline-flex items-center rounded-full px-5 py-2 bg-gradient-to-br from-brand-blue to-brand-mint text-white text-body-sm font-semibold shadow-[0_12px_28px_rgba(37,99,235,0.24)] transition-transform hover:-translate-y-0.5"
               >
-                Crear simulación
+                Crear mi agente
               </Link>
             </div>
 
@@ -84,10 +84,10 @@ export default function Navbar() {
               ))}
               <div className="pt-3">
                 <Link
-                  href="/presupuestador"
+                  href="/crear-agente"
                   className="block rounded-full text-center px-5 py-3 bg-gradient-to-br from-brand-blue to-brand-mint text-white text-body-sm font-semibold"
                 >
-                  Crear simulación
+                  Crear mi agente
                 </Link>
               </div>
             </div>

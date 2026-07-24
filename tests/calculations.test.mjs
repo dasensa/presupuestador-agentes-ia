@@ -4,6 +4,7 @@ import { calcResumen, calcSinergia } from '../lib/calculations.js';
 import { calcROIModel } from '../lib/roi-calculator.js';
 import { calculateMonthlyUsageCost, getAgentPricing } from '../lib/agent-pricing.js';
 import { CASOS_DATA } from '../data/casos.js';
+import { buildAgentBlueprint } from '../lib/agent-factory.js';
 
 const casos = {
   1: { id: 1, s: 'Retail', t: 'Chat', ini: 10_000, rec: 1_000 },
@@ -72,4 +73,38 @@ test('solo factura el consumo que supera la bolsa incluida', () => {
   const pricing = getAgentPricing({ s: 'Retail', t: 'Chat', ini: 14_000, prob: 'Retencion' });
   assert.equal(calculateMonthlyUsageCost(pricing, 800).monthlyTotal, 1_500);
   assert.equal(calculateMonthlyUsageCost(pricing, 1_600).monthlyTotal, 2_040);
+});
+
+test('construye automáticamente un blueprint Essential listo para sandbox', () => {
+  const result = buildAgentBlueprint({
+    name: 'Asistente de reservas',
+    sector: 'Viajes',
+    objective: 'Responder disponibilidad y preparar solicitudes de reserva para el equipo.',
+    process: 'Reservas',
+    channel: 'web',
+    volume: 'bajo',
+    autonomy: 'informar',
+    plan: 'essential',
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.blueprint.status, 'Listo para sandbox');
+  assert.equal(result.blueprint.includedInteractions, 1_000);
+  assert.ok(result.blueprint.tests.length >= 5);
+});
+
+test('exige revisión humana si el agente ejecuta acciones o usa sistemas externos', () => {
+  const result = buildAgentBlueprint({
+    name: 'Agente de operaciones',
+    sector: 'Retail',
+    objective: 'Preparar pedidos y ejecutar cambios confirmados por el responsable de tienda.',
+    process: 'Operaciones',
+    channel: 'web',
+    volume: 'medio',
+    autonomy: 'ejecutar',
+    plan: 'advanced',
+    systems: 'ERP del cliente',
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.blueprint.status, 'Revisión requerida');
+  assert.match(result.blueprint.deployment.next, /Revisión humana/);
 });

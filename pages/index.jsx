@@ -23,14 +23,14 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <title>{`${SITE.name} — Diseña tu equipo de agentes IA`}</title>
+        <title>{`${SITE.name} — Construye tu agente IA`}</title>
         <meta
           name="description"
-          content="Diseña tu equipo de agentes IA, identifica procesos de alto impacto y calcula una simulación de ROI antes de desplegar."
+          content="Describe el agente IA que necesitas y genera automáticamente una primera versión con controles, pruebas y despliegue por fases."
         />
         <link rel="canonical" href={SITE.url} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content={`${SITE.name} — Diseña tu equipo de agentes IA`} />
+        <meta property="og:title" content={`${SITE.name} — Construye tu agente IA`} />
         <meta property="og:description" content={SITE.description} />
         <meta property="og:url" content={SITE.url} />
         <meta property="og:image" content={`${SITE.url}/images/verticals-editorial/banca.webp`} />
@@ -44,14 +44,14 @@ export default function HomePage() {
               <div>
                 <SectionBadge>{'Procesos -> Agentes -> Impacto -> ROI'}</SectionBadge>
                 <h1 className="mt-7 max-w-4xl font-serif text-[54px] leading-[0.96] tracking-tight text-slate-950 md:text-[82px]">
-                  Diseña tu equipo de agentes IA
+                  Solicita tu agente. AgentIA construye la primera versión.
                 </h1>
                 <p className="mt-7 max-w-2xl text-lg leading-8 text-slate-600">
-                  Identificamos los procesos con mayor potencial, diseñamos agentes inteligentes por función y calculamos el impacto económico antes de desplegarlos.
+                  Describe el objetivo, el canal y la autonomía. Nuestra fábrica de agentes genera la especificación, los controles y las pruebas antes de crear un entorno seguro de demostración.
                 </p>
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                  <LuminousButton href="/presupuestador">
-                    Crear mi simulación
+                  <LuminousButton href="/crear-agente">
+                    Crear mi agente
                     <ArrowRight size={16} />
                   </LuminousButton>
                   <LuminousButton href="/servicios" variant="secondary">
@@ -67,10 +67,10 @@ export default function HomePage() {
         <section className="pb-16 md:pb-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-              <MetricCard value="70+" label="Casos de uso" description="Biblioteca sectorial para priorizar automatizaciones reales." icon={Layers3} />
+              <MetricCard value="70+" label="Plantillas sectoriales" description="Puntos de partida reutilizables para construir más rápido." icon={Layers3} />
               <MetricCard value="10" label="Sectores" description="Mapas de agentes adaptados a cada industria." icon={Map} />
-              <MetricCard value="ROI" label="Antes de desplegar" description="Estimacion economica preliminar para decidir con datos." icon={Gauge} />
-              <MetricCard value="Roadmap" label="Por fases" description="Pilotos, integraciones y escalado con una ruta clara." icon={Route} />
+              <MetricCard value="Evals" label="Antes de desplegar" description="Pruebas de calidad, seguridad, coste y escalado humano." icon={Gauge} />
+              <MetricCard value="Sandbox" label="Antes de producción" description="Primera versión aislada, controlada y reversible." icon={Route} />
             </div>
           </div>
         </section>
@@ -81,7 +81,7 @@ export default function HomePage() {
               <SectionBadge icon={LineChart}>De proceso a agente</SectionBadge>
               <h2 className="mt-5 font-serif text-display-md text-slate-950">Convierte procesos repetitivos en agentes inteligentes</h2>
               <p className="mt-4 text-body-lg text-slate-500">
-                Del diagnóstico al despliegue: una ruta clara para automatizar con impacto medible.
+                De la solicitud al sandbox: una ruta automatizada con aprobación antes de producción.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -94,11 +94,11 @@ export default function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-12 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
               <div>
-                <SectionBadge>Agent builder</SectionBadge>
-                <h2 className="mt-5 font-serif text-display-md text-slate-950">Agentes especializados por funcion</h2>
+                <SectionBadge>Agent Factory</SectionBadge>
+                <h2 className="mt-5 font-serif text-display-md text-slate-950">Agentes especializados construidos desde plantillas</h2>
               </div>
               <p className="max-w-xl text-body text-slate-500">
-                Combina modulos por funcion para construir un equipo de agentes alineado con tus procesos, canales y sistemas.
+                La plataforma combina módulos, conocimiento, controles y evaluaciones según tu proceso, canal y nivel de autonomía.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -143,15 +143,15 @@ export default function HomePage() {
             <GlassCard className="relative overflow-hidden p-8 text-center md:p-14">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(6,182,212,0.18),transparent_40%)]" />
               <div className="relative">
-                <SectionBadge>Simulacion inicial</SectionBadge>
+                <SectionBadge>Construcción guiada</SectionBadge>
                 <h2 className="mx-auto mt-5 max-w-3xl font-serif text-display-md text-slate-950">
-                  Empieza por una simulación. Decide con datos.
+                  Describe el agente. Recibe su primera especificación.
                 </h2>
                 <p className="mx-auto mt-4 max-w-2xl text-body-lg text-slate-500">
-                  Selecciona tu sector, identifica procesos y recibe una estimación inicial de inversión, retorno e impacto operativo.
+                  Configura misión, canal, conocimiento y autonomía. AgentIA prepara automáticamente controles y pruebas antes del sandbox.
                 </p>
-                <LuminousButton href="/presupuestador" className="mt-8">
-                  Crear mi simulación
+                <LuminousButton href="/crear-agente" className="mt-8">
+                  Crear mi agente
                   <ArrowRight size={16} />
                 </LuminousButton>
               </div>

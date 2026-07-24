@@ -4,6 +4,7 @@ const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://presupuestador-ag
 
 const staticRoutes = [
   { path: '/', priority: '1.0', changefreq: 'weekly' },
+  { path: '/crear-agente', priority: '1.0', changefreq: 'weekly' },
   { path: '/servicios', priority: '0.9', changefreq: 'weekly' },
   { path: '/presupuestador', priority: '0.8', changefreq: 'monthly' },
   { path: '/contacto', priority: '0.7', changefreq: 'monthly' },
